@@ -1,0 +1,117 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+
+.container{
+  width: 100%;
+  height: 250px;
+  background-color: $snapshotBackground;
+  color: $headerTopMenuColor;
+  padding: 30px 20px 10px 20px;
+  @include flex-row-center-center;
+  &__content{
+    @include flex-col-start-start;
+    height: 100%;
+    flex: 2;
+    word-wrap: break-word;
+    &_blue{
+      color: $snapshotHeadColor;
+    }
+    h2{
+      margin-bottom: 5px;
+      color: $snapshotHeadColor;
+      font-family: "Gotham SSm A", "Gotham SSm B", Halvetica, sans-serif;
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 25px;
+    }
+    p{
+      margin: 20px 0;
+    }
+    p, span{
+      font-size: 14px;
+      font-weight: 500;
+    }
+    div{
+      margin-top: 10px;
+    }
+    &_id{
+      p{
+        font-weight: 600;
+        margin: 0;
+      }
+      margin-bottom: 5px;
+    }
+    &_text{
+      max-height: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    &_row {
+      @include flex-row-center-center;
+      font-size: 13px;
+      line-height: 18px;
+      p{
+        margin: 0;
+      }
+      span{
+        margin-left: 5px;
+      }
+    }
+    i{
+      margin-right: 5px;
+    }
+  }
+  &__info{
+    height: 115px;
+    min-width: 200px;
+    padding-left: 10px;
+    flex: 1;
+    &__topbar{
+      background-color: white;
+      font-size: 18px;
+      -webkit-box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.75);
+      -moz-box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.75);
+      box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.75);
+      ul{
+        @include flex-row-around-center;
+        li:first-child{
+          border-right: 2px solid $borderColor;
+        }
+        li{
+          @include flex-col-center-center;
+          flex: 1;
+          margin: 10px;
+        }
+      }
+      p{
+        color: $snapshotHeadColor;
+        margin-bottom: 5px;
+        i{
+          margin-right: 5px;
+        }
+      }
+      span{
+        color: $headerTopMenuColor;
+      }
+    }
+    &__botbar{
+      background-color: $lightGreenTheme;
+      color: white;
+      padding: 15px;
+      @include flex-row-center-center;
+    }
+  }
+}
+
+.danger{
+  &_red{
+    i{
+      color: red;
+    }
+  }
+  &_green{
+    i{
+      color: green;
+    }
+  }
+}

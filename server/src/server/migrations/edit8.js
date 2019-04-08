@@ -12,13 +12,29 @@
 //     }
 // };
 
+
+
+// 'use strict';
+// module.exports = {
+//     up: (queryInterface, DataTypes) => {
+//         return queryInterface.changeColumn('Users', 'role', {
+//             type: DataTypes.ENUM('customer', 'creative'),
+//             defaultValue: 'customer',
+//             allowNull: false,
+//         });
+//     },
+//
+//     down: (queryInterface, DataTypes) => {
+//         return queryInterface.dropTable('User');
+//     }
+// };
+
 'use strict';
 module.exports = {
     up: (queryInterface, DataTypes) => {
-        return queryInterface.changeColumn('Users', 'role', {
-            type: DataTypes.ENUM('customer', 'creative'),
-            defaultValue: 'customer',
-            allowNull: false,
+        return queryInterface.addColumn('Contests', 'order_id', {
+            type: DataTypes.STRING,
+            allowNull: true
         });
     },
 

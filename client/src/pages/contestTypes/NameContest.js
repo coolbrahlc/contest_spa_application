@@ -3,6 +3,7 @@ import {GridLoader} from "react-spinners";
 import {collectFormData, getSelects, setContestOrder} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
 import {Link} from "react-router-dom";
+import Header from "../../components/Header/Header";
 
 class  nameContest extends Component {
 
@@ -124,6 +125,7 @@ class  nameContest extends Component {
     render() {
         return (
             <div className="Users">
+                <Header {...this.props}/>
                 Creating NAME contest
                 <div>
                     <input type="text"

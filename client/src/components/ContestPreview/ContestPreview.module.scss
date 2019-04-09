@@ -62,16 +62,14 @@
     }
   }
   &__info{
-    height: 115px;
+    height: 150px;
     min-width: 200px;
     padding-left: 10px;
     flex: 1;
     &__topbar{
       background-color: white;
       font-size: 18px;
-      -webkit-box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.75);
-      -moz-box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.75);
-      box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.75);
+      border: 2px solid grey;
       ul{
         @include flex-row-around-center;
         li:first-child{

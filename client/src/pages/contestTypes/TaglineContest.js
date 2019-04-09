@@ -3,34 +3,38 @@ import React, { Component } from 'react';
 import {collectFormData, setContestOrder} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
 import {Link} from "react-router-dom";
+import Header from "../../components/Header/Header";
 
-class  logoContest extends Component {
+class  taglineContest extends Component {
 
     constructor(props) {
         super(props);
         this.state= {
-            contestType: 'Logo',
+            contestType: 'Tagline',
             contestName: '',
             industry:'',
             ventureName:'',
             typeOfWork:'',
             targetCustomer:'',
-            logoSelectsValue: '',
-            logoSelects: [],
-            logoFileValue: null
+            taglineSelectsValue: '',
+            taglineSelects: [],
+            nameFile: "",
+            taglineFileValue: null
+
         }
     }
+
     componentDidMount() {
+
         if (!this.props.contestsToInsert) {
             this.props.history.push({
                 pathname: '/contest'
             });
         } else {
-            let logoSelects = this.props.selects
-                .filter(name => (name.contest_type === "logo"))
-                .map(name =>name.name );
+            let selects = this.props.selects;
+            let taglineSelects = selects.filter(name => (name.contest_type === "tagline")).map(name =>name.name );
             this.setState({
-                logoSelects
+                taglineSelects
             });
         }
     }
@@ -38,13 +42,12 @@ class  logoContest extends Component {
     onChangeFile =  (e) => {
         console.log(e.target.files[0]);
         this.setState({
-            logoFileValue:e.target.files[0]
+            taglineFileValue:e.target.files[0]
         });
 
-    };
+    }
 
     sendContestData = () => {
-
         let bodyFormData;
 
         if (!this.props.contestFormData) {
@@ -53,27 +56,36 @@ class  logoContest extends Component {
             bodyFormData = this.props.contestFormData;
         }
 
-        bodyFormData.set("logoForm", JSON.stringify({
-            type: "Logo",
+        bodyFormData.set("taglineForm", JSON.stringify({
+            type: "Tagline",
             name: this.state.contestName,
-            preferences: this.state.logoSelectsValue,
+            preferences: this.state.taglineSelectsValue,
             industry: this.state.industry,
             venture_name: this.state.ventureName,
             type_of_work: this.state.typeOfWork,
             target_customer: this.state.targetCustomer,
         }));
-
-        if (this.state.logoFileValue) {
-            bodyFormData.append("LogoFile", this.state.logoFileValue);
+        if (this.state.taglineFileValue) {
+            bodyFormData.append("TaglineFile", this.state.taglineFileValue);
         }
 
         this.props.collectFormData(bodyFormData);
 
+
         let order = this.props.contestsToInsert;
-        this.props.setContestOrder(order);
-        this.props.history.push({
-            pathname: '/checkout'
-        });
+        console.log(order, 'order in tagline')
+        let nextStep = order.indexOf('tagline')+1;
+        if (nextStep === order.length) {
+            this.props.history.push({
+                pathname: '/checkout'
+            });
+        } else {
+            this.props.setContestOrder(order);
+            this.props.history.push({
+                pathname: '/'+ order[nextStep],
+            });
+        }
+
     };
 
     handleInputChange = (event) => {
@@ -89,13 +101,14 @@ class  logoContest extends Component {
     render() {
         return (
             <div className="Users">
-                Creating LOGO contest
+                <Header {...this.props}/>
+                Creating title contest
                 <div>
                     <input type="text"
-                           placeholder="Contest name"
-                           name="contestName"
-                           value={this.state.contestName}
-                           onChange={this.handleInputChange}/>
+                            placeholder="Contest name"
+                            name="contestName"
+                            value={this.state.contestName}
+                            onChange={this.handleInputChange}/>
                 </div>
 
                 <div>
@@ -109,11 +122,17 @@ class  logoContest extends Component {
                 <div>
                     <input type="text"
                            placeholder="Venture name"
-                           name="typeOfWork"
+                           name="ventureName"
                            value={this.state.ventureName}
                            onChange={this.handleInputChange}/>
                 </div>
-
+                <div>
+                    <input type="text"
+                           placeholder="Type Of Work"
+                           name="typeOfWork"
+                           value={this.state.typeOfWork}
+                           onChange={this.handleInputChange}/>
+                </div>
                 <div>
                     <input type="text"
                            placeholder="Target customer"
@@ -123,22 +142,15 @@ class  logoContest extends Component {
                 </div>
 
                 <div>
-                    <input type="text"
-                           placeholder="Type Of Work"
-                           name="typeOfWork"
-                           value={this.state.typeOfWork}
-                           onChange={this.handleInputChange}/>
-                </div>
-
-                <div>
-                    <select value={this.state.logoSelectsValue}
-                            name="logoSelectsValue"
+                    <select value={this.state.taglineSelectsValue}
+                            name="taglineSelectsValue"
                             onChange={this.handleInputChange}>
                         {
-                            this.state.logoSelects.map(select => ( <option key={select} value={select}>{select}</option>) )
+                            this.state.taglineSelects.map(select => ( <option key={select} value={select}>{select}</option>) )
                         }
                     </select>
                 </div>
+
 
                 <div>
                     <input type="file"
@@ -150,7 +162,9 @@ class  logoContest extends Component {
             </div>
         );
     }
+
 }
+
 
 const mapStateToProps =(state) => {
     let {contestsToInsert, contestFormData, selects} = state.testReducer;
@@ -163,7 +177,7 @@ const mapDispatchToProps =(dispatch) => ({
 
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(logoContest);
+export default connect(mapStateToProps, mapDispatchToProps)(taglineContest);
 
 
 

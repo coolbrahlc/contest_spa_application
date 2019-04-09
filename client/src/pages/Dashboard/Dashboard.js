@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import {GridLoader} from "react-spinners";
-import {getUserProfile} from "../actions/actionCreator";
+import {getUserProfile} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
 import {Link} from "react-router-dom";
-import {tokenAction, getAllContests, getCustomerContests} from '../actions/actionCreator';
-import {ROLE} from "../constants/constants";
-import CustomerDashboard from "../components/CustomerDashboard/CustomerDashobard";
-import CreativeDashboard from "../components/CreativeDashboard/CreativeDashboard";
+import {tokenAction, getAllContests, getCustomerContests} from '../../actions/actionCreator';
+import {ROLE} from "../../constants/constants";
+import CustomerDashboard from "../../components/CustomerDashboard/CustomerDashobard";
+import CreativeDashboard from "../../components/CreativeDashboard/CreativeDashboard";
 import { Container, Row, Col } from 'react-bootstrap';
-import Header from "../components/Header/Header";
+import Header from "../../components/Header/Header";
 
 
 class  Dashboard extends Component {
 
     constructor(props) {
         super(props);
-        this.token = localStorage.getItem('token');
+        // this.token = localStorage.getItem('token');
         this.state= {
             contests: ''
         }
@@ -23,14 +23,15 @@ class  Dashboard extends Component {
 
     componentDidMount() {
         const {user} = this.props;
+        console.log(user)
         if(user) {
-            this.props.getContests({token: this.token, params: {} });
+            this.props.getContests({ params: {} });
         }
     }
 
     renderDashboardHeader(){
         const {user} = this.props;
-        console.log(user);
+        //console.log(user);
         if(user) {
             return (
                 <div className={"style.header"}>
@@ -53,7 +54,7 @@ class  Dashboard extends Component {
         }
     }
 
-    renderDashboard(){
+    renderDashboard () {
         return (
             <>
                 {

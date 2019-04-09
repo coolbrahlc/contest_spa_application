@@ -4,12 +4,13 @@ import {GridLoader} from "react-spinners";
 import connect from "react-redux/es/connect/connect";
 import {Redirect} from 'react-router-dom'
 import style from "./ContestPage.module.scss";
-
 import {getContestById} from "../../actions/actionCreator";  //updateContest
-// import ContestEdit from "../../components/ContestEdit/ContestEdit";
+import SingleEntry from "../../components/SingleEntry/SingleEntry";
+import {ROLE} from "../../constants/constants";
 import { Container, Row, Col, Tabs, Tab } from 'react-bootstrap';
 import Header from "../../components/Header/Header";
 import moment from "moment";
+import CreateEntry from "../../components/CreateEntry/CreateEntry";
 
 
 class  ContestPage extends Component {
@@ -17,8 +18,6 @@ class  ContestPage extends Component {
     constructor(props) {
         super(props);
         this.token = localStorage.getItem('token');
-
-
         this.state= {
             selectValues: ['Active', 'Finished', 'All'],
             currentSelection: 'All',
@@ -26,13 +25,9 @@ class  ContestPage extends Component {
         }
     }
 
-    renderLoader() {
-        return (<GridLoader
-            sizeUnit={"px"}
-            size={40 }
-            color={'#123abc'}
-            loading={this.props.isFetchingContest}
-        />);
+    componentDidMount() {
+        const id = this.props.match.params.id;
+        this.props.getContestById({id:id, token:this.token});
     }
 
     redirect =  () => {
@@ -41,25 +36,10 @@ class  ContestPage extends Component {
         })
     };
 
-    listEntries() {
-
-        if (this.props.contest) {
-            let suggestions = this.props.contest.Suggestions;
-            return suggestions.map(s =>
-                <li
-                    key={s.id}>
-                    <div>
-                        {JSON.stringify(s)}
-                    </div>
-                </li>
-            )
-        }
-    }
-
     renderBrief = (contest) => {
-        const {title, tag, venture_name, naming_type, venture, target,
-            preference, industry, createdAt, budget, id} = contest;
-        const date = moment(createdAt).format("YYYY-MM-DD HH:mm");
+        const {name, type, venture_name, target_customer,
+            preference, industry, created_at, prize_pool, id} = contest;
+        const date = moment(created_at).format("YYYY-MM-DD HH:mm");
         return (
             <div className={style.brief}>
 
@@ -70,19 +50,19 @@ class  ContestPage extends Component {
                     </li>
                     <li>
                         <h5>Contest Type</h5>
-                        <p>{tag}</p>
+                        <p>{type}</p>
                     </li>
                     <li>
                         <h5>Contest Title</h5>
-                        <p>{title}</p>
+                        <p>{name}</p>
                     </li>
                     <li>
                         <h5>What is your Business/ Brand about?</h5>
-                        <p>{venture}</p>
+                        <p>{venture_name}</p>
                     </li>
                     <li>
                         <h5>Tell us about your customers</h5>
-                        <p>{target}</p>
+                        <p>{target_customer}</p>
                     </li>
                     <li>
                         <h5>Type of business</h5>
@@ -97,32 +77,50 @@ class  ContestPage extends Component {
                         <p>{moment(date).from(moment())}</p>
                     </li>
                     <li>
-                        <h5>Budget</h5>
-                        <p>{budget}</p>
+                        <h5>Prize poll</h5>
+                        <p>{prize_pool}</p>
                     </li>
                 </ul>
             </div>
         );
     };
 
-
-
-    renderCorrectBrief = (contest) => {
-        if(contest) {
-            return this.renderBrief(contest)
-
+    renderEntries = () => {
+        const {user} = this.props;
+        const {id, type, Suggestions} = this.props.contest;
+        if(user){
+            if(user.role === ROLE.CUSTOMER) {
+                return(
+                    <div >
+                        {
+                            Suggestions.map(e => {
+                                return <SingleEntry key={e.id} data={e}/>
+                            })
+                        }
+                    </div>
+                )
+            }
+            else{
+                return(
+                    <div>
+                        Click here to add your entry
+                        <CreateEntry type={type} contest_id={id} {...this.props}/>
+                    </div>
+                )
+            }
         }
     };
 
-
     renderContest = () => {
-        const {isFetching, contest} = this.props;
-        if(isFetching){
-            return <GridLoader loading={isFetching}
-                                color={'#28D2D1'}/>
+        const {isFetchingContest, contest} = this.props;
+        if(isFetchingContest){
+            return <GridLoader loading={isFetchingContest}
+                               sizeUnit={"px"}
+                               size={40 }
+                               color={'#28D2D1'}/>
         }
         else{
-            if(!contests.length>0){
+            if(!contest){
                 return (
                     <Container>
                         <Row>Nothing found</Row>
@@ -131,59 +129,18 @@ class  ContestPage extends Component {
             }
             return (
                 <Container>
-                    <Tabs defaultActiveKey="brief" id="contest-tab">
-                        <Tab eventKey="brief" title="Brief">
-                            {
-                                this.renderCorrectBrief(contest)
-                            }
-                        </Tab>
-                        {
-                            this.renderCorrectEntries()
-                        }
-                    </Tabs>
+                    <div>
+                        <div>
+                            { this.renderBrief(contest) }
+                        </div>
+                        { this.renderEntries() }
+                    </div>
                 </Container>
             );
         }
     };
 
-    renderCorrectEntries = () => {
-        const {user} = this.props;
-        const {type, id, Suggestions} = this.props.contest;
-        console.log(this.props.contest);
-        if(user){
-            if(user.role === ROLES.CUSTOMER) {
-                return(
-                    <Tab eventKey="entries" title="Entries">
-                        {
-                            Suggestions.map(e => {
-                                return <SingleEntry key={e.id} data={e}/>
-                            })
-                        }
-                    </Tab>
-                )
-            }
-            else{
-                return(
-                    <Tab eventKey="entrie" title="Entrie">
-                        {/*<Entrie type={tag} contest_id={id} {...this.props}/>*/}
-                    </Tab>
-                )
-            }
-        }
-    };
-
-
-
-
-
-    componentDidMount() {
-        const id = this.props.match.params.id;
-        //this.setState({isFetching: true});
-        this.props.getContestById({id:id, token:this.token});
-    }
-
     render() {
-
         // return (
         //     <div className="UserProfile">
         //         contest page
@@ -194,24 +151,18 @@ class  ContestPage extends Component {
         // );
         return this.renderContest();
     }
-
 }
 
-
-const mapStateToProps =(state) => {
-    return {
-        //isFetchingUser: state.CustomerCO.isFetchingUser,
-        //user: state.testReducer.user.
-        isFetchingContest: state.customerContestsReducer.isFetchingContest,
-        error: state.customerContestsReducer.error,
-
-        contest: state.customerContestsReducer.contest
-    }
+const mapStateToProps = (state) => {
+    const {user} = state.authReducer;
+    const {contest, isFetchingContest, error, preferences} = state.customerContestsReducer;
+    return {error, contest, isFetchingContest, preferences, user};
 };
 
-const mapDispatchToProps =(dispatch) => ({
-    getContestById: (data) => dispatch(getContestById(data))
+const mapDispatchToProps = (dispatch) => ({
+    getContestById: (id) => dispatch(getContestById(id)),
 });
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContestPage);
 

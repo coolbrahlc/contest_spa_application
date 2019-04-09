@@ -8,19 +8,11 @@ const {UserAlreadyExistsError,
         UserNotFoundError} = require('../../utils/customErrrors/errors');
 const config = require('../../utils/consts');
 
-// module.exports.emailCheck = async(req,res,next) => {
-//     const foundUser = await db.Users.findOne({where: {email: req.body.email}});
-//     if (foundUser) {
-//         next(new UserAlreadyExistsError());
-//     } else {
-//         next();
-//     }
-// };
 
 module.exports.register = async (req, res, next) => {
     try {
-        const foundUser = await db.Users.findOne({where: {email: req.body.email}});
-        if (!foundUser) {
+        /*const foundUser = await db.Users.findOne({where: {email: req.body.email}});
+        if (!foundUser) {*/
             const {name, password, email, role} = req.body;
             let encryptedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
             let registerUser = await db.Users.create({
@@ -37,9 +29,9 @@ module.exports.register = async (req, res, next) => {
                 req.body.user = registerUser;
                 next()
             }
-        } else {
+        /*} else {
             next(new UserAlreadyExistsError());
-        }
+        }*/
     } catch (error) {
         next(new ApplicationError(error.message));
     }
@@ -54,12 +46,8 @@ module.exports.login = async (req, res, next) => {
         if (user) {
             const isEqual = await bcrypt.compare(req.body.password, user.password);
             if (isEqual) {
-                const token = jwt.sign({ id: user.id, role: user.role}, config.SECRET, {expiresIn: '5d'});
-                //console.log(req.id, user.id, 'req id');
-                // let updated  = await db.Users.update(
-                //     {token: token},
-                //     {where: {id: user.id} }
-                // );
+                const token = jwt.sign({ id: user.id, role: user.role}, config.SECRET, {expiresIn: '30d'});
+
                 const updated = await user.update({token: token });
                 if(updated) {
                     res.send({message: 'Successfull login',
@@ -73,7 +61,7 @@ module.exports.login = async (req, res, next) => {
                     next(new ApplicationError());
                 }
             } else {
-                next(new WrongPasswordError())
+                next(new UserNotFoundError())
             }
         } else {
             next(new UserNotFoundError())
@@ -96,6 +84,9 @@ module.exports.tokenCheck=(req,res,next)=>{
 
         db.Users.findOne({where: {id: req.decoded.id} })
             .then(user=>{
+                console.log(accessToken)
+                console.log(user.token)
+
                 if(user.token!==accessToken){
                     throw new UnauthorizedError();
                 }
@@ -104,6 +95,7 @@ module.exports.tokenCheck=(req,res,next)=>{
                 next();
             })
             .catch(err=>{
+
                 next(err)
             })
 
@@ -116,6 +108,7 @@ module.exports.tokenCheck=(req,res,next)=>{
 module.exports.createNewToken = (req,res,next) => {
     const {id, role} = req.decoded;
     req.body.token = jwt.sign({id: id, role: role}, config.SECRET, {expiresIn: "30d"});
+    console.log(req.body.token)
     next();
 };
 
@@ -140,7 +133,7 @@ module.exports.tokenUpdate= async (req,res, next) => {
     }
     else{
         const success = await user.update({token: req.body.token });
-        if(success){
+        if(success) {
             res.send({
                 token: req.body.token,
                 role: user.role,

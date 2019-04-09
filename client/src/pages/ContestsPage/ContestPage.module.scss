@@ -1,0 +1,37 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+
+.brief{
+  border: grey solid 2px;
+  width: 100%;
+  padding: 15px;
+  position: relative;
+  font-family: Raleway-light, sans-serif;
+  h5{
+    color: $cardColor;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 17.5px;
+  }
+  p{
+    font-size: 15px;
+    line-height: 21px;
+    opacity: .7;
+  }
+  &__edit{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 12px 40px;
+    font-family: Lato, sans-serif;
+    cursor: pointer;
+    @include flex-row-center-center;
+    i{
+      margin-right: 5px;
+    }
+    color: $snapshotHeadColor;
+    border-radius: 2px;
+    border: 2px solid $snapshotHeadColor;
+    z-index: 100;
+  }
+}

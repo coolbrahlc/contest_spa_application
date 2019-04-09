@@ -8,8 +8,6 @@ import {contestsSaga, getContestsById, getAllContestsSaga} from './contestsSaga'
 
 
 function* rootSaga() {
-    // yield takeLatest(ACTION.TEST_ACTION, testFunc);
-    // yield takeLatest(ACTION.GET_USER_PROFILE, getUserProfileSaga);
     yield takeLatest(ACTION.SET_ARRAY_ORDER, setArrayOrder);
     yield takeLatest(ACTION.COLLECT_FORM_DATA, collectForm);
     yield takeLatest(ACTION.GET_SELECTS, getAllSelectsSaga);
@@ -22,7 +20,6 @@ function* rootSaga() {
     yield takeLatest(ACTION.GET_CUSTOMER_CONTESTS, contestsSaga);
     yield takeLatest(ACTION.GET_CONTEST_BY_ID, getContestsById);
     yield takeLatest(ACTION.GET_ALL_CONTESTS, contestsSaga);
-
 }
 
 export default rootSaga;

@@ -5,8 +5,6 @@ import checkoutReducer from './checkoutReducer';
 import customerContestsReducer from './CustomerContestsReducer';
 
 
-
-
 const appReducer = combineReducers({
     testReducer,
     authReducer,

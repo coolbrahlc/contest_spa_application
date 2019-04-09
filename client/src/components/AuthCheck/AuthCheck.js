@@ -7,18 +7,24 @@ export default function (NestedComponent) {
     class Authenticate extends Component{
 
         componentDidMount() {
+            //this.props.auth();
+
             const token = localStorage.getItem('token');
             if (!token) {
                 this.props.history.replace('/login');
             } else {
-                this.props.auth(token);
+                this.props.auth();
             }
         }
+
+        redirect =() => {
+            this.props.history.replace('/login');
+        };
 
         render() {
             if(this.props.isFetching){
                 return <GridLoader loading={this.props.isFetching}
-                                    color={'#28D2D1'}
+                                   color={'#28D2D1'}
                 />
             }
             else{
@@ -35,7 +41,7 @@ export default function (NestedComponent) {
     };
 
     const mapDispatchToProps = (dispatch) => ({
-        auth: (data) => dispatch(auth(data))
+        auth: () => dispatch(auth())
     });
 
     return connect(mapStateToProps, mapDispatchToProps)(Authenticate);

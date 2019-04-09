@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const uuid = require('node-uuid');
 const jwt = require('jsonwebtoken');
 const config = require('../../utils/consts');
 const db = require('../../models/index');
@@ -39,9 +40,11 @@ module.exports.setActiveContest = (req, res, next) => {
     });
 
     let prize_pool = parseInt(config.PRIZE_POOL/contests.length);
+    const orderId = uuid.v1();
 
     contests.map((contest) =>{
         contest.creator_id = req.decoded.id;
+        contest.order_id = orderId;
         contest.updated_at = Date.now();
         contest.is_active = false;
         contest.prize_pool = prize_pool;
@@ -58,18 +61,15 @@ module.exports.setActiveContest = (req, res, next) => {
 
 
 module.exports.createContests = (req, res, next) => {
+    // let insertContestPromises = req.contests.map(contest => {
+    //     return db.Contests.create(contest)
+    let insertContestPromises = db.Contests.bulkCreate(req.contests);
 
-    console.log(req.contests);
-    let insertContestPromises = req.contests.map(contest => {
-        return db.Contests.create(contest)
-    });
-
-    console.log(config.BANK_ACCOUNT_CARD);
     db.sequelize.transaction(()=> {
         return Promise.all([
             db.BankAccounts.update(
                 { account: db.sequelize.literal('account -' + config.PRIZE_POOL) },
-                { where: {card_number: req.body.cardNumber }}  //                    1111222233334444
+                { where: {card_number: req.body.cardNumber }}                   //   1111222233334444
             ),
             db.BankAccounts.update(
                 { account: db.sequelize.literal('account +' + config.PRIZE_POOL) },
@@ -77,14 +77,14 @@ module.exports.createContests = (req, res, next) => {
             ),
         ])
     })
-        .then(()=>{
-            return Promise.all(insertContestPromises)
-        })
-        .then(results=> {
-            res.status(200).send({results:results, status:"success"})
-        })
-        .catch(err => {
-            console.log(err);
-            next(new ApplicationError(err))
-        });
+    .then(()=>{
+        return insertContestPromises;
+    })
+    .then(results=> {
+        res.status(200).send({results:results, status:"success"})
+    })
+    .catch(err => {
+        console.log(err);
+        next(new ApplicationError(err))
+    });
 };

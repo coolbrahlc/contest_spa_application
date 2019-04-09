@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 //import logo from './logo.svg';
 import './App.css';
-import Register from './pages/auth/Register';
-import Login from './pages/auth/Login';
-import createContest from './pages/createContest';
+import Register from './pages/Auth/Register';
+import Login from './pages/Auth/Login';
+import createContest from './pages/CreateContest/CreateContest';
 import NotFound from './pages/old/NotFound';
-import taglineContest from './pages/contestTypes/taglineContest';
-import nameContest from './pages/contestTypes/nameContest';
-import logoContest from './pages/contestTypes/logoContest';
+import taglineContest from './pages/contestTypes/TaglineContest';
+import nameContest from './pages/contestTypes/NameContest';
+import logoContest from './pages/contestTypes/LogoContest';
 import checkout from './pages/contestTypes/checkout';
-import dashboard from './pages/dashboard';
+import dashboard from './pages/Dashboard/Dashboard';
 import Home from './pages/Home/Home';
-import contestPage from './pages/contestPage';
-import authCheck from './components/authCheck/authCheck';
+import contestPage from './pages/ContestsPage/contestPage';
+import authCheck from './components/AuthCheck/AuthCheck';
 import Auth from './components/Auth/Auth';
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
@@ -24,13 +24,12 @@ class App extends Component {
     return (
         <Router>
             <div>
-                <Switch>
+                <Switch >
                     {/*<Route exact path="/users/"  component={ (props) => <Users {...props} test={"test"}/> }/>*/}
                     <Route exact path="/contest/:id" component={authCheck(contestPage)} />
-                    <Route exact path="/" component={Auth(Home)} />
-
-                    <Route exact path="/login/" component={Auth(Login)} />
-                    <Route exact path="/register/" component={Auth(Register)} />
+                    <Route exact path="/" component={authCheck(Home)} />
+                    <Route exact path="/login/" component={Login} />
+                    <Route exact path="/register/" component={Register} />
                     <Route exact path="/contest/" component={authCheck(createContest)} />
 
                     <Route exact path="/tagline/" component={authCheck(taglineContest)} />

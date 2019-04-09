@@ -7,10 +7,12 @@ export default function (NestedComponent) {
     class Auth extends Component{
 
         componentDidMount() {
-            const token = localStorage.getItem('token');
-            if (token) {
-                this.props.auth(token);
-            }
+            // const token = localStorage.getItem('token');
+            // if (token) {
+            //     this.props.auth(token);
+            // }
+            this.props.auth();
+
         }
 
         render() {
@@ -33,7 +35,7 @@ export default function (NestedComponent) {
     };
 
     const mapDispatchToProps = (dispatch) => ({
-        auth: (data) => dispatch(auth(data))
+        auth: () => dispatch(auth())
     });
 
     return connect(mapStateToProps, mapDispatchToProps)(Auth);

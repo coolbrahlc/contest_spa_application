@@ -1,0 +1,104 @@
+@import "../../sass/mixins";
+@import "../../sass/variables";
+
+.container{
+    background-color: $authBackColor;
+    width: 100%;
+    height: 100vh;
+    font-family: Gotham SSm A, Gotham SSm B, Halvetica, sans-serif;
+@include flex-col-start-center;
+&__subcontainer{
+    @include flex-col-center-center;
+        width: 100%;
+        max-width: 600px;
+        margin-top: 80px;
+        p:first-child{
+            margin-bottom: 18px;
+        }
+    }
+&__header{
+    @include flex-row-around-center;
+        width: 100%;
+        padding-top: 50px;
+    }
+&__info{
+        color: white;
+        font-weight: 600;
+        letter-spacing: 0;
+        font-size: 38px;
+    }
+}
+
+.link{
+@include linkButton;
+&:hover{
+        color: white;
+        text-decoration: none;
+    }
+}
+
+.error{
+  @include flex-row-center-center;
+  border: 1px solid red;
+  color: white;
+  max-width: 550px;
+  width: 100%;
+  min-height: 20px;
+  padding: 5px;
+  margin: 10px 0 15px 0;
+}
+
+
+@mixin input{
+  width: 550px;
+  padding-bottom: 11.5px;
+  input{
+    padding: 22px;
+    width: 100%;
+    border-radius: 5px;
+    border-color: black;
+    border-width: 0;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: normal;
+    background-color: white;
+    color: $inputColor;
+  }
+}
+
+.inputDefault{
+  @include input;
+}
+
+.inputDanger{
+  @include input;
+  input{
+    border-color: red;
+    border-width: 2px;
+  }
+}
+
+.inputButton{
+  width: 100%;
+  height: 61px;
+  border-radius: 5px;
+  border-color: black;
+  border-width: 0;
+  line-height: normal;
+  background-color: $loginBackColor;
+  cursor: pointer;
+  button{
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    background-color: $loginBackColor;
+    color: white;
+    border-radius: 5px;
+    border-color: black;
+    border-width: 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
+
+

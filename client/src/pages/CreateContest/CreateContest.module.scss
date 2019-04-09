@@ -1,0 +1,80 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+
+.mostPopularCategories{
+  @include flex-row-center-center;
+  background-color: $lightGreenTheme;
+  padding: 25px 0;
+}
+
+.otherCategories{
+  @include flex-row-center-center;
+  background-color: white;
+  padding: 25px 0;
+}
+
+.cardHolder{
+  height: 380px;
+  list-style: none;
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+  li{
+    height: inherit;
+    display: inline-block;
+    width: 24%;
+    padding: 0 15px;
+    margin-bottom: 30px;
+    vertical-align: top;
+  }
+}
+
+.heading{
+  padding-bottom: 20px;
+  color: white;
+  font-family: Raleway, sans-serif;
+  text-align: center;
+  h3{
+    font-size: 32px;
+    font-weight: 500;
+    margin: 20px 0 10px 0;
+  }
+  b{
+    font-size: 32px;
+    font-weight: 700;
+  }
+  p{
+    font-size: 17px;
+    line-height: 24px;
+    margin-bottom: 10px;
+  }
+  hr{
+    width: 100px;
+    border-color: white;
+  }
+}
+
+.otherHeading{
+  padding-bottom: 20px;
+  color: $cardColor;
+  font-family: Raleway, sans-serif;
+  text-align: center;
+  h3 {
+    font-size: 32px;
+    font-weight: 500;
+    margin: 20px 0 10px 0;
+  }
+  p{
+    font-size: 17px;
+    line-height: 24px;
+    margin-bottom: 10px;
+  }
+  hr{
+    width: 100px;
+    border-color: $lightGreenTheme;
+  }
+}
+
+.card{
+  margin: 15px;
+}

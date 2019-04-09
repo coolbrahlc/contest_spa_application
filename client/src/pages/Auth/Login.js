@@ -5,7 +5,10 @@ import {login} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
 import { Formik, FormikProps, Form, Field } from 'formik';
 import * as Yup from 'yup';
-
+import style from "./Login.module.scss";
+import Logo from "../../images/logo.png";
+import {Link} from "react-router-dom";
+import Input from "../../components/Input/Input";
 
 class  Login extends Component {
 
@@ -40,58 +43,58 @@ class  Login extends Component {
             backendErr,
             user) => {
         return (
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="email" style={{ display: 'block' }}>
-                    Email
-                </label>
-                <div>
-                    <input
-                        id="email"
-                        placeholder="Enter your email"
-                        type="text"
-                        value={values.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                            errors.email && touched.email ? 'text-input error' : 'text-input'
-                        }
-                    />
-                    {errors.email &&
-                    touched.email && <div className="input-feedback">{errors.email}</div>}
+            <div className={style.container}>
+                <div className={style.container__header}>
+                    <Link to={"/"}>
+                        <img src={Logo} alt={"Logo"}/>
+                    </Link>
+                    <Link to={"/register"} className={style.link}>Register</Link>
                 </div>
-                <div>
-                    <input
-                        id="password"
-                        placeholder="Enter your password"
-                        type="password"
-                        value={values.password}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        className={
-                            errors.password && touched.password ? 'text-input error' : 'text-input'
-                        }
-                    />
-                    {errors.password &&
-                    touched.password && <div className="input-feedback">{errors.password}</div>}
+                <div className={style.container__subcontainer}>
+                    <p className={style.container__info}>
+                        LOGIN TO YOUR ACCOUNT
+                    </p>
+                    <div className={style.container}>
+                    <form onSubmit={handleSubmit}>
+
+                        <div className = {errors.email && touched.email ? style.inputDanger: style.inputDefault}>
+                            <input
+                                id="email"
+                                placeholder="Enter your email"
+                                type="text"
+                                value={values.email}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                            />
+                            {errors.email &&
+                            touched.email && <div className={style.error}>{errors.email}</div>}
+                        </div>
+                        <div className = {errors.password && touched.password ? style.inputDanger: style.inputDefault}>
+                            <input
+                                id="password"
+                                placeholder="Enter your password"
+                                type="password"
+                                value={values.password}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                            />
+                            {errors.password &&
+                            touched.password && <div className={style.error}>{errors.password}</div>}
+                        </div>
+
+                        <div className={style.inputButton} >
+                            <button
+                                type="submit" disabled={isSubmitting}>
+                                LOGIN
+                            </button>
+                        </div>
+                        {backendErr && <div className={style.error}>{backendErr}</div>}
+                        {user && this.loginSuccess()}
+                    </form>
+                    </div>
                 </div>
+            </div>
 
-                <button
-                    type="button"
-                    className="outline"
-                    onClick={handleReset}
-                    disabled={!dirty || isSubmitting}
-                >
-                    Reset
-                </button>
-                <button type="submit" disabled={isSubmitting}>
-                    Login
-                </button>
-
-
-                {backendErr && <div className="input-feedback">{backendErr}</div>}
-                {user && this.loginSuccess()}
-
-            </form>
         );
     };
 
@@ -111,7 +114,7 @@ class  Login extends Component {
                     password: Yup.string()
                         .required('Required')
                         .min(6, 'Password is too short - should be 6 chars minimum.')
-                        .max(40, 'Password is too short - should be 6 chars minimum.'),
+                        .max(40, 'Password is too long - should be 40 chars max.'),
 
                 })}
             >

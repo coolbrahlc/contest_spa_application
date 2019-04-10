@@ -4,30 +4,35 @@ import {GridLoader} from "react-spinners";
 import connect from "react-redux/es/connect/connect";
 import {Redirect} from 'react-router-dom'
 import style from "./ContestPage.module.scss";
-import {getContestById} from "../../actions/actionCreator";  //updateContest
+import {getContestById, updateContest} from "../../actions/actionCreator";  //updateContest
 import SingleEntry from "../../components/SingleEntry/SingleEntry";
 import {ROLE} from "../../constants/constants";
 import { Container, Row, Col, Tabs, Tab } from 'react-bootstrap';
 import Header from "../../components/Header/Header";
 import moment from "moment";
 import CreateEntry from "../../components/CreateEntry/CreateEntry";
+import NameContest from "../../pages/ContestTypes/NameContest";
+import LogoContest from "../../pages/ContestTypes/LogoContest";
+import TaglineContest from "../../pages/ContestTypes/TaglineContest";
 
+const formNames = {
+    Name: NameContest,
+    Logo: LogoContest,
+    Tagline: TaglineContest,
+};
 
 class  ContestPage extends Component {
 
     constructor(props) {
         super(props);
-        this.token = localStorage.getItem('token');
         this.state= {
-            selectValues: ['Active', 'Finished', 'All'],
-            currentSelection: 'All',
-            contests: ''
+            editMode: false
         }
     }
 
     componentDidMount() {
         const id = this.props.match.params.id;
-        this.props.getContestById({id:id, token:this.token});
+        this.props.getContestById({id:id});
     }
 
     redirect =  () => {
@@ -36,12 +41,46 @@ class  ContestPage extends Component {
         })
     };
 
+    changeMode =  () => {
+        this.setState({
+            editMode: !this.state.edgeMode
+        })
+    };
+
+    update = (data) => {
+        this.props.updateContest(data);
+        this.setState({
+            editMode :false
+        })
+    };
+
+    renderEdit =  () => {
+        const {type} = this.props.contest;
+        const Component =formNames[type];
+
+        if (!Component) {
+            return null
+        }
+        return <Component
+            contestsToInsert = {[type]}
+            dataContest = {this.props.contest}
+            editMode = {true}
+            update = {this.update}
+            contest = {this.props.contest}
+            {...this.props}
+        />;
+
+    };
+
     renderBrief = (contest) => {
         const {name, type, venture_name, target_customer,
             preference, industry, created_at, prize_pool, id} = contest;
         const date = moment(created_at).format("YYYY-MM-DD HH:mm");
         return (
             <div className={style.brief}>
+
+                <div onClick={()=>this.changeMode()}>EDIT</div>
+                {this.state.editMode && this.renderEdit()}
 
                 <ul>
                     <li>
@@ -120,13 +159,6 @@ class  ContestPage extends Component {
                                color={'#28D2D1'}/>
         }
         else{
-            if(!contest){
-                return (
-                    <Container>
-                        <Row>Nothing found</Row>
-                    </Container>
-                );
-            }
             return (
                 <Container>
                     <div>
@@ -141,15 +173,15 @@ class  ContestPage extends Component {
     };
 
     render() {
-        // return (
-        //     <div className="UserProfile">
-        //         contest page
-        //         {this.props.error && this.redirect()}
-        //         {this.props.isFetchingContest  ? this.renderLoader() : this.listEntries()}
-        //     </div>
-        //
-        // );
-        return this.renderContest();
+        if(!this.props.contest){
+            return (
+                <Container>
+                    <Row>Nothing found</Row>
+                </Container>
+            );
+        } else {
+            return this.renderContest();
+        }
     }
 }
 
@@ -161,6 +193,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     getContestById: (id) => dispatch(getContestById(id)),
+    updateContest: (data) => dispatch(updateContest(data)),
 });
 
 

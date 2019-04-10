@@ -4,57 +4,47 @@ import {collectFormData, getSelects, setContestOrder} from "../../actions/action
 import connect from "react-redux/es/connect/connect";
 import {Link} from "react-router-dom";
 import Header from "../../components/Header/Header";
+import { withRouter } from 'react-router';
 
-class  nameContest extends Component {
+class  NameContest extends Component {
 
     constructor(props) {
         super(props);
-        if (this.props.contestFormData){
-            let data = JSON.parse(this.props.contestFormData.getAll("nameForm"));
-            this.state= {
-                contestType: 'Name',
-                contestName: data.name,
-                typeOfNameSelects: [],
-                nameStyleSelects: [],
-                typeOfName: data.type_of_title,
-                nameStyle: data.preferences,
-                industry: data.industry,
-                typeOfWork: data.type_of_work,
-                targetCustomer: data.target_customer,
-                nameFile: '',
-                nameFileValue: null
-            }
-        } else {
-            this.state= {
-                contestType: 'Name',
-                contestName: '',
-                typeOfNameSelects: [],
-                nameStyleSelects: [],
-                typeOfName: '',
-                nameStyle: '',
-                industry:'',
-                typeOfWork:'',
-                targetCustomer:'',
-                nameFile: '',
-                nameFileValue: null
-            }
+        let data ={};
+        if (props.dataContest) {
+            data = props.dataContest;
+        }
+        if (this.props.contestFormData) {
+            data = JSON.parse(this.props.contestFormData.getAll("nameForm"));
+        }
+        this.state= {
+            contestType: 'Name',
+            contestName: data.name,
+            typeOfName: data.type_of_title,
+            nameStyle: data.preferences,
+            industry: data.industry,
+            typeOfWork: data.type_of_work,
+            targetCustomer: data.target_customer,
+            nameFile: '',
+            nameFileValue: null
         }
     }
 
     componentDidMount() {
-        if (!this.props.contestsToInsert) {
+        const order = this.props.contestsToInsert;
+        const {editMode} =this.props;
+        if (!order  && !editMode) {
             this.props.history.push({
-                pathname: '/contest'
+                pathname: '/'
             });
         } else {
-            let selects = this.props.selects;
-            let typeOfNameSelects = selects.filter(name => (name.contest_type === "name_type")).map(name =>name.name );
-            let nameStyleSelects = selects.filter(name => (name.contest_type === "name_style")).map(name =>name.name );
-            this.setState({
-                typeOfNameSelects,
-                nameStyleSelects
-            });
+            this.props.getSelects()
         }
+    }
+
+    getSelects(type) {
+        const selects = this.props.selects;
+        return selects.filter(name => (name.contest_type === type)).map(name =>name.name ); 
     }
 
     onChangeFile =  (e) => {
@@ -81,35 +71,28 @@ class  nameContest extends Component {
         if (this.state.nameFileValue) {
             bodyFormData.append("NameFile", this.state.nameFileValue);
         }
-        //console.log(bodyFormData.getAll('files'));
-        this.props.collectFormData(bodyFormData);
 
-        // if (this.props.contestsToInsert.length===1) {
-        //     this.props.history.push({
-        //         pathname: '/checkout'
-        //     });
-        // } else {
-        //     let editedOrder = this.props.contestsToInsert.slice(1);
-        //     this.props.setContestOrder(editedOrder);
-        //     this.props.history.push({
-        //         pathname: '/'+ editedOrder[0],
-        //     });
-        // }
+        if (!this.props.editMode) {
+            this.props.collectFormData(bodyFormData);
 
-        let order = this.props.contestsToInsert;
-        console.log(order, 'order in name');
-        let nextStep = order.indexOf('name')+1;
-        if (nextStep === order.length) {
-            this.props.history.push({
-                pathname: '/checkout'
-            });
+            let order = this.props.contestsToInsert;
+            let nextStep = order.indexOf('name')+1;
+            if (nextStep === order.length) {
+                this.props.history.push({
+                    pathname: '/checkout'
+                });
+            } else {
+                this.props.setContestOrder(order);
+                this.props.history.push({
+                    pathname: '/'+ order[nextStep],
+                });
+            }
         } else {
-            this.props.setContestOrder(order);
-            this.props.history.push({
-                pathname: '/'+ order[nextStep],
-            });
+            this.props.update({
+                data: bodyFormData,
+                id: this.props.contest.id
+            })
         }
-
     };
 
     handleInputChange = (event) => {
@@ -123,9 +106,12 @@ class  nameContest extends Component {
     };
 
     render() {
-        return (
+        const {isFetching} = this.props;
+
+        return ( isFetching ? <GridLoader loading={isFetching}
+                                         color={'#28D2D1'}/> :
             <div className="Users">
-                <Header {...this.props}/>
+                {/*<Header {...this.props}/>*/}
                 Creating NAME contest
                 <div>
                     <input type="text"
@@ -138,11 +124,11 @@ class  nameContest extends Component {
                 <div>
                     <select value={this.state.typeOfName}
                             name="typeOfName"
-                            defaultValue={this.state.typeOfNameSelects[0]}
+                            defaultValue={'Company'}
 
                             onChange={this.handleInputChange}>
                         {
-                            this.state.typeOfNameSelects.map(select => ( <option key={select} value={select}>{select}</option>) )
+                            this.getSelects("name_type").map(select => ( <option key={select} value={select}>{select}</option>) )
                         }
                     </select>
                 </div>
@@ -173,13 +159,12 @@ class  nameContest extends Component {
 
                 <div>
                     <select value={this.state.nameStyle}
-                            defaultValue={this.state.nameStyleSelects[0]}
+                            defaultValue={'Classic'}
                             name="nameStyle"
 
                             onChange={this.handleInputChange}>
                         {
-
-                            this.state.nameStyleSelects.map(select => ( <option key={select} value={select}>{select}</option>) )
+                            this.getSelects("name_style").map(select => ( <option key={select} value={select}>{select}</option>))
                         }
                     </select>
                 </div>
@@ -199,8 +184,8 @@ class  nameContest extends Component {
 
 
 const mapStateToProps =(state) => {
-    let {contestsToInsert, contestFormData, selects} = state.testReducer;
-    return {contestsToInsert, contestFormData, selects}
+    let {contestsToInsert, contestFormData, selects, isFetching} = state.testReducer;
+    return {contestsToInsert, contestFormData, selects, isFetching}
 };
 
 const mapDispatchToProps =(dispatch) => ({
@@ -209,7 +194,7 @@ const mapDispatchToProps =(dispatch) => ({
     collectFormData: (formData) => dispatch(collectFormData(formData))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(nameContest);
+export default connect(mapStateToProps, mapDispatchToProps)(NameContest);
 
 
 

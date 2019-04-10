@@ -9,11 +9,8 @@ import style from "./CreateContest.module.scss";
 import { Container, Row, Col } from 'react-bootstrap';
 import ContestCreateCard from "../../components/ContestCreateCard/ContestCreateCard";
 import NameBlue from "../../images/Company-Names_blue.png";
-import NameGrey from "../../images/Company-Names_grey.png";
 import TagBlue from "../../images/Taglines_blue.png";
-import TagGrey from "../../images/Taglines_grey.png";
 import LogoBlue from "../../images/Logos_blue.png";
-import LogoGrey from "../../images/Logos_grey.png";
 
 
 class  CreateContest extends Component {
@@ -26,7 +23,7 @@ class  CreateContest extends Component {
     }
 
     componentDidMount() {
-        this.props.getSelects();
+        //this.props.getSelects();
         this.setState({isFetching: true});
     }
 
@@ -208,14 +205,14 @@ class  CreateContest extends Component {
 
 const mapStateToProps =(state) => {
     return {
-        isFetchingUser: state.testReducer.isFetchingUser,
+        //isFetchingUser: state.testReducer.isFetchingUser,
         user: state.testReducer.user
     }
 };
 
 const mapDispatchToProps =(dispatch) => ({
     setContestOrder: (arr) => dispatch(setContestOrder(arr)),
-    getSelects: () => dispatch(getSelects())
+    //getSelects: () => dispatch(getSelects())
 
 });
 

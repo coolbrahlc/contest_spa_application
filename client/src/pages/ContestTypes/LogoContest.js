@@ -1,53 +1,61 @@
 import React, { Component } from 'react';
-//import {GridLoader} from "react-spinners";
-import {collectFormData, setContestOrder} from "../../actions/actionCreator";
+import {GridLoader} from "react-spinners";
+import {collectFormData, getSelects, setContestOrder} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
 import {Link} from "react-router-dom";
 import Header from "../../components/Header/Header";
 
-class  taglineContest extends Component {
-
+class  LogoContest extends Component {
+    
     constructor(props) {
         super(props);
+        let data ={};
+        if (props.dataContest) {
+            data = props.dataContest;
+        }
+        if (this.props.contestFormData) {
+            data = JSON.parse(this.props.contestFormData.getAll("nameForm"));
+        }
         this.state= {
             contestType: 'Tagline',
             contestName: '',
-            industry:'',
-            ventureName:'',
-            typeOfWork:'',
-            targetCustomer:'',
-            taglineSelectsValue: '',
-            taglineSelects: [],
+            industry: data.industry,
+            ventureName: data.venture_name,
+            typeOfWork: data.type_of_work,
+            targetCustomer: data.target_customer,
+            logoSelectsValue: data.preferences,
             nameFile: "",
-            taglineFileValue: null
-
+            logoFileValue: null
         }
     }
 
     componentDidMount() {
-
-        if (!this.props.contestsToInsert) {
+        let order = this.props.contestsToInsert;
+        const {editMode} =this.props;
+        if (!order  && !editMode) {
             this.props.history.push({
-                pathname: '/contest'
+                pathname: '/'
             });
         } else {
-            let selects = this.props.selects;
-            let taglineSelects = selects.filter(name => (name.contest_type === "tagline")).map(name =>name.name );
-            this.setState({
-                taglineSelects
-            });
+            this.props.getSelects()
         }
+    }
+
+    getSelects(type) {
+        const selects = this.props.selects;
+        return selects.filter(name => (name.contest_type === type)).map(name =>name.name );
     }
 
     onChangeFile =  (e) => {
         console.log(e.target.files[0]);
         this.setState({
-            taglineFileValue:e.target.files[0]
+            logoFileValue:e.target.files[0]
         });
 
-    }
+    };
 
     sendContestData = () => {
+
         let bodyFormData;
 
         if (!this.props.contestFormData) {
@@ -56,36 +64,33 @@ class  taglineContest extends Component {
             bodyFormData = this.props.contestFormData;
         }
 
-        bodyFormData.set("taglineForm", JSON.stringify({
-            type: "Tagline",
+        bodyFormData.set("logoForm", JSON.stringify({
+            type: "Logo",
             name: this.state.contestName,
-            preferences: this.state.taglineSelectsValue,
+            preferences: this.state.logoSelectsValue,
             industry: this.state.industry,
             venture_name: this.state.ventureName,
             type_of_work: this.state.typeOfWork,
             target_customer: this.state.targetCustomer,
         }));
-        if (this.state.taglineFileValue) {
-            bodyFormData.append("TaglineFile", this.state.taglineFileValue);
+
+        if (this.state.logoFileValue) {
+            bodyFormData.append("LogoFile", this.state.logoFileValue);
         }
 
-        this.props.collectFormData(bodyFormData);
-
-
-        let order = this.props.contestsToInsert;
-        console.log(order, 'order in tagline')
-        let nextStep = order.indexOf('tagline')+1;
-        if (nextStep === order.length) {
+        if (!this.props.editMode) {
+            this.props.collectFormData(bodyFormData);
+            let order = this.props.contestsToInsert;
+            this.props.setContestOrder(order);
             this.props.history.push({
                 pathname: '/checkout'
             });
         } else {
-            this.props.setContestOrder(order);
-            this.props.history.push({
-                pathname: '/'+ order[nextStep],
-            });
+            this.props.update({
+                data: bodyFormData,
+                id: this.props.contest.id
+            })
         }
-
     };
 
     handleInputChange = (event) => {
@@ -99,16 +104,20 @@ class  taglineContest extends Component {
     };
 
     render() {
-        return (
+        const {isFetching} = this.props;
+
+        return ( isFetching ? <GridLoader loading={isFetching}
+                                          color={'#28D2D1'}/> :
             <div className="Users">
                 <Header {...this.props}/>
-                Creating title contest
+
+                Creating LOGO contest
                 <div>
                     <input type="text"
-                            placeholder="Contest name"
-                            name="contestName"
-                            value={this.state.contestName}
-                            onChange={this.handleInputChange}/>
+                           placeholder="Contest name"
+                           name="contestName"
+                           value={this.state.contestName}
+                           onChange={this.handleInputChange}/>
                 </div>
 
                 <div>
@@ -126,13 +135,7 @@ class  taglineContest extends Component {
                            value={this.state.ventureName}
                            onChange={this.handleInputChange}/>
                 </div>
-                <div>
-                    <input type="text"
-                           placeholder="Type Of Work"
-                           name="typeOfWork"
-                           value={this.state.typeOfWork}
-                           onChange={this.handleInputChange}/>
-                </div>
+
                 <div>
                     <input type="text"
                            placeholder="Target customer"
@@ -142,15 +145,22 @@ class  taglineContest extends Component {
                 </div>
 
                 <div>
-                    <select value={this.state.taglineSelectsValue}
-                            name="taglineSelectsValue"
+                    <input type="text"
+                           placeholder="Type Of Work"
+                           name="typeOfWork"
+                           value={this.state.typeOfWork}
+                           onChange={this.handleInputChange}/>
+                </div>
+
+                <div>
+                    <select value={this.state.logoSelectsValue}
+                            name="logoSelectsValue"
                             onChange={this.handleInputChange}>
                         {
-                            this.state.taglineSelects.map(select => ( <option key={select} value={select}>{select}</option>) )
+                            this.getSelects("logo").map(select => ( <option key={select} value={select}>{select}</option>) )
                         }
                     </select>
                 </div>
-
 
                 <div>
                     <input type="file"
@@ -162,22 +172,21 @@ class  taglineContest extends Component {
             </div>
         );
     }
-
 }
 
-
 const mapStateToProps =(state) => {
-    let {contestsToInsert, contestFormData, selects} = state.testReducer;
-    return {contestsToInsert, contestFormData, selects}
+    let {contestsToInsert, contestFormData, selects, isFetching} = state.testReducer;
+    return {contestsToInsert, contestFormData, selects, isFetching}
 };
 
 const mapDispatchToProps =(dispatch) => ({
+    getSelects: () => dispatch(getSelects()),
     setContestOrder: (arr) => dispatch(setContestOrder(arr)),
     collectFormData: (formData) => dispatch(collectFormData(formData))
-
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(taglineContest);
+export default connect(mapStateToProps, mapDispatchToProps)(LogoContest);
+
 
 
 

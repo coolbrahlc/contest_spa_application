@@ -11,7 +11,7 @@ const {UserAlreadyExistsError,
 
 module.exports.getContestsById =  async (req, res , next) => {
 
-    console.log("decoded", req.decoded.role);
+    // console.log("decoded", req.decoded.role);
 
     try {
         let contest = await db.Contests.findOne(
@@ -88,17 +88,26 @@ module.exports.getCreatorEntries =  async (req, res , next) => {
     }
 };
 
+
 module.exports.updateContest = async (req,res,next) => {
-    const edit = req.body.contest;
+
+    const contestBody = Object.assign({}, req.body);
+
+    let contest = [];
+    Object.keys(contestBody).forEach(key => {
+        contest.push(JSON.parse(contestBody[key]));
+    });
+    const edit =  contest[0] //req.body;//.contest;
+
     try {
-        const contest = await Contest.update(edit, {
+        const contest = await db.Contests.update(edit, {
             returning: true,
             where: {
-                id: edit.id
+                id: req.params.id
             }
         });
         if (contest) {
-            res.send(contest);
+            next()
         }
     }
     catch (e) {
@@ -107,30 +116,3 @@ module.exports.updateContest = async (req,res,next) => {
 };
 
 
-/*
-module.exports.getCreatorContests =  async (req, res , next) => {
-    try {
-        console.log(db);
-        let creatorContests = await db.ContestParticipants.findAll(
-            {
-            where:{participant_id: req.params.id},
-            include: [
-                {
-                model: db.Contests,
-                attributes: ['name'],
-                as: 'contest',
-                required: true
-                }
-            ]
-        }
-        );
-
-        if (!creatorContests) {
-            res.send('not found')
-        }
-        res.status(200).send(creatorContests)
-    } catch (e) {
-        console.log(e);
-        res.status(500).send(e)
-    }
-};*/

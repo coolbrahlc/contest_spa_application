@@ -6,7 +6,8 @@ const initialState = {
     isFetchingContest: true,
     error: null,
     contests: null,
-    contest: null
+    contest: null,
+    editMode: false,
 };
 
 
@@ -17,7 +18,8 @@ export default function (state = initialState, action) {
                 ...state,
                 isFetching: true,
                 error: null,
-                contests: null
+                contests: null,
+                editMode: true,
             }
         }
         case ACTION.GET_CUSTOMER_CONTESTS_RESPONSE: {
@@ -25,7 +27,9 @@ export default function (state = initialState, action) {
                 ...state,
                 isFetching: false,
                 error: null,
-                contests: action.data
+                contests: action.data,
+                editMode: false,
+
             }
         }
         case ACTION.GET_CONTEST_BY_ID_REQUEST: {
@@ -33,7 +37,9 @@ export default function (state = initialState, action) {
                 ...state,
                 isFetchingContest: true,
                 error: null,
-                contest: null
+                contest: null,
+                editMode: false,
+
             }
         }
 

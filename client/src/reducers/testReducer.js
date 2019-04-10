@@ -2,20 +2,23 @@ import ACTION from '../actions/actiontsTypes';
 
 
 const initialState = {
-    users: [],
-    isFetching: false,
-    isFetchingUser: false,
+    isFetching: true,
+    isFetchingUser: true,
     error: null,
-    user: {},
-    contestsToInsert: false,
-    contestFormData: false,
-    selects: false
 };
 
 export default function (state=initialState, action) {
     switch (action.type) {
 
-        case ACTION.SET_SELECTS: {
+        case ACTION.GET_SELECTS_REQUEST: {
+            return {
+                ...state,
+                isFetching: true,
+                error: null
+            }
+        }
+        
+        case ACTION.GET_SELECTS_RESPONSE: {
             return {
                 ...state,
                 selects: action.selects,
@@ -43,7 +46,6 @@ export default function (state=initialState, action) {
             console.log(state.contestsToInsert, 'from reducer');
             return {
                 ...state,
-                //contestFormData: state.contestFormData.concat
                 contestFormData: action.data
             }
         }

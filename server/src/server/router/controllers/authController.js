@@ -115,6 +115,7 @@ module.exports.createNewToken = (req,res,next) => {
 
 module.exports.sendToken = (req,res,next) => {
     const {id, role} = req.decoded;
+    console.log('sending token', req.body.token)
     res.send({
         token: req.body.token,
         role: role,

@@ -10,7 +10,11 @@ const fileUpload = require('../utils/fileUpload');
 
 
 router.post('/contests/', auth.tokenCheck, controller.getContests);
-router.get('/contests/:id/', auth.tokenCheck, controller.getContestsById);
+router.get('/contests/:id/',/* auth.tokenCheck,*/ controller.getContestsById);
+router.put('/contests/:id/', /*auth.tokenCheck,*/ fileUpload.rules,
+                                                controller.updateContest,
+                                                controller.getContestsById);
+
 router.post('/contests/create', auth.tokenCheck,   // TODO validator
                                 fileUpload.rules,
                                 transaction.checkCreditCard,

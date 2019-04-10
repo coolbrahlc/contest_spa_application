@@ -8,7 +8,6 @@ export function* registerSaga({data}){
     yield put({ type: ACTION.USER_REQUEST });
     try{
         const res = yield register(data);
-        //console.log(res.data)
         window.localStorage.setItem('token', res.data.token);
         yield put({
             type: ACTION.USER_RESPONSE,
@@ -28,11 +27,8 @@ export function* loginSaga({data}){
     yield put({ type: ACTION.USER_REQUEST });
     try{
         const res = yield login(data);
-        console.log('token')
-        console.log(res.data.token)
-        console.log('token')
-
         window.localStorage.setItem('token', res.data.token);
+
         yield put({
             type: ACTION.USER_RESPONSE,
             token: res.data.token,
@@ -47,10 +43,10 @@ export function* loginSaga({data}){
     }
 }
 
-export function* authSaga({data}){
+export function* authSaga(){
     yield put({ type: ACTION.USER_REQUEST});
     try{
-        const res = yield token(data);
+        const res = yield token();
         window.localStorage.setItem('token', res.data.token);
         yield put({
             type: ACTION.USER_RESPONSE,

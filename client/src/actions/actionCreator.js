@@ -1,15 +1,7 @@
 import ACTION from './actiontsTypes';
 
-// export const getUserProfile = (id) => {
-//     console.log(id, "33333")
-//     return {
-//         type: ACTION.GET_USER_PROFILE,
-//         id: id
-//     };
-// };
 
 export const setContestOrder = (arr) => {
-  //console.log('setting order : ', arr);
   return {
     type: ACTION.SET_ARRAY_ORDER,
     arr: arr
@@ -17,7 +9,6 @@ export const setContestOrder = (arr) => {
 };
 
 export const collectFormData = (formData) => {
-  //console.log( ' formData');
   return {
     type: ACTION.COLLECT_FORM_DATA,
     data: formData
@@ -49,8 +40,12 @@ export const logout = () => ({
 
 export const auth = (data) => ({
   type: ACTION.USER_AUTH,
-  data
 });
+export const clean = () => ({
+  type: ACTION.USER_CLEAN,
+  
+});
+
 
 
 export const checkout = (data) => {
@@ -76,4 +71,9 @@ export const getCustomerContests = (data) => {
 
 export const getAllContests = () => ({
   type: ACTION.GET_ALL_CONTESTS
+});
+
+export const updateContest = (data) => ({
+  type: ACTION.UPDATE_CONTEST,
+  data
 });

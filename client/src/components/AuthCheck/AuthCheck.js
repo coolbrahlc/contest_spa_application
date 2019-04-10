@@ -1,19 +1,21 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import {auth} from "../../actions/actionCreator";
+import {auth, logout} from "../../actions/actionCreator";
 import { GridLoader } from 'react-spinners';
 
 export default function (NestedComponent) {
     class Authenticate extends Component{
 
         componentDidMount() {
-            //this.props.auth();
-
-            const token = localStorage.getItem('token');
-            if (!token) {
-                this.props.history.replace('/login');
-            } else {
-                this.props.auth();
+            console.log('HOC')
+            if (!this.props.user) {
+                const token = localStorage.getItem('token');
+                if (token) {
+                    this.props.auth();
+                } else {
+                    this.props.logout();
+                    this.props.history.replace('/login');
+                }
             }
         }
 
@@ -41,7 +43,8 @@ export default function (NestedComponent) {
     };
 
     const mapDispatchToProps = (dispatch) => ({
-        auth: () => dispatch(auth())
+        auth: () => dispatch(auth()),
+        logout: () => dispatch(logout())
     });
 
     return connect(mapStateToProps, mapDispatchToProps)(Authenticate);

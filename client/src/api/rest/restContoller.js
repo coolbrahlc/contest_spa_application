@@ -34,6 +34,12 @@ export const getContestById = (data) => {
     });
 };
 
+export const updateContest = (data) => {
+    console.log('rest');
+    console.log(data.id);
+    return axios.put(`${baseUrl}/contests/${data.id}`, data.data);
+};
+
 
 export const getAllContests = (data) => {
     return axios.post(`${baseUrl}/contests/`, data, {});

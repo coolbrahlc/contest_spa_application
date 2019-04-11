@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {GridLoader} from "react-spinners";
-import {getUserProfile, setContestOrder} from "../../actions/actionCreator";
+import {getUserProfile, dataClear} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
 import {Link} from "react-router-dom";
 import {tokenAction, checkout} from '../../actions/actionCreator';
@@ -29,6 +29,7 @@ class  nameContest extends Component {
             data,
             token: this.token,
         });
+        this.props.dataClear();
     };
 
     handleInputChange = (event) => {
@@ -37,20 +38,30 @@ class  nameContest extends Component {
         });
     };
 
+    redirect = () => {
+        this.props.history.push({
+            pathname: '/dashboard',
+        });
+    };
+
 
     render() {
-        // console.log(this.props);
-        // if (!this.isLoginned) {
-        //     return <Redirect to='/login'/>
-        // }
 
+        const {success, isFetching, error} = this.props;
         return (
             <div>
                 <input type='text' value={this.state.cardNumber} onChange={this.handleInputChange}/>
 
                 <div onClick={this.checkout}>CHECKOUT BUTTON</div>
 
-                {!this.props.success && <div>{this.props.error}</div>}
+                {error && <div>{this.props.error}</div>}
+
+                {success && this.redirect()}
+
+                {isFetching && <GridLoader loading={isFetching}
+                                           sizeUnit={"px"}
+                                           size={40 }
+                                           color={'#28D2D1'}/>}
 
             </div>
         )
@@ -60,12 +71,12 @@ class  nameContest extends Component {
 
 const mapStateToProps =(state) => {
     const {contestFormData} = state.testReducer;
-    const {success, error} = state.checkoutReducer;
-    return { contestFormData, success, error }
+    const {success, error, isFetching} = state.checkoutReducer;
+    return { contestFormData, success, error, isFetching }
 };
 
 const mapDispatchToProps =(dispatch) => ({
-    setContestOrder: (arr) => dispatch(setContestOrder(arr)),
+    dataClear: () => dispatch(dataClear()),
     checkoutSubmit: (data) => dispatch(checkout(data))
 });
 

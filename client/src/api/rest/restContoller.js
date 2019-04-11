@@ -1,13 +1,6 @@
 import axios from 'axios'
 const baseUrl =  "http://localhost:3000";
 
-export const getAllUsers = () => {
-    return axios.get(`${baseUrl}/users`);
-};
-
-export const getUserProfile = (id) => {
-    return axios.get(    `${baseUrl}/users/${id}`);
-};
 
 export const getAllSelects = () => {
     return axios.get(`${baseUrl}/selects`);
@@ -35,15 +28,21 @@ export const getContestById = (data) => {
 };
 
 export const updateContest = (data) => {
-    console.log('rest');
-    console.log(data.id);
     return axios.put(`${baseUrl}/contests/${data.id}`, data.data);
 };
 
+// export const getAllContests = (data) => {
+//     return axios.post(`${baseUrl}/contests/`, data, {});
+// };
 
-export const getAllContests = (data) => {
-    return axios.post(`${baseUrl}/contests/`, data, {});
+export const setEntryWinner = (data) => {
+    return axios.put(`${baseUrl}/entry/winner`, data);
 };
 
+export const rejectEntry = (id) => {
+    console.log('from rest')
+    console.log(id)
+    return axios.put(`${baseUrl}/entry/reject`, {id: id});
+};
 
 

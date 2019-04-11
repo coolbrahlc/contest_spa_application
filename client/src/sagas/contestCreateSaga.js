@@ -9,7 +9,7 @@ export function* setArrayOrder(action) {
 }
 
 export function* collectForm(action) {
-    yield put({type:ACTION.GET_ARRAY_ORDER, contestsToInsert:action.arr})
+    yield put({type:ACTION.FORM_DATA_SET, contestFormData:action.data})
 }
 
 

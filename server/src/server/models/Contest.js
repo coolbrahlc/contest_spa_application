@@ -74,6 +74,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         },
 
+
         completed: {
             type: DataTypes.BOOLEAN,
             defaultValue: false

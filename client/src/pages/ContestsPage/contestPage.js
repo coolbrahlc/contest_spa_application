@@ -4,7 +4,7 @@ import {GridLoader} from "react-spinners";
 import connect from "react-redux/es/connect/connect";
 import {Redirect} from 'react-router-dom'
 import style from "./ContestPage.module.scss";
-import {getContestById, updateContest} from "../../actions/actionCreator";  //updateContest
+import {getContestById, updateContest, setEntryWinner, rejectEntry} from "../../actions/actionCreator";  //updateContest
 import SingleEntry from "../../components/SingleEntry/SingleEntry";
 import {ROLE} from "../../constants/constants";
 import { Container, Row, Col, Tabs, Tab } from 'react-bootstrap';
@@ -126,14 +126,20 @@ class  ContestPage extends Component {
 
     renderEntries = () => {
         const {user} = this.props;
-        const {id, type, Suggestions} = this.props.contest;
+        const {id, type, Suggestions, is_active} = this.props.contest;
         if(user){
             if(user.role === ROLE.CUSTOMER) {
                 return(
                     <div >
                         {
                             Suggestions.map(e => {
-                                return <SingleEntry key={e.id} data={e}/>
+                                return <SingleEntry key={e.id} data={e}
+                                                    reject = {this.props.rejectEntry}
+                                                    win = {this.props.setEntryWinner}
+                                                    contestId = {id}
+                                                    isActiveContest = {is_active}
+                                                    customerId = {user.id}
+                                />
                             })
                         }
                     </div>
@@ -192,6 +198,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
+    setEntryWinner: (data) => dispatch(setEntryWinner(data)),
+    rejectEntry: (data) => dispatch(rejectEntry(data)),
     getContestById: (id) => dispatch(getContestById(id)),
     updateContest: (data) => dispatch(updateContest(data)),
 });

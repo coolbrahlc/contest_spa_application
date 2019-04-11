@@ -15,6 +15,11 @@ export const collectFormData = (formData) => {
   };
 };
 
+export const dataClear = () => {
+    return {
+        type: ACTION.FORM_DATA_CLEAR,
+    };
+};
 
 export const getSelects = () => {
   return {
@@ -46,8 +51,6 @@ export const clean = () => ({
   
 });
 
-
-
 export const checkout = (data) => {
   return {
     type: ACTION.CHECKOUT,
@@ -76,4 +79,14 @@ export const getAllContests = () => ({
 export const updateContest = (data) => ({
   type: ACTION.UPDATE_CONTEST,
   data
+});
+
+export const setEntryWinner = (data) => ({
+  type: ACTION.SET_ENTRY_WINNER,
+  data,
+});
+
+export const rejectEntry = (data) => ({
+  type: ACTION.REJECT_ENTRY,
+  data,
 });

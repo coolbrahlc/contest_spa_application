@@ -27,6 +27,9 @@ router.post('/register', auth.register, auth.createNewToken, auth.tokenUpdate); 
 router.post('/token', auth.tokenCheck, auth.sendToken);
 router.get('/selects/', selects.getAllSelects);
 
+router.put('/entry/reject', auth.tokenCheck, transaction.rejectSuggestion);
+router.put('/entry/winner', auth.tokenCheck, transaction.setWinnerSuggestion);
+
 
 module.exports = router;
 

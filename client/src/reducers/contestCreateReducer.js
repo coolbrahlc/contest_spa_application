@@ -5,6 +5,8 @@ const initialState = {
     isFetching: true,
     isFetchingUser: true,
     error: null,
+    contestFormData: null
+
 };
 
 export default function (state=initialState, action) {
@@ -36,21 +38,25 @@ export default function (state=initialState, action) {
         }
 
         case ACTION.GET_ARRAY_ORDER: {
+            console.log('getting array', action.contestsToInsert)
             return {
                 ...state,
                 contestsToInsert: action.contestsToInsert,
             }
         }
 
-        case ACTION.COLLECT_FORM_DATA: {
-            console.log(state.contestsToInsert, 'from reducer');
+        case ACTION.FORM_DATA_SET: {
             return {
                 ...state,
-                contestFormData: action.data
+                contestFormData: action.contestFormData
             }
         }
-
-
+        case ACTION.FORM_DATA_CLEAR: {
+            return {
+                ...state,
+                contestFormData: null
+            }
+        }
         default: {
             return state;
         }

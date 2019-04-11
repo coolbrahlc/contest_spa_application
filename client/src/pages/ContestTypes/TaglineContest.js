@@ -13,8 +13,8 @@ class  TaglineContest extends Component {
         if (props.dataContest) {
             data = props.dataContest;
         }
-        if (this.props.contestFormData) {
-            data = JSON.parse(this.props.contestFormData.getAll("nameForm"));
+        if (this.props.contestFormData.has("taglineForm")) {
+            data = JSON.parse(this.props.contestFormData.getAll("taglineForm"));
         }
         this.state= {
             contestType: 'Tagline',
@@ -86,7 +86,6 @@ class  TaglineContest extends Component {
                     pathname: '/checkout'
                 });
             } else {
-                this.props.setContestOrder(order);
                 this.props.history.push({
                     pathname: '/'+ order[nextStep],
                 });
@@ -186,7 +185,7 @@ const mapStateToProps =(state) => {
 
 const mapDispatchToProps =(dispatch) => ({
     getSelects: () => dispatch(getSelects()),
-    setContestOrder: (arr) => dispatch(setContestOrder(arr)),
+    //setContestOrder: (arr) => dispatch(setContestOrder(arr)),
     collectFormData: (formData) => dispatch(collectFormData(formData))
 });
 

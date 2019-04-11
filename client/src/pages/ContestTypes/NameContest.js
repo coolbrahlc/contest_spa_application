@@ -75,18 +75,23 @@ class  NameContest extends Component {
         if (!this.props.editMode) {
             this.props.collectFormData(bodyFormData);
 
+            
+            
             let order = this.props.contestsToInsert;
+            
             let nextStep = order.indexOf('name')+1;
+            
             if (nextStep === order.length) {
                 this.props.history.push({
                     pathname: '/checkout'
                 });
             } else {
-                this.props.setContestOrder(order);
                 this.props.history.push({
                     pathname: '/'+ order[nextStep],
                 });
             }
+            
+            
         } else {
             this.props.update({
                 data: bodyFormData,

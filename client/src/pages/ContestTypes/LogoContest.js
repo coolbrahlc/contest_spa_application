@@ -13,8 +13,8 @@ class  LogoContest extends Component {
         if (props.dataContest) {
             data = props.dataContest;
         }
-        if (this.props.contestFormData) {
-            data = JSON.parse(this.props.contestFormData.getAll("nameForm"));
+        if (this.props.contestFormData.has("logoForm")) {
+            data = JSON.parse(this.props.contestFormData.getAll("logoForm"));
         }
         this.state= {
             contestType: 'Tagline',

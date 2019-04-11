@@ -26,9 +26,14 @@ const CustomerDashboard = (props) => {
 
 
     if (isFetching) {
-        return <GridLoader loading={isFetching}
+        return (
+            <div className={style.loader}>
+                <GridLoader loading={isFetching}
                             color={'#28D2D1'}
-        />
+                            height={320} width={320}
+                />
+            </div>
+            )
     }
     else{
         if(!contests.length>0){

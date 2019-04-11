@@ -59,7 +59,6 @@ class Header extends Component{
             <>
                 <div className={style.announcement}>
                     <span>Squadhelp recognized as one of the Most Innovative Companies by Inc Magazine.</span>
-                    {/*<a href="https://www.squadhelp.com/blog/squadhelp-recognized-one-six-innovative-companies-inc-magazine/">Read Announcement</a>*/}
                 </div>
                 <div className={style.topHeader}>
                     <Container className={style.fullHeight}>

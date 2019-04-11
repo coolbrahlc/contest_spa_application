@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import {GridLoader} from "react-spinners";
-import {collectFormData, getSelects, setContestOrder} from "../../actions/actionCreator";
+import {collectFormData, getSelects} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
-import {Link} from "react-router-dom";
-import Header from "../../components/Header/Header";
-import { withRouter } from 'react-router';
+import style from "./NameContest.module.scss";
+//import sheme from "../../utils/nameFormValidation";
+import { Container, Row, Col } from 'react-bootstrap';
+
+
 
 class  NameContest extends Component {
 
@@ -26,7 +28,7 @@ class  NameContest extends Component {
             typeOfWork: data.type_of_work,
             targetCustomer: data.target_customer,
             nameFile: '',
-            nameFileValue: null
+            nameFileValue: null,
         }
     }
 
@@ -44,15 +46,15 @@ class  NameContest extends Component {
 
     getSelects(type) {
         const selects = this.props.selects;
-        return selects.filter(name => (name.contest_type === type)).map(name =>name.name ); 
+        return selects.filter(name => (name.contest_type === type)).map(name =>name.name );
     }
+
 
     onChangeFile =  (e) => {
         console.log(e.target.files[0]);
         this.setState({
             nameFileValue:e.target.files[0]
         });
-
     };
 
     sendContestData = () => {
@@ -74,11 +76,8 @@ class  NameContest extends Component {
 
         if (!this.props.editMode) {
             this.props.collectFormData(bodyFormData);
-
-            
             
             let order = this.props.contestsToInsert;
-            
             let nextStep = order.indexOf('name')+1;
             
             if (nextStep === order.length) {
@@ -91,13 +90,16 @@ class  NameContest extends Component {
                 });
             }
             
-            
         } else {
             this.props.update({
                 data: bodyFormData,
                 id: this.props.contest.id
             })
         }
+    };
+    
+    handlePrevClick = () => {
+        this.props.history.goBack();
     };
 
     handleInputChange = (event) => {
@@ -110,27 +112,22 @@ class  NameContest extends Component {
         });
     };
 
-    render() {
-        const {isFetching} = this.props;
-
-        return ( isFetching ? <GridLoader loading={isFetching}
-                                         color={'#28D2D1'}/> :
-            <div className="Users">
-                {/*<Header {...this.props}/>*/}
-                Creating NAME contest
-                <div>
+    renderForm = () => {
+        return (
+            <div>
+                <div className={style.formSection}>
                     <input type="text"
                            placeholder="Contest name"
                            name="contestName"
                            value={this.state.contestName}
                            onChange={this.handleInputChange}/>
                 </div>
-
-                <div>
+                
+                <div className={style.formSection}>
                     <select value={this.state.typeOfName}
                             name="typeOfName"
                             defaultValue={'Company'}
-
+                            className={style["form-control"]}
                             onChange={this.handleInputChange}>
                         {
                             this.getSelects("name_type").map(select => ( <option key={select} value={select}>{select}</option>) )
@@ -138,23 +135,23 @@ class  NameContest extends Component {
                     </select>
                 </div>
 
-                <div>
+                <div className={style.formSection}>
                     <input type="text"
                            placeholder="Industry"
                            name="industry"
                            value={this.state.industry}
                            onChange={this.handleInputChange}/>
                 </div>
-
-                <div>
+                
+                <div className={style.formSection}>
                     <input type="text"
                            placeholder="Venture name"
                            name="typeOfWork"
                            value={this.state.typeOfWork}
                            onChange={this.handleInputChange}/>
                 </div>
-
-                <div>
+                
+                <div className={style.formSection}>
                     <input type="text"
                            placeholder="Target customer"
                            name="targetCustomer"
@@ -162,11 +159,11 @@ class  NameContest extends Component {
                            onChange={this.handleInputChange}/>
                 </div>
 
-                <div>
+                <div className={style.formSection}>
                     <select value={this.state.nameStyle}
+                            className={style["form-control"]}
                             defaultValue={'Classic'}
                             name="nameStyle"
-
                             onChange={this.handleInputChange}>
                         {
                             this.getSelects("name_style").map(select => ( <option key={select} value={select}>{select}</option>))
@@ -174,15 +171,66 @@ class  NameContest extends Component {
                     </select>
                 </div>
 
-                <div>
+                <div className={style.formSection}>
                     <input type="file"
                            name="nameFile"
                            onChange={this.onChangeFile} />
                 </div>
-
-
-                <button onClick={this.sendContestData} defaultValue={this.state.name} >Send</button>
             </div>
+        )
+    };
+
+
+    render() {
+        const {isFetching} = this.props;
+
+        return ( isFetching ?                 
+                <div className={style.loader}>
+                    <GridLoader loading={isFetching}
+                                color={'#28D2D1'}
+                                height={320} width={320}
+                    />
+                </div>
+            :
+            <>                
+                <div className={style["heading-steps"]}>
+                    <Container>
+                        <Row>
+                            <Col md={5}>
+                                <h2>Company {this.state.contestType}</h2>
+                                <p>Tell us a bit more about your business as well
+                                    as your preferences so that creatives get a better
+                                    idea about what you are looking for</p>
+                            </Col>
+                        </Row>
+                    </Container>
+                </div>
+                <div className={style.form}>
+                    <Container>
+                        <Row className={style.formPadding}>
+                            {
+                                this.renderForm()
+                            }
+                        </Row>
+                    </Container>
+                </div>
+                <Container>
+                    <Row className={style.navigationMenu}>
+                        <Col md = {6}>
+                            <p>You are almost finished. Select a pricing package in the next step</p>
+                        </Col>
+                        <Col md={6} className={style.navigationMenu__buttons}>
+                            <div className={style.navigationMenu__prevButton} onClick={this.handlePrevClick}>
+                                Prev
+                            </div>
+                            <div className={style.navigationMenu__nextButton} onClick={this.sendContestData}>
+                                Next
+                            </div>
+                        </Col>
+                    </Row>
+                </Container>
+            </>
+
         );
     }
 }
@@ -195,7 +243,6 @@ const mapStateToProps =(state) => {
 
 const mapDispatchToProps =(dispatch) => ({
     getSelects: () => dispatch(getSelects()),
-    setContestOrder: (arr) => dispatch(setContestOrder(arr)),
     collectFormData: (formData) => dispatch(collectFormData(formData))
 });
 

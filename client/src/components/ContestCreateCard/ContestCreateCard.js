@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React from "react";
 import style from "./ContestCreateCard.module.scss";
 
 export default function ContestCreateCard(props) {
-    
+
     const renderImages = () => {
         return props.img.map(i => {
             return <img key={i} src={i} alt="img"/>

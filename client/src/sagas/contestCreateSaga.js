@@ -1,6 +1,6 @@
 import { put } from 'redux-saga/effects'
 import ACTION from '../actions/actiontsTypes'
-import {getAllSelects, register} from '../api/rest/restContoller'
+import {getAllSelects} from '../api/rest/restContoller'
 
 
 

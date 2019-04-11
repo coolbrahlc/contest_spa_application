@@ -27,23 +27,21 @@ class ContestPreview extends Component{
     };
 
     render(){
-        const {tag, id, venture, industry, created_at, prize_pool, entriesCount, days_passed} = this.props.contest;
+        const {type, id, venture, industry, created_at, prize_pool, entriesCount, days_passed} = this.props.contest;
         const date = moment(created_at).format("YYYY-MM-DD HH:mm");
         const new_date = moment(date, "YYYY-MM-DD HH:mm").add(days_passed, 'days');
-        const text = venture;
-        const text1 = "text ";
         return(
             <div className={style.container} onClick={this.clickHandler}>
                 <div className={style.container__content}>
-                    {/*<h2>{tag} for {industry}</h2>*/}
+                    <h2>{type} for {industry}</h2>
                     <div className={style.container__content_id}>
                         <p># {id}</p>
                     </div>
                     <div className={style.container__content_row}>
-                        <p className={style.container__content_blue}>{tag}</p>
+                        <p className={style.container__content_blue}>{type}</p>
                         <span>Posted {moment(date).from(moment())}</span>
                     </div>
-                    <p className={style.container__content_text}>{text}</p>
+                    <p className={style.container__content_text}>{venture}</p>
                     <div className={style.container__content_row}>
                         {
                             this.renderStatus()

@@ -1,7 +1,7 @@
 import {takeLatest} from 'redux-saga/effects'
 import ACTION from '../actions/actiontsTypes'
-import {testFunc, getUserProfileSaga, setArrayOrder, collectForm, getAllSelectsSaga} from './contestCreateSaga'
-import {registerSaga, loginSaga, authSaga, cleanSaga} from './authSaga';
+import {setArrayOrder, collectForm, getAllSelectsSaga} from './contestCreateSaga'
+import {registerSaga, loginSaga, authSaga} from './authSaga';
 import {checkoutSaga} from './checkoutSaga';
 import {contestsSaga, getContestsById, updateContestSaga, setEntryWinnerSaga, rejectEntrySaga} from './contestsSaga';
 

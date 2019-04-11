@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import {GridLoader} from "react-spinners";
-import {getUserProfile} from "../../actions/actionCreator";
+//import {GridLoader} from "react-spinners";
 import connect from "react-redux/es/connect/connect";
-import {Link} from "react-router-dom";
-import {tokenAction, getAllContests, getCustomerContests} from '../../actions/actionCreator';
+//import {Link} from "react-router-dom";
+import { getCustomerContests} from '../../actions/actionCreator';
 import {ROLE} from "../../constants/constants";
 import CustomerDashboard from "../../components/CustomerDashboard/CustomerDashobard";
 import CreativeDashboard from "../../components/CreativeDashboard/CreativeDashboard";
-import { Container, Row, Col } from 'react-bootstrap';
-import Header from "../../components/Header/Header";
+import { Container, Row } from 'react-bootstrap';
 
 
 class  Dashboard extends Component {
@@ -77,7 +75,6 @@ class  Dashboard extends Component {
     render() {
         return (
             <>
-                <Header {...this.props}/>
                 {
                     this.renderDashboard()
                 }

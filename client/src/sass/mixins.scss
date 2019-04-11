@@ -83,3 +83,8 @@
   font-size: 18px;
   font-weight: 600;
 }
+
+@mixin loader {
+  @include flex-row-center-center;
+  margin-top: 280px;
+}

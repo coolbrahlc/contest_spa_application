@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import '../../App.css';
-//import {GridLoader} from "react-spinners";
-import {getUserProfile} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
 import {Formik} from "formik";
 import * as Yup from "yup";
@@ -31,8 +29,6 @@ class  Register extends Component {
     }
 
     registerUser = (data) => {
-        console.log(this.state.role)
-
         data.role = this.state.role
         console.log(data)
         this.props.register(data);

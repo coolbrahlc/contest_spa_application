@@ -3,7 +3,7 @@ import style from "./SingleEntry.module.scss";
 
 export default function SingleEntry(props) {
 
-    const {id, creator_id, file, content, user_id, status} = props.data;
+    const {id, creator_id, user_id, status} = props.data;
     const {win, reject, contestId, customerId, isActiveContest} = props;
 
     const onWinClick = () => {

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import {GridLoader} from "react-spinners";
-import {getUserProfile, dataClear} from "../../actions/actionCreator";
+import { dataClear} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
-import {Link} from "react-router-dom";
-import {tokenAction, checkout} from '../../actions/actionCreator';
+import { checkout} from '../../actions/actionCreator';
 
 
 class  nameContest extends Component {
@@ -18,8 +17,9 @@ class  nameContest extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.contestFormData, 'MY VALUES')
-
+        if (!this.props.contestFormData) {
+            this.redirect('/')
+        }
     }
 
     checkout = () => {
@@ -38,9 +38,9 @@ class  nameContest extends Component {
         });
     };
 
-    redirect = () => {
+    redirect = (route) => {
         this.props.history.push({
-            pathname: '/dashboard',
+            pathname: route,
         });
     };
 
@@ -56,7 +56,7 @@ class  nameContest extends Component {
 
                 {error && <div>{this.props.error}</div>}
 
-                {success && this.redirect()}
+                {success && this.redirect('/dashboard')}
 
                 {isFetching && <GridLoader loading={isFetching}
                                            sizeUnit={"px"}

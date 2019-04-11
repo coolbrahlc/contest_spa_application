@@ -33,3 +33,7 @@
     background-color: #28D2D1;
   }
 }
+
+.loader {
+  @include loader;
+}

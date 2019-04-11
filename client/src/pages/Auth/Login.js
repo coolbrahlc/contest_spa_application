@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import '../../App.css';
-//import {GridLoader} from "react-spinners";
 import {login} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
-import { Formik, FormikProps, Form, Field } from 'formik';
+import { Formik } from 'formik';
 import * as Yup from 'yup';
 import style from "./Login.module.scss";
 import Logo from "../../images/logo.png";
 import {Link} from "react-router-dom";
-import Input from "../../components/Input/Input";
 
 class  Login extends Component {
 

@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import '../../App.css';
-import {GridLoader} from "react-spinners";
-import {setContestOrder, getSelects} from "../../actions/actionCreator";
+//import {GridLoader} from "react-spinners";
+import {setContestOrder} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
-import {Link} from "react-router-dom";
-import Header from "../../components/Header/Header";
 import style from "./CreateContest.module.scss";
 import { Container, Row, Col } from 'react-bootstrap';
 import ContestCreateCard from "../../components/ContestCreateCard/ContestCreateCard";
@@ -38,8 +36,6 @@ class  CreateContest extends Component {
     render() {
         return (
                 <>
-                    <Header {...this.props}/>
-                    
                     <div className={style.mostPopularCategories}>
                         <Container>
                             <Row>

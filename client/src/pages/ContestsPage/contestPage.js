@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import '../../App.css';
 import {GridLoader} from "react-spinners";
 import connect from "react-redux/es/connect/connect";
-import {Redirect} from 'react-router-dom'
 import style from "./ContestPage.module.scss";
 import {getContestById, updateContest, setEntryWinner, rejectEntry} from "../../actions/actionCreator";  //updateContest
 import SingleEntry from "../../components/SingleEntry/SingleEntry";
 import {ROLE} from "../../constants/constants";
-import { Container, Row, Col, Tabs, Tab } from 'react-bootstrap';
-import Header from "../../components/Header/Header";
+import { Container, Row } from 'react-bootstrap';
 import moment from "moment";
 import CreateEntry from "../../components/CreateEntry/CreateEntry";
 import NameContest from "../../pages/ContestTypes/NameContest";
@@ -159,10 +157,14 @@ class  ContestPage extends Component {
     renderContest = () => {
         const {isFetchingContest, contest} = this.props;
         if(isFetchingContest){
-            return <GridLoader loading={isFetchingContest}
-                               sizeUnit={"px"}
-                               size={40 }
-                               color={'#28D2D1'}/>
+            return (
+                <div className={style.loader}>
+                    <GridLoader loading={isFetchingContest}
+                                color={'#28D2D1'}
+                                height={320} width={320}
+                    />
+                </div>
+            )
         }
         else{
             return (

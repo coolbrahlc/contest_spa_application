@@ -61,13 +61,20 @@ module.exports.createContests = (req, res, next) => {
 
 module.exports.rejectSuggestion =  async (req, res , next) => {
 
-    //middleware check and owner of contest role and contest status
 
-    const id = req.body.id;
-    console.log(id)
-
+    const {id, contestId, customerId} = req.body;
 
     try {
+        const checkIsOwner = await db.Contests.findOne({
+            attributes: ['creator_id'],
+            where: {
+                id: contestId
+            }
+        });
+        if (checkIsOwner.dataValues.creator_id!==customerId) {
+            next(new ApplicationError('Permission denied'))
+        }
+
         const entry = await db.Suggestions.update({
                 status: "rejected"},
             {where: {id: id},
@@ -99,16 +106,21 @@ module.exports.rejectSuggestion =  async (req, res , next) => {
 
 module.exports.setWinnerSuggestion =  async (req, res , next) => {
 
-    //middleware check and owner of contest role and contest status
-
-    console.log("User from token", req.decoded);
+    //console.log("User from token", req.decoded);
 
     const {customerId, contestId, entryId, creatorId} = req.body;
+
+    console.log(creatorId, );
+
 
     let t;
     let endedContest;
 
     try {
+        if (customerId !== req.decoded.id) {
+            next(new ApplicationError('Permission denied'))
+        }
+
         t = await db.sequelize.transaction();
 
         await db.Suggestions.update({status: "winner"},

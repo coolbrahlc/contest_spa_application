@@ -39,10 +39,8 @@ export const setEntryWinner = (data) => {
     return axios.put(`${baseUrl}/entry/winner`, data);
 };
 
-export const rejectEntry = (id) => {
-    console.log('from rest')
-    console.log(id)
-    return axios.put(`${baseUrl}/entry/reject`, {id: id});
+export const rejectEntry = (data) => {
+    return axios.put(`${baseUrl}/entry/reject`, data);
 };
 
 

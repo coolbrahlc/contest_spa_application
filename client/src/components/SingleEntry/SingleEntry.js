@@ -3,13 +3,19 @@ import style from "./SingleEntry.module.scss";
 
 export default function SingleEntry(props) {
 
-    const {id, creator_id, user_id, status} = props.data;
+    const {id, user_id, status} = props.data;
     const {win, reject, contestId, customerId, isActiveContest} = props;
 
     const onWinClick = () => {
+        console.log({
+            entryId: id,
+            creatorId: user_id,
+            contestId,
+            customerId
+        })
         win({
             entryId: id,
-            creatorId: creator_id,
+            creatorId: user_id,
             contestId,
             customerId
         })
@@ -19,7 +25,7 @@ export default function SingleEntry(props) {
         return (
             <div>
                 <div onClick={() => onWinClick({}) } className={"float-right"}> Set as winner</div>
-                {(status!=="rejected") && <div onClick={() => reject(id) } className={"float-right"}> Reject</div>}
+                {(status!=="rejected") && <div onClick={() => reject({id, customerId, contestId}) } className={"float-right"}> Reject</div>}
             </div>
     )};
 

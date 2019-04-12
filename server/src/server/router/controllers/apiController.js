@@ -11,8 +11,6 @@ const {UserAlreadyExistsError,
 
 module.exports.getContestsById =  async (req, res , next) => {
 
-    // console.log("decoded", req.decoded.role);
-
     try {
         let contest = await db.Contests.findOne(
             {where:{id: req.params.id},
@@ -71,7 +69,6 @@ module.exports.getContests =  async (req, res , next) => {
         next(new ApplicationError('Internal error'))
     }
 };
-
 
 
 module.exports.getCreatorEntries =  async (req, res , next) => {

@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const uuid = require('node-uuid');
 const jwt = require('jsonwebtoken');
 const config = require('../../utils/consts');
+const dateSet = require('../../utils/dateSet');
+
 const db = require('../../models/index');
 const {UserAlreadyExistsError,
     WrongPasswordError,
@@ -23,40 +25,6 @@ module.exports.checkCreditCard=(req,res,next)=>{
         .catch(err=>{
             next(new ApplicationError(" Credit card not found"));
         })
-};
-
-
-module.exports.setActiveContest = (req, res, next) => {
-
-    //next(new ApplicationError("some error", 500));
-    console.log("files: ",req.files);
-
-    const contestsBody = Object.assign({}, req.body);
-    delete contestsBody['cardNumber'];
-
-    let contests = [];
-    Object.keys(contestsBody).forEach(key => {
-        contests.push(JSON.parse(contestsBody[key]));
-    });
-
-    let prize_pool = parseInt(config.PRIZE_POOL/contests.length);
-    const orderId = uuid.v1();
-
-    contests.map((contest) =>{
-        contest.creator_id = req.decoded.id;
-        contest.order_id = orderId;
-        contest.updated_at = Date.now();
-        contest.is_active = false;
-        contest.prize_pool = prize_pool;
-
-        let fileField = req.files[contest.type+'File'] ;  // adding file path
-        if (fileField) {
-            contest.file = fileField[0].filename;
-        }
-    });
-    contests[0].is_active = true;
-    req.contests= contests;
-    next();
 };
 
 
@@ -135,11 +103,7 @@ module.exports.setWinnerSuggestion =  async (req, res , next) => {
 
     console.log("User from token", req.decoded);
 
-    // req.body.cusomerId === req.decoded.id ?
     const {customerId, contestId, entryId, creatorId} = req.body;
-    // const contestId = req.body.contestId;  //contest OBJ from state
-    // const entryId = req.body.id;            //from entry
-    // const creatorId = req.body.user_id;  //from entry
 
     let t;
     let endedContest;
@@ -170,14 +134,17 @@ module.exports.setWinnerSuggestion =  async (req, res , next) => {
             const contests = await db.Contests.findAll(
                 {where: {order_id: endedContest.order_id, completed: false}, transaction:t });
             if (contests.length) {
+                const nextId =Math.min(...contests.map(c => {
+                        return c.dataValues.id;
+                    }));
+                const filtered = contests.filter( c => c.dataValues.id === nextId );
+                const endDate = dateSet.addDays(filtered[0].days_passed);
+
                 db.Contests.update(
-                    {is_active: true},
+                    {is_active: true, end_date: endDate},
                     {
                         where: {
-                            id:
-                                Math.min(...contests.map(c => {
-                                    return c.dataValues.id;
-                                })),
+                            id: nextId,
                             is_active: false,
                             completed: false,
                         },

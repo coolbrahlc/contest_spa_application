@@ -5,8 +5,8 @@ const initialState = {
     isFetching: true,
     isFetchingUser: true,
     error: null,
-    contestFormData: null
-
+    contestFormData: null,
+    success: null,
 };
 
 export default function (state=initialState, action) {
@@ -38,7 +38,7 @@ export default function (state=initialState, action) {
         }
 
         case ACTION.GET_ARRAY_ORDER: {
-            console.log('getting array', action.contestsToInsert)
+            //console.log('getting array', action.contestsToInsert)
             return {
                 ...state,
                 contestsToInsert: action.contestsToInsert,
@@ -52,9 +52,37 @@ export default function (state=initialState, action) {
             }
         }
         case ACTION.FORM_DATA_CLEAR: {
+            console.log('FORM_DATA_CLEAR')
             return {
                 ...state,
-                contestFormData: null
+                contestFormData: null,
+                success: false,
+                error: false,
+                //isFetching: false,
+            }
+        }
+
+        case ACTION.CHECKOUT_REQUEST: {
+            return {
+                ...state,
+                isFetching: true,
+                error: null,
+            }
+        }
+        case ACTION.CHECKOUT_RESPONSE: {
+            return {
+                ...state,
+                isFetching: false,
+                error: false,
+                success: true,
+            }
+        }
+        case ACTION.CHECKOUT_ERROR: {
+            return {
+                ...state,
+                isFetching: false,
+                error: action.error,
+                success: false
             }
         }
         default: {

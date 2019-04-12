@@ -8,7 +8,7 @@ import customerContestsReducer from './customerContestsReducer';
 const appReducer = combineReducers({
     testReducer,
     authReducer,
-    checkoutReducer,
+    //checkoutReducer,
     customerContestsReducer
 });
 

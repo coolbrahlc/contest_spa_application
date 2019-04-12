@@ -11,7 +11,6 @@ const sagaMiddleware = createSagaMiddleware();
 export default function configureStore() {
 
     const store = createStore(combineReducers, applyMiddleware(sagaMiddleware));
-    //axios.defaults.headers.common['Authorization'] = localStorage.getItem("token");
 
     axios.interceptors.request.use(function(config) {
         const token = localStorage.getItem("token");

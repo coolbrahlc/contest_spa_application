@@ -91,6 +91,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
 
+        end_date: {
+            allowNull: true,
+            type: DataTypes.DATE,
+        },
+
         created_at: {
             allowNull: false,
             type: DataTypes.DATE,
@@ -98,8 +103,9 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         updated_at: {
-            allowNull: false,
-            type: DataTypes.DATE
+            allowNull: true,
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
         },
 
     },

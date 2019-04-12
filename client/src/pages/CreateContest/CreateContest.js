@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
 //import {GridLoader} from "react-spinners";
-import {setContestOrder} from "../../actions/actionCreator";
+import {dataClear, setContestOrder} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
 import style from "./CreateContest.module.scss";
 import { Container, Row, Col } from 'react-bootstrap';
@@ -27,6 +27,7 @@ class  CreateContest extends Component {
 
     clickHandler = (arr) => {
         this.props.setContestOrder(arr);
+        this.props.dataClear();
         this.props.history.push({
             pathname: '/'+arr[0],
         })
@@ -209,6 +210,8 @@ const mapStateToProps =(state) => {
 const mapDispatchToProps =(dispatch) => ({
     setContestOrder: (arr) => dispatch(setContestOrder(arr)),
     //getSelects: () => dispatch(getSelects())
+    dataClear: () => dispatch(dataClear()),
+
 
 });
 

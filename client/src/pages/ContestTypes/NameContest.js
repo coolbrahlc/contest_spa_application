@@ -29,6 +29,7 @@ class  NameContest extends Component {
             targetCustomer: data.target_customer,
             nameFile: '',
             nameFileValue: null,
+            length: 0
         }
     }
 
@@ -69,6 +70,7 @@ class  NameContest extends Component {
             industry: this.state.industry,
             type_of_work: this.state.typeOfWork,
             target_customer: this.state.targetCustomer,
+            days_passed: this.state.length,
         }));
         if (this.state.nameFileValue) {
             bodyFormData.append("NameFile", this.state.nameFileValue);
@@ -81,6 +83,7 @@ class  NameContest extends Component {
             let nextStep = order.indexOf('name')+1;
             
             if (nextStep === order.length) {
+                console.log(1)
                 this.props.history.push({
                     pathname: '/checkout'
                 });
@@ -171,6 +174,13 @@ class  NameContest extends Component {
                     </select>
                 </div>
 
+                <div className={style.formSection}>
+                    <input type="number"
+                           placeholder="Contest length"
+                           name="length"
+                           value={this.state.length}
+                           onChange={this.handleInputChange}/>
+                </div>
                 <div className={style.formSection}>
                     <input type="file"
                            name="nameFile"

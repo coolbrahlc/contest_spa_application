@@ -32,9 +32,10 @@
 'use strict';
 module.exports = {
     up: (queryInterface, DataTypes) => {
-        return queryInterface.addColumn('Contests', 'order_id', {
-            type: DataTypes.STRING,
-            allowNull: true
+        return queryInterface.changeColumn('Contests', 'updated_at', {
+            type: DataTypes.DATE,
+            allowNull: true,
+            defaultValue: DataTypes.NOW
         });
     },
 

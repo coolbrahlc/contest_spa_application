@@ -24,12 +24,14 @@ class  nameContest extends Component {
 
     checkout = () => {
         let data = this.props.contestFormData;
+        if (data) {
+            console.log(123)
+        }
         data.set('cardNumber',this.state.cardNumber);
         this.props.checkoutSubmit({
             data,
             token: this.token,
         });
-        this.props.dataClear();
     };
 
     handleInputChange = (event) => {
@@ -71,7 +73,7 @@ class  nameContest extends Component {
 
 const mapStateToProps =(state) => {
     const {contestFormData} = state.testReducer;
-    const {success, error, isFetching} = state.checkoutReducer;
+    const {success, error, isFetching} = state.testReducer;
     return { contestFormData, success, error, isFetching }
 };
 

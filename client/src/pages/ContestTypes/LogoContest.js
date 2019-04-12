@@ -84,7 +84,6 @@ class  LogoContest extends Component {
         if (!this.props.editMode) {
             this.props.collectFormData(bodyFormData);
             let order = this.props.contestsToInsert;
-            this.props.setContestOrder(order);
             this.props.history.push({
                 pathname: '/checkout'
             });

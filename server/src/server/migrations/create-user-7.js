@@ -33,19 +33,7 @@ module.exports = {
                 type: Sequelize.DECIMAL(10,2),
                 defaultValue: 0
             },
-			// age: {
-			// 	type: Sequelize.BIGINT,
-			// 	allowNull: false,
-			// 	isAdult(value) {
-			// 		let date = moment()
-			// 			.subtract(18, 'years')
-			// 			.unix();
-			// 		date = moment(date).diff(value);
-			// 		if (date <= 0) {
-			// 			throw  new Error('You must be older then 18 years');
-			// 		}
-			// 	}
-			// },
+
 			role: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
@@ -57,6 +45,12 @@ module.exports = {
 				}
 			},
 
+			token: {
+				type: DataTypes.STRING,
+				allowNull: true,
+				unique: true,
+			},
+
 			created_at: {
 				allowNull: false,
 				type: Sequelize.DATE,
@@ -64,6 +58,7 @@ module.exports = {
 			},
 			updated_at: {
 				allowNull: false,
+				defaultValue: Sequelize.NOW,
 				type: Sequelize.DATE
 			}
 		});

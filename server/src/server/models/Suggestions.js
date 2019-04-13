@@ -34,7 +34,7 @@ module.exports = (sequelize , DataTypes) => {
             allowNull: false
         },
 
-        status: {              // TO DO
+        status: {
             type: DataTypes.ENUM('rejected', 'winner', 'review'),
             defaultValue: 'review',
             allowNull: true
@@ -42,12 +42,13 @@ module.exports = (sequelize , DataTypes) => {
 
         created_at: {
             allowNull: false,
-            type: DataTypes.DATE,
-            defaultValue: DataTypes.NOW
+            defaultValue: DataTypes.NOW,
+            type: DataTypes.DATE
         },
 
         updated_at: {
             allowNull: false,
+            defaultValue: DataTypes.NOW,
             type: DataTypes.DATE
         }
     },      {
@@ -55,10 +56,8 @@ module.exports = (sequelize , DataTypes) => {
     });
 
     Suggestions.associate = function (models) {
-        Suggestions.belongsTo(models.Users, {foreignKey: 'user_id', sourceKey: 'id'});
-    };
-    Suggestions.associate = function (models) {
         Suggestions.belongsTo(models.Contests, {foreignKey: 'contest_id', sourceKey: 'id'});
+        Suggestions.belongsTo(models.Users, {foreignKey: 'user_id', sourceKey: 'id'});
     };
 
     return Suggestions;

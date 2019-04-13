@@ -6,18 +6,10 @@ import style from "./ContestPage.module.scss";
 import {getContestById, updateContest, setEntryWinner, rejectEntry} from "../../actions/actionCreator";  //updateContest
 import SingleEntry from "../../components/SingleEntry/SingleEntry";
 import {ROLE} from "../../constants/constants";
-import { Container, Row } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import moment from "moment";
 import CreateEntry from "../../components/CreateEntry/CreateEntry";
 import NameContest from "../../pages/ContestTypes/NameContest";
-import LogoContest from "../../pages/ContestTypes/LogoContest";
-import TaglineContest from "../../pages/ContestTypes/TaglineContest";
-
-const formNames = {
-    Name: NameContest,
-    Logo: LogoContest,
-    Tagline: TaglineContest,
-};
 
 class  ContestPage extends Component {
 
@@ -54,12 +46,9 @@ class  ContestPage extends Component {
 
     renderEdit =  () => {
         const {type} = this.props.contest;
-        const Component =formNames[type];
 
-        if (!Component) {
-            return null
-        }
-        return <Component
+        return <NameContest
+            type = {type}
             contestsToInsert = {[type]}
             dataContest = {this.props.contest}
             editMode = {true}
@@ -76,7 +65,6 @@ class  ContestPage extends Component {
         const date = moment(created_at).format("YYYY-MM-DD HH:mm");
         return (
             <div className={style.brief}>
-
 
                 {this.state.editMode ?
                     this.renderEdit()
@@ -126,14 +114,80 @@ class  ContestPage extends Component {
         );
     };
 
+    renderBrief2 = (contest) => {
+        const {name, type, file, venture_name, target_customer, type_of_title,
+            preference, industry, created_at, prize_pool, id} = contest;
+
+        const date = moment(created_at).format("YYYY-MM-DD HH:mm");
+        return (
+            <div className={style.brief}>
+                {this.state.editMode ?
+                    this.renderEdit()
+                    :
+                    <div className={style.link+' '+"float-right"}
+                         onClick={()=>this.changeMode()}>EDIT CONTEST
+                    </div>
+                }
+                <ul>
+                    <li className={style.brief__thin}>
+                        <p>{name}</p>
+                        <span>#{id}</span>
+                    </li>
+                    <li className={style.brief__thin}>
+                        <p>{type}</p>
+                        <span>{moment(date).from(moment())}</span>
+                    </li>
+                    {
+                       type_of_title &&
+                       <li className={style.brief__thin}>
+                           <p>{type_of_title}</p>
+                       </li>
+                    }
+                    {
+                        venture_name &&
+                        <li className={style.brief__thin}>
+                            <p>{venture_name}</p>
+                        </li>
+                    }
+                    <li className={style.brief__thin}>
+                        <p>{industry}</p>
+                    </li>
+                    <li className={style.brief__thin}>
+                        <h5>Preferences</h5>
+                        <p>{preference}</p>
+                    </li>
+                    <li className={style.brief__thick}>
+                        <h5>Target customers</h5>
+                        <p>{target_customer}</p>
+                    </li>
+                    <li className={style.brief__thick}>
+                        <h5 className={style.brief__thick}>Description</h5>
+                        <p>{venture_name}</p>
+                    </li>
+                    <li>
+                        <h5>Budget</h5>
+                        <p>{prize_pool}</p>
+                    </li>
+                    <li>
+                        {
+                            //this.renderImage(file)
+                        }
+                    </li>
+                </ul>
+            </div>
+        );
+    };
+
+
     renderEntries = () => {
         const {user} = this.props;
         const {id, type, Suggestions, is_active} = this.props.contest;
+
         if(user){
             if(user.role === ROLE.CUSTOMER) {
                 return(
-                    <div >
-                        {
+                    <div className={style.entryContainer}>
+                    {
                             Suggestions.map(e => {
                                 return <SingleEntry key={e.id} data={e}
                                                     reject = {this.props.rejectEntry}
@@ -172,19 +226,23 @@ class  ContestPage extends Component {
         }
         else{
             return (
-                <Container>
-                    <div>
-                        <div>
-                            { this.renderBrief(contest) }
-                        </div>
-                        { this.renderEntries() }
+                <div className={style.container}>
+                    <div className={style.contestContainer}>
+                        {
+                            this.renderBrief2(contest)
+                        }
+
+                        {
+                            this.renderEntries()
+                        }
                     </div>
-                </Container>
+                </div>
             );
         }
     };
 
     render() {
+        //const {sideMenuStatus} = this.state;
         if(!this.props.contest){
             return (
                 <Container>
@@ -192,7 +250,24 @@ class  ContestPage extends Component {
                 </Container>
             );
         } else {
-            return this.renderContest();
+            return (
+                <Row className={style.fullHeight}>
+                    <Col md={"auto"} className={style.clearRight}>
+                        {/*<SideBar filterListener={this.getFilterData}*/}
+                        {/*         opened={sideMenuStatus}*/}
+                        {/*         toggleSideMenu={this.toggleSideMenu}*/}
+                        {/*         {...this.props}/>*/}
+                    </Col>
+                    <Col className={style.clearLeft}>
+                        <div className={style.content}>
+                            {
+                                this.renderContest()
+                            }
+                        </div>
+                    </Col>
+                </Row>
+            );
+
         }
     }
 }

@@ -5,37 +5,52 @@ import connect from "react-redux/es/connect/connect";
 import style from "./NameContest.module.scss";
 import { Container, Row, Col } from 'react-bootstrap';
 
-
+const contObj = {
+    name: 'Name',
+    logo: 'Logo',
+    tagline: 'Tagline',
+};
 
 class  NameContest extends Component {
 
     constructor(props) {
         super(props);
+        let contestType;
+        if (!props.editMode) {
+            contestType = this.props.location.state.contestType;
+        } else {
+            contestType = props.type
+        }
+
         let data ={};
         if (props.dataContest) {
             data = props.dataContest;
         }
         if (this.props.contestFormData) {
-            data = JSON.parse(this.props.contestFormData.getAll("nameForm"));
+            if (this.props.contestFormData.has(`${contestType}Form`)) {
+                data = JSON.parse(this.props.contestFormData.getAll(`${contestType}Form`));
+            }
         }
-        const {name, type_of_title, preferences, industry, type_of_work, target_customer} = data;
+        const {name, type_of_title, preferences, industry, type_of_work,
+            target_customer, venture_name, days_passed } = data;
         this.state= {
-            contestType: 'Name',
+            contestType: contestType,
             contestName: name? name : '',
             typeOfName: type_of_title? type_of_title : 'Company',
-            nameStyle: preferences ? preferences : 'Classic',
+            preferences: preferences ? preferences : 'Classic',
             industry: industry? industry : '',
             typeOfWork: type_of_work ? type_of_work : '',
             targetCustomer: target_customer ? target_customer : '',
             nameFile: '',
             nameFileValue: null,
-            length: 0
+            length: days_passed ? days_passed : 0,
+            ventureName: venture_name? venture_name: '',
         }
     }
 
     componentDidMount() {
         const order = this.props.contestsToInsert;
-        const {editMode, history, selects, getSelects} =this.props;
+        const { editMode, history, selects, getSelects } =this.props;
         if (!order  && !editMode) {
             history.push({pathname: '/' });
         } else {
@@ -56,31 +71,40 @@ class  NameContest extends Component {
     };
 
     sendContestData = () => {
-        const bodyFormData = new FormData();
-        const {contestName, typeOfName, nameStyle, industry, typeOfWork, targetCustomer, length, nameFileValue}= this.state;
+        let bodyFormData;
+        if (!this.props.contestFormData) {
+            bodyFormData = new FormData();
+        } else {
+            bodyFormData = this.props.contestFormData;
+        }
+        const {contestType, contestName, typeOfName, nameStyle, industry,
+            typeOfWork, targetCustomer, length, nameFileValue}= this.state;
         const {editMode, contestsToInsert, collectFormData, update, contest, history}= this.props;
 
-        bodyFormData.set("nameForm", JSON.stringify({
-            type: "Name",
+        bodyFormData.set(`${contestType}Form`, JSON.stringify({
+            type: contObj[contestType],
             name: contestName,
             type_of_title: typeOfName,
-            preferences:nameStyle,
+            preferences: nameStyle,
             industry: industry,
             type_of_work:typeOfWork,
             target_customer: targetCustomer,
             days_passed: length,
+            venture_name: this.state.ventureName,
         }));
         if (nameFileValue) {
-            bodyFormData.append("NameFile", nameFileValue);
+            bodyFormData.append(`${contestType}File`, nameFileValue);
         }
+
         if (!editMode) {
             collectFormData(bodyFormData);
-            let order = contestsToInsert;
-            let nextStep = order.indexOf('name')+1;
+            const order = contestsToInsert;
+            const nextStep = order.indexOf(contestType)+1;
+
             if (nextStep === order.length) {
                 history.push({ pathname: '/checkout' });
             } else {
-                history.push({ pathname: '/'+ order[nextStep] });
+                history.push({ pathname: '/'+ order[nextStep], state: { contestType: order[nextStep]} });
             }
         } else {
             update({
@@ -104,6 +128,7 @@ class  NameContest extends Component {
     };
 
     renderForm = () => {
+        const {contestType} =this.state;
         return (
             <div>
                 <div className={style.formSection}>
@@ -114,16 +139,15 @@ class  NameContest extends Component {
                            onChange={this.handleInputChange}/>
                 </div>
 
+                { contestType!=='name' &&
                 <div className={style.formSection}>
-                    <select value={this.state.typeOfName}
-                            name="typeOfName"
-                            className={style["form-control"]}
-                            onChange={this.handleInputChange}>
-                        {
-                            this.getSelects("name_type").map(select => ( <option key={select} value={select}>{select}</option>) )
-                        }
-                    </select>
+                    <input type="text"
+                           placeholder="Venture name"
+                           name="ventureName"
+                           value={this.state.ventureName}
+                           onChange={this.handleInputChange}/>
                 </div>
+                }
 
                 <div className={style.formSection}>
                     <input type="text"
@@ -133,13 +157,19 @@ class  NameContest extends Component {
                            onChange={this.handleInputChange}/>
                 </div>
 
-                <div className={style.formSection}>
-                    <input type="text"
-                           placeholder="Venture name"
-                           name="typeOfWork"
-                           value={this.state.typeOfWork}
-                           onChange={this.handleInputChange}/>
-                </div>
+                 {contestType === 'name' &&
+                    <div className={style.formSection}>
+                        <select value={this.state.typeOfName}
+                                name="typeOfName"
+                                className={style["form-control"]}
+                                onChange={this.handleInputChange}>
+                            {
+                                this.getSelects("name_type").map(select => (
+                                    <option key={select} value={select}>{select}</option>))
+                            }
+                        </select>
+                    </div>
+                }
 
                 <div className={style.formSection}>
                     <input type="text"
@@ -149,16 +179,47 @@ class  NameContest extends Component {
                            onChange={this.handleInputChange}/>
                 </div>
 
-                <div className={style.formSection}>
-                    <select value={this.state.nameStyle}
-                            className={style["form-control"]}
-                            name="nameStyle"
-                            onChange={this.handleInputChange}>
-                        {
-                            this.getSelects("name_style").map(select => ( <option key={select} value={select}>{select}</option>))
-                        }
-                    </select>
-                </div>
+                {contestType === 'name' &&
+                    <div className={style.formSection}>
+                        <select value={this.state.preferences}
+                                className={style["form-control"]}
+                                name="preferences"
+                                onChange={this.handleInputChange}>
+                            {
+                                this.getSelects("name_style").map(select => (
+                                    <option key={select} value={select}>{select}</option>))
+                            }
+                        </select>
+                    </div>
+                }
+
+                {contestType === 'tagline' &&
+                    <div className={style.formSection}>
+                        <select value={this.state.preferences}
+                                name="preferences"
+                                className={style["form-control"]}
+                                onChange={this.handleInputChange}>
+                            {
+                                this.getSelects("tagline").map(select => (
+                                    <option key={select} value={select}>{select}</option>))
+                            }
+                        </select>
+                    </div>
+                }
+
+                {contestType === 'logo' &&
+                    <div className={style.formSection}>
+                        <select value={this.state.preferences}
+                                name="preferences"
+                                className={style["form-control"]}
+                                onChange={this.handleInputChange}>
+                            {
+                                this.getSelects("logo").map(select => (
+                                    <option key={select} value={select}>{select}</option>))
+                            }
+                        </select>
+                    </div>
+                }
 
                 <div className={style.formSection}>
                     <input type="number"
@@ -177,8 +238,9 @@ class  NameContest extends Component {
     };
 
 
+
     render() {
-        const {editMode, isFetching} =this.props;
+        const { editMode, isFetching } =this.props;
         return ( isFetching ?
                 <div className={style.loader}>
                     <GridLoader loading={isFetching}
@@ -237,7 +299,6 @@ class  NameContest extends Component {
                     }
                 </Container>
             </>
-
         );
     }
 }

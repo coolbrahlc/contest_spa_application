@@ -1,22 +1,56 @@
 @import "../../sass/variables";
 @import "../../sass/mixins";
 
-.brief{
-  border: grey solid 2px;
+
+.header{
   width: 100%;
-  padding: 15px;
+  height: 150px;
+  background-color: $profileBackground;
+}
+
+.fullHeight{
+  height: 100%;
+}
+
+.clearRight{
+  padding-right: 0;
+}
+
+.clearLeft{
+  padding-left: 0;
+}
+
+.content{
+  background-color: #FAFBFE;
+  padding: 5px 20px;
+  height: 100%;
+}
+
+.container{
+  width: 100%;
+  padding: 0 15px;
+  margin-top: 20px;
+}
+
+.contestContainer{
+  width: 100%;
+  max-width: 1100px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 5px 10px 3px rgba(0, 0, 0, 0.1);
+}
+
+.brief{
+  background-color: $snapshotBackground;
+  padding: 30px;
   position: relative;
-  font-family: Raleway-light, sans-serif;
-  h5{
-    color: $cardColor;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 17.5px;
+  &__thin{
+    @include flex-row-between-center;
+    width: 30%;
   }
-  p{
-    font-size: 15px;
-    line-height: 21px;
-    opacity: .7;
+  &__thick{
+    @include flex-col-start-start;
+    width: 70%
   }
   &__edit{
     position: absolute;
@@ -25,16 +59,18 @@
     padding: 12px 40px;
     font-family: Lato, sans-serif;
     cursor: pointer;
-    @include flex-row-center-center;
-    i{
-      margin-right: 5px;
-    }
     color: $snapshotHeadColor;
-    border-radius: 2px;
-    border: 2px solid $snapshotHeadColor;
     z-index: 100;
   }
 }
+
+.menuHeader{
+  @include flex-row-start-center;
+  p{
+    padding: 20px 30px;
+  }
+}
+
 
 .link{
   font-family: Raleway, sans-serif;
@@ -46,4 +82,9 @@
     color: $headerHoveredColor;
     text-decoration: none;
   }
+}
+
+.entryContainer{
+  @include flex-row-start-center;
+  flex-wrap: wrap;
 }

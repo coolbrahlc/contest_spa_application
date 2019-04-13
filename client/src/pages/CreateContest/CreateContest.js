@@ -31,6 +31,7 @@ class  CreateContest extends Component {
         this.props.dataClear();
         this.props.history.push({
             pathname: '/'+arr[0],
+            state: { contestType: arr[0]}
         })
     };
 

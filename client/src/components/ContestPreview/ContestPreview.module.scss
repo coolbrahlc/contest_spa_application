@@ -6,7 +6,9 @@
   height: 250px;
   background-color: $snapshotBackground;
   color: $headerTopMenuColor;
-  padding: 30px 20px 10px 20px;
+  padding: 30px 20px 20px 20px;
+  max-width: 1100px;
+  margin-bottom: 20px;
   @include flex-row-center-center;
   &__content{
     @include flex-col-start-start;
@@ -17,7 +19,6 @@
       color: $snapshotHeadColor;
     }
     h2{
-      margin-bottom: 5px;
       color: $snapshotHeadColor;
       font-family: "Gotham SSm A", "Gotham SSm B", Halvetica, sans-serif;
       font-size: 18px;
@@ -25,7 +26,7 @@
       line-height: 25px;
     }
     p{
-      margin: 20px 0;
+      margin: 20px 10px 20px 0;
     }
     p, span{
       font-size: 14px;
@@ -34,17 +35,11 @@
     div{
       margin-top: 10px;
     }
-    &_id{
-      p{
-        font-weight: 600;
-        margin: 0;
-      }
-      margin-bottom: 5px;
-    }
     &_text{
       max-height: 100px;
       overflow: hidden;
       text-overflow: ellipsis;
+      word-break: break-all;
     }
     &_row {
       @include flex-row-center-center;
@@ -53,8 +48,8 @@
       p{
         margin: 0;
       }
-      span{
-        margin-left: 5px;
+      span {
+        margin-left: 10px;
       }
     }
     i{
@@ -62,14 +57,16 @@
     }
   }
   &__info{
-    height: 150px;
+    height: 115px;
     min-width: 200px;
     padding-left: 10px;
     flex: 1;
     &__topbar{
       background-color: white;
       font-size: 18px;
-      border: 2px solid grey;
+      -webkit-box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.75);
+      -moz-box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.75);
+      box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.75);
       ul{
         @include flex-row-around-center;
         li:first-child{

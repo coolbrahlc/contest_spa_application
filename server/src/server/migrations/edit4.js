@@ -30,12 +30,13 @@
 // };
 
 
+
 'use strict';
 module.exports = {
     up: (queryInterface, DataTypes) => {
-        return queryInterface.addColumn('Contests', 'order_id', {
-            allowNull: true,
-            type: DataTypes.STRING,
+        return queryInterface.addColumn('Suggestions', 'file', {
+                type: DataTypes.STRING,
+                allowNull: true
         });
     },
 

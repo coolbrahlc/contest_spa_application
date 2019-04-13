@@ -13,7 +13,12 @@ module.exports.getContestsById =  async (req, res , next) => {
     try {
         let contest = await db.Contests.findOne(
             {where:{id: req.params.id},
-                include: [{ model: db.Suggestions }]
+                include: [{ model: db.Suggestions,
+                    include: [{
+                        model: db.Users,
+                        attributes: ['full_name', 'profile_picture']
+                    }]
+                }]
             },
         );
         // if (req.decoded.role===0) {

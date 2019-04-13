@@ -18,6 +18,15 @@ module.exports = {
                     key: 'id'
                 }
             },
+            order_id: {
+                type: Sequelize.STRING,
+                allowNull: true
+            },
+
+            end_date: {
+                allowNull: true,
+                type: Sequelize.DATE,
+            },
 
             type: {
                 type: Sequelize.ENUM('Name', 'Tagline', 'Logo'),
@@ -92,7 +101,9 @@ module.exports = {
 
             updated_at: {
                 allowNull: false,
-                type: Sequelize.DATE
+                type: Sequelize.DATE,
+                defaultValue: Sequelize.NOW
+
             }
         });
     },

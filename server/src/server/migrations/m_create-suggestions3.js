@@ -34,8 +34,8 @@ module.exports = {
                 allowNull: false
             },
 
-            status: {              // TO DO
-                type: Sequelize.ENUM('rejected', 'winner', 'review'),
+            status: {
+                type: Sequelize.ENUM('rejected', 'winner', 'review', 'accepted'),
                 defaultValue: 'review',
                 allowNull: true
             },
@@ -48,6 +48,7 @@ module.exports = {
 
             updated_at: {
                 allowNull: false,
+                defaultValue: Sequelize.NOW,
                 type: Sequelize.DATE
             }
         });

@@ -4,9 +4,9 @@ import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import createContest from './pages/CreateContest/CreateContest';
 import NotFound from './pages/old/NotFound';
-import taglineContest from './pages/ContestTypes/TaglineContest';
+//import taglineContest from './pages/ContestTypes/TaglineContest';
+//import logoContest from './pages/ContestTypes/LogoContest';
 import nameContest from './pages/ContestTypes/NameContest';
-import logoContest from './pages/ContestTypes/LogoContest';
 import checkout from './pages/Checkout/Checkout';
 import dashboard from './pages/Dashboard/Dashboard';
 import Home from './pages/Home/Home';
@@ -31,9 +31,9 @@ class App extends Component {
                     <Route exact path="/register/" component={Register} />
                     <Route exact path="/contest/" component={authCheck(HeaderHOC(createContest))} />
 
-                    <Route exact path="/tagline/" component={authCheck(HeaderHOC(taglineContest))} />
-                    <Route exact path="/logo/" component={authCheck(HeaderHOC(logoContest))} />
-                    <Route exact path="/name/" component={authCheck(HeaderHOC(nameContest))} />
+                    <Route exact path="/tagline/" component={authCheck(HeaderHOC( nameContest))} />
+                    <Route exact path="/logo/" component={authCheck(HeaderHOC( nameContest))} />
+                    <Route exact path="/name/" component={authCheck(HeaderHOC( nameContest ))} />
                     <Route exact path="/checkout/" component={authCheck(HeaderHOC(checkout))} />
                     <Route exact path="/dashboard/" component={authCheck(HeaderHOC(dashboard))} />
 

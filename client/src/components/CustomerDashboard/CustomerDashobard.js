@@ -36,8 +36,7 @@ const CustomerDashboard = (props) => {
             )
     }
     else{
-        if(!contests.length>0){
-            // return (<div>nothing found</div>)
+        if(!contests.length>0 && !lastFilter){
             return (
                 <Container>
                     <Row className={style.contests}>
@@ -54,18 +53,18 @@ const CustomerDashboard = (props) => {
         return (
             <Container>
                 <Row className={style.contests}>
-                    <Col md = {{size: 2, offset: 5}}>
+                    <Col md = {{size: 6}}>
+                        {<div className={style.link} onClick={() => clickHandler({is_active: true}, 'Active' )}>Active Contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler({completed: true}, 'Completed' )}>Completed contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler({is_active: false}, 'Inactive' )}>Inactive contests</div> }
+                    </Col>
+                    <Col md = {{size: 6}}>
                         <div className={`${style.button} float-right`}>
                             <Link className={style.button__link} to="/contest">START CONTEST</Link>
                         </div>
                     </Col>
                 </Row>
-
-                {<div onClick={() => clickHandler({is_active: true}, 'Active' )}>Active Contests</div>}
-                {<div onClick={() => clickHandler({completed: true}, 'Completed' )}>Completed contests</div>}
-                {<div onClick={() => clickHandler({is_active: false}, 'Inactive' )}>Inactive contests</div> }
-
-                {lastFilter && <div onClick={() => filterHandler()}>Current filter: {lastFilter}</div>}
+                {lastFilter && <div  className={style.filter} onClick={() => filterHandler()}>Current filter: {lastFilter}</div>}
 
                 {
                     contests.map(c => {

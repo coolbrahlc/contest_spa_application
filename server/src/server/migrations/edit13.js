@@ -29,13 +29,13 @@
 //     }
 // };
 
+
 'use strict';
 module.exports = {
     up: (queryInterface, DataTypes) => {
-        return queryInterface.changeColumn('Contests', 'updated_at', {
-            type: DataTypes.DATE,
+        return queryInterface.addColumn('Contests', 'order_id', {
             allowNull: true,
-            defaultValue: DataTypes.NOW
+            type: DataTypes.STRING,
         });
     },
 

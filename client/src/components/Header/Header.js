@@ -82,13 +82,10 @@ class Header extends Component{
 
                                     <div >
                                         <Link className={style.link} to="/contest">CONTESTS</Link>
-                                        <i className="fas fa-chevron-down fa-xs"/>
                                     </div>
-
 
                                     <div>
                                         <Link className={style.link} to="/dashboard">DASHBOARD</Link>
-                                        <i className="fas fa-chevron-down fa-xs"/>
                                     </div>
                                 </Nav>
                             </Navbar>

@@ -4,8 +4,7 @@ const dateSet = require('../utils/dateSet');
 
 module.exports.setActiveContest = (req, res, next) => {
 
-    //next(new ApplicationError("some error", 500));
-    console.log("files: ",req.files);
+    //console.log("files: ",req.files);
 
     const contestsBody = Object.assign({}, req.body);
     delete contestsBody['cardNumber'];
@@ -21,7 +20,6 @@ module.exports.setActiveContest = (req, res, next) => {
     contests.map((contest) =>{
         contest.creator_id = req.decoded.id;
         contest.order_id = orderId;
-        //contest.updated_at = Date.now();
         contest.is_active = false;
         contest.prize_pool = prize_pool;
 

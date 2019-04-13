@@ -10,7 +10,6 @@ const {UserAlreadyExistsError,
 
 
 module.exports.getContestsById =  async (req, res , next) => {
-
     try {
         let contest = await db.Contests.findOne(
             {where:{id: req.params.id},
@@ -41,7 +40,6 @@ module.exports.getContestsById =  async (req, res , next) => {
 };
 
 
-
 module.exports.getContests =  async (req, res , next) => {
 
     if (req.decoded.role===0) {
@@ -70,31 +68,14 @@ module.exports.getContests =  async (req, res , next) => {
     }
 };
 
-
-module.exports.getCreatorEntries =  async (req, res , next) => {
-    try {
-        let creatorEntries = await db.Suggestions.findAll({where:{user_id: req.id}});
-
-        if (!creatorEntries) {
-            res.send('not found')
-        }
-        res.status(200).send(creatorEntries)
-    } catch (e) {
-        console.log(e);
-        res.status(500).send(e)
-    }
-};
-
-
 module.exports.updateContest = async (req,res,next) => {
 
     const contestBody = Object.assign({}, req.body);
-
     let contest = [];
     Object.keys(contestBody).forEach(key => {
         contest.push(JSON.parse(contestBody[key]));
     });
-    const edit =  contest[0] //req.body;//.contest;
+    const edit =  contest[0];
 
     try {
         const contest = await db.Contests.update(edit, {

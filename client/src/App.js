@@ -7,7 +7,7 @@ import NotFound from './pages/old/NotFound';
 import taglineContest from './pages/ContestTypes/TaglineContest';
 import nameContest from './pages/ContestTypes/NameContest';
 import logoContest from './pages/ContestTypes/LogoContest';
-import checkout from './pages/ContestTypes/Checkout';
+import checkout from './pages/Checkout/Checkout';
 import dashboard from './pages/Dashboard/Dashboard';
 import Home from './pages/Home/Home';
 import contestPage from './pages/ContestsPage/contestPage';

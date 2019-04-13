@@ -1,43 +1,30 @@
 import 'babel-polyfill';
 const express = require('express');
 const router = express.Router();
-const controller = require('./controllers/apiController');
-const auth = require('./controllers/authController');
-const selects = require('./controllers/selectsController');
-const transaction = require('./controllers/transactionController');
-const middleware = require('../middlewares/createContest');
-
-const fileUpload = require('../utils/fileUpload');
-
-const db = require('../models/index');
-const moment = require('moment');
+const { getContests, getContestsById, updateContest } = require('./controllers/contestController');
+const { login, register } = require('./controllers/authController');
+const { createNewToken, tokenCheck, tokenUpdate, sendToken } = require('../middlewares/token/auth');
+const { getAllSelects } = require('./controllers/selectsController');
+const { checkCreditCard, createContests } = require('./controllers/transactionController');
+const { rejectSuggestion, setWinnerSuggestion, createSuggestion } = require('./controllers/entryController');
+const { setActiveContest } = require('../middlewares/createContest');
+const { fileUpload } = require('../utils/fileUpload');
 
 
-router.post('/contests/', auth.tokenCheck, controller.getContests);
-router.get('/contests/:id/', auth.tokenCheck, controller.getContestsById);
-router.put('/contests/:id/', auth.tokenCheck, fileUpload.rules,
-                                                controller.updateContest,
-                                                controller.getContestsById);
+router.post('/contests/', tokenCheck, getContests);
+router.get('/contests/:id/', tokenCheck, getContestsById);
+router.put('/contests/:id/', tokenCheck, fileUpload, updateContest, getContestsById);
+router.post('/contests/create', tokenCheck, fileUpload, checkCreditCard, setActiveContest, createContests);
+router.get('/selects/', getAllSelects);
 
-router.post('/contests/create', auth.tokenCheck,   // TODO validator
-                                fileUpload.rules,
-                                transaction.checkCreditCard,
-                                middleware.setActiveContest,
-                                transaction.createContests);
+router.post('/entry/create', tokenCheck, createSuggestion);
+router.put('/entry/reject', tokenCheck, rejectSuggestion);
+router.put('/entry/winner', tokenCheck, setWinnerSuggestion);
 
-router.post('/login', auth.login);      // TODO validator
-router.post('/register', auth.register, auth.createNewToken, auth.tokenUpdate);        // TODO validator auth.sendToken
+router.post('/login', login);
+router.post('/register', register, createNewToken, tokenUpdate);
+router.post('/token', tokenCheck, sendToken);
 //router.post('/token', auth.tokenCheck, auth.createNewToken, auth.tokenUpdate);
-router.post('/token', auth.tokenCheck, auth.sendToken);
-router.get('/selects/', selects.getAllSelects);
-
-router.put('/entry/reject', auth.tokenCheck, transaction.rejectSuggestion);
-router.put('/entry/winner', auth.tokenCheck, transaction.setWinnerSuggestion);
-
 
 
 module.exports = router;
-
-
-
-

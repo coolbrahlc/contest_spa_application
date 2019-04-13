@@ -3,7 +3,6 @@ import {GridLoader} from "react-spinners";
 import {collectFormData, getSelects} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
 import style from "./NameContest.module.scss";
-//import sheme from "../../utils/nameFormValidation";
 import { Container, Row, Col } from 'react-bootstrap';
 
 
@@ -19,14 +18,15 @@ class  NameContest extends Component {
         if (this.props.contestFormData) {
             data = JSON.parse(this.props.contestFormData.getAll("nameForm"));
         }
+        const {name, type_of_title, preferences, industry, type_of_work, target_customer} = data;
         this.state= {
             contestType: 'Name',
-            contestName: data.name,
-            typeOfName: data.type_of_title,
-            nameStyle: data.preferences,
-            industry: data.industry,
-            typeOfWork: data.type_of_work,
-            targetCustomer: data.target_customer,
+            contestName: name? name : '',
+            typeOfName: type_of_title? type_of_title : 'Company',
+            nameStyle: preferences ? preferences : 'Classic',
+            industry: industry? industry : '',
+            typeOfWork: type_of_work ? type_of_work : '',
+            targetCustomer: target_customer ? target_customer : '',
             nameFile: '',
             nameFileValue: null,
             length: 0
@@ -35,21 +35,18 @@ class  NameContest extends Component {
 
     componentDidMount() {
         const order = this.props.contestsToInsert;
-        const {editMode} =this.props;
+        const {editMode, history, selects, getSelects} =this.props;
         if (!order  && !editMode) {
-            this.props.history.push({
-                pathname: '/'
-            });
+            history.push({pathname: '/' });
         } else {
-            this.props.getSelects()
+            !selects && getSelects()
         }
     }
 
     getSelects(type) {
-        const selects = this.props.selects;
+        const {selects} = this.props;
         return selects.filter(name => (name.contest_type === type)).map(name =>name.name );
     }
-
 
     onChangeFile =  (e) => {
         console.log(e.target.files[0]);
@@ -59,48 +56,40 @@ class  NameContest extends Component {
     };
 
     sendContestData = () => {
-
-        let bodyFormData = new FormData();
+        const bodyFormData = new FormData();
+        const {contestName, typeOfName, nameStyle, industry, typeOfWork, targetCustomer, length, nameFileValue}= this.state;
+        const {editMode, contestsToInsert, collectFormData, update, contest, history}= this.props;
 
         bodyFormData.set("nameForm", JSON.stringify({
             type: "Name",
-            name: this.state.contestName,
-            type_of_title: this.state.typeOfName,
-            preferences: this.state.nameStyle,
-            industry: this.state.industry,
-            type_of_work: this.state.typeOfWork,
-            target_customer: this.state.targetCustomer,
-            days_passed: this.state.length,
+            name: contestName,
+            type_of_title: typeOfName,
+            preferences:nameStyle,
+            industry: industry,
+            type_of_work:typeOfWork,
+            target_customer: targetCustomer,
+            days_passed: length,
         }));
-        if (this.state.nameFileValue) {
-            bodyFormData.append("NameFile", this.state.nameFileValue);
+        if (nameFileValue) {
+            bodyFormData.append("NameFile", nameFileValue);
         }
-
-        if (!this.props.editMode) {
-            this.props.collectFormData(bodyFormData);
-            
-            let order = this.props.contestsToInsert;
+        if (!editMode) {
+            collectFormData(bodyFormData);
+            let order = contestsToInsert;
             let nextStep = order.indexOf('name')+1;
-            
             if (nextStep === order.length) {
-                console.log(1)
-                this.props.history.push({
-                    pathname: '/checkout'
-                });
+                history.push({ pathname: '/checkout' });
             } else {
-                this.props.history.push({
-                    pathname: '/'+ order[nextStep],
-                });
+                history.push({ pathname: '/'+ order[nextStep] });
             }
-            
         } else {
-            this.props.update({
+            update({
                 data: bodyFormData,
-                id: this.props.contest.id
+                id: contest.id
             })
         }
     };
-    
+
     handlePrevClick = () => {
         this.props.history.goBack();
     };
@@ -109,7 +98,6 @@ class  NameContest extends Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
-
         this.setState({
             [name]: value
         });
@@ -125,11 +113,10 @@ class  NameContest extends Component {
                            value={this.state.contestName}
                            onChange={this.handleInputChange}/>
                 </div>
-                
+
                 <div className={style.formSection}>
                     <select value={this.state.typeOfName}
                             name="typeOfName"
-                            defaultValue={'Company'}
                             className={style["form-control"]}
                             onChange={this.handleInputChange}>
                         {
@@ -145,7 +132,7 @@ class  NameContest extends Component {
                            value={this.state.industry}
                            onChange={this.handleInputChange}/>
                 </div>
-                
+
                 <div className={style.formSection}>
                     <input type="text"
                            placeholder="Venture name"
@@ -153,7 +140,7 @@ class  NameContest extends Component {
                            value={this.state.typeOfWork}
                            onChange={this.handleInputChange}/>
                 </div>
-                
+
                 <div className={style.formSection}>
                     <input type="text"
                            placeholder="Target customer"
@@ -165,7 +152,6 @@ class  NameContest extends Component {
                 <div className={style.formSection}>
                     <select value={this.state.nameStyle}
                             className={style["form-control"]}
-                            defaultValue={'Classic'}
                             name="nameStyle"
                             onChange={this.handleInputChange}>
                         {
@@ -192,9 +178,8 @@ class  NameContest extends Component {
 
 
     render() {
-        const {isFetching} = this.props;
-
-        return ( isFetching ?                 
+        const {editMode, isFetching} =this.props;
+        return ( isFetching ?
                 <div className={style.loader}>
                     <GridLoader loading={isFetching}
                                 color={'#28D2D1'}
@@ -202,19 +187,21 @@ class  NameContest extends Component {
                     />
                 </div>
             :
-            <>                
-                <div className={style["heading-steps"]}>
-                    <Container>
-                        <Row>
-                            <Col md={5}>
-                                <h2>Company {this.state.contestType}</h2>
-                                <p>Tell us a bit more about your business as well
-                                    as your preferences so that creatives get a better
-                                    idea about what you are looking for</p>
-                            </Col>
-                        </Row>
-                    </Container>
-                </div>
+            <>
+                {!editMode &&
+                    <div className={style["heading-steps"]}>
+                        <Container>
+                            <Row>
+                                <Col md={5}>
+                                    <h2>Company {this.state.contestType}</h2>
+                                    <p>Tell us a bit more about your business as well
+                                        as your preferences so that creatives get a better
+                                        idea about what you are looking for</p>
+                                </Col>
+                            </Row>
+                        </Container>
+                    </div>
+                }
                 <div className={style.form}>
                     <Container>
                         <Row className={style.formPadding}>
@@ -225,19 +212,29 @@ class  NameContest extends Component {
                     </Container>
                 </div>
                 <Container>
-                    <Row className={style.navigationMenu}>
-                        <Col md = {6}>
-                            <p>You are almost finished. Select a pricing package in the next step</p>
-                        </Col>
-                        <Col md={6} className={style.navigationMenu__buttons}>
-                            <div className={style.navigationMenu__prevButton} onClick={this.handlePrevClick}>
-                                Prev
-                            </div>
-                            <div className={style.navigationMenu__nextButton} onClick={this.sendContestData}>
-                                Next
-                            </div>
-                        </Col>
-                    </Row>
+                    {!editMode ?
+                        <Row className={style.navigationMenu}>
+                            <Col md={6}>
+                                <p>You are almost finished. Select a pricing package in the next step</p>
+                            </Col>
+                            <Col md={6} className={style.navigationMenu__buttons}>
+                                <div className={style.navigationMenu__prevButton} onClick={this.handlePrevClick}>
+                                    Prev
+                                </div>
+                                <div className={style.navigationMenu__nextButton} onClick={this.sendContestData}>
+                                    Next
+                                </div>
+                            </Col>
+                        </Row>
+                        :
+                        <Row className={style.navigationMenu}>
+                            <Col md={6}>
+                                <div className={style.navigationMenu__nextButton} onClick={this.sendContestData}>
+                                    Submit editing
+                                </div>
+                            </Col>
+                        </Row>
+                    }
                 </Container>
             </>
 

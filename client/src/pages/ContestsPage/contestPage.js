@@ -77,8 +77,12 @@ class  ContestPage extends Component {
         return (
             <div className={style.brief}>
 
-                <div onClick={()=>this.changeMode()}>EDIT</div>
-                {this.state.editMode && this.renderEdit()}
+
+                {this.state.editMode ?
+                    this.renderEdit()
+                    :
+                    <div className={style.link+' '+"float-right"}  onClick={()=>this.changeMode()}>EDIT CONTEST</div>
+                }
 
                 <ul>
                     <li>

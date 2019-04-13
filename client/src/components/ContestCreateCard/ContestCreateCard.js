@@ -13,7 +13,15 @@ export default function ContestCreateCard(props) {
         const {click, type} = props;
         click(type);
     };
-    
+    const renderType = (type) => {
+        type.map(el =>{
+            console.log(el.toUpperCase())
+            return (
+                <div>{el.toUpperCase()+' '}</div>
+            )
+        })
+    }
+
     let containerTheme;
     if(props.theme){
         containerTheme = style["container-dark"];
@@ -21,7 +29,7 @@ export default function ContestCreateCard(props) {
     else{
         containerTheme = style["container-white"];
     }
-    
+
     return(
         <div className={containerTheme}
              onClick={handleClick}>

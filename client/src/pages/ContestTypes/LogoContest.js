@@ -6,7 +6,7 @@ import style from "./NameContest.module.scss";
 import { Container, Row, Col } from 'react-bootstrap';
 
 class  LogoContest extends Component {
-    
+
     constructor(props) {
         super(props);
         let data ={};
@@ -40,7 +40,7 @@ class  LogoContest extends Component {
                 pathname: '/'
             });
         } else {
-            this.props.getSelects()
+            !this.props.selects && this.props.getSelects()
         }
     }
 
@@ -175,8 +175,7 @@ class  LogoContest extends Component {
     }
 
     render() {
-        const {isFetching} = this.props;
-
+        const {isFetching, editMode} = this.props;
         return ( isFetching ?
                 <div className={style.loader}>
                     <GridLoader loading={isFetching}
@@ -185,11 +184,12 @@ class  LogoContest extends Component {
                     />
                 </div> :
                 <>
+                    {!editMode &&
                     <div className={style["heading-steps"]}>
                         <Container>
                             <Row>
                                 <Col md={5}>
-                                    <h2>Company  {this.state.contestType}</h2>
+                                    <h2>Company {this.state.contestType}</h2>
                                     <p>Tell us a bit more about your business as well
                                         as your preferences so that creatives get a better
                                         idea about what you are looking for</p>
@@ -197,6 +197,7 @@ class  LogoContest extends Component {
                             </Row>
                         </Container>
                     </div>
+                    }
                     <div className={style.form}>
                         <Container>
                             <Row className={style.formPadding}>
@@ -207,19 +208,30 @@ class  LogoContest extends Component {
                         </Container>
                     </div>
                     <Container>
-                        <Row className={style.navigationMenu}>
-                            <Col md = {6}>
-                                <p>You are almost finished. Select a pricing package in the next step</p>
-                            </Col>
-                            <Col md={6} className={style.navigationMenu__buttons}>
-                                <div className={style.navigationMenu__prevButton} onClick={this.handlePrevClick}>
-                                    Prev
-                                </div>
-                                <div className={style.navigationMenu__nextButton} onClick={this.sendContestData}>
-                                    Next
-                                </div>
-                            </Col>
-                        </Row>
+                        {!editMode ?
+
+                            <Row className={style.navigationMenu}>
+                                <Col md={6}>
+                                    <p>You are almost finished. Select a pricing package in the next step</p>
+                                </Col>
+                                <Col md={6} className={style.navigationMenu__buttons}>
+                                    <div className={style.navigationMenu__prevButton} onClick={this.handlePrevClick}>
+                                        Prev
+                                    </div>
+                                    <div className={style.navigationMenu__nextButton} onClick={this.sendContestData}>
+                                        Next
+                                    </div>
+                                </Col>
+                            </Row>
+                            :
+                            <Row className={style.navigationMenu}>
+                                <Col md={6}>
+                                    <div className={style.navigationMenu__nextButton} onClick={this.sendContestData}>
+                                        Next
+                                    </div>
+                                </Col>
+                            </Row>
+                        }
                     </Container>
                 </>
         );

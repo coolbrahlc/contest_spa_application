@@ -25,7 +25,8 @@ class  CreateContest extends Component {
         this.setState({isFetching: true});
     }
 
-    clickHandler = (arr) => {
+    clickHandler = (data) => {
+        const arr = data.map(el => el.toLowerCase().trim());
         this.props.setContestOrder(arr);
         this.props.dataClear();
         this.props.history.push({
@@ -54,7 +55,7 @@ class  CreateContest extends Component {
                                 <Col md={12}>
                                     <ul className={style.cardHolder}>
                                         <li>
-                                            <ContestCreateCard type={['name']}
+                                            <ContestCreateCard type={['Name']}
                                                  img={[
                                                      NameBlue
                                                  ]}
@@ -68,7 +69,7 @@ class  CreateContest extends Component {
                                             />
                                         </li>
                                         <li>
-                                            <ContestCreateCard type={['tagline']}
+                                            <ContestCreateCard type={['Tagline']}
                                                    img={[
                                                      TagBlue
                                                  ]}
@@ -79,11 +80,11 @@ class  CreateContest extends Component {
                                                      "target audience with an " +
                                                      "on-target tagline"
                                                  }
-                                                               
+
                                             />
                                         </li>
                                         <li>
-                                            <ContestCreateCard type={['logo']}
+                                            <ContestCreateCard type={['Logo']}
                                                        img={[
                                                      LogoBlue
                                                  ]}
@@ -118,7 +119,7 @@ class  CreateContest extends Component {
                                     <ul className={style.cardHolder}>
                                         <li>
                                             <ContestCreateCard
-                                                type={['name', 'tagline', 'logo']}
+                                                type={['Name ', 'Tagline ', 'Logo ']}
                                                 img={[
                                                      NameBlue,
                                                      TagBlue,
@@ -138,7 +139,7 @@ class  CreateContest extends Component {
                                         </li>
                                         <li>
                                             <ContestCreateCard
-                                                type={['name', 'tagline']}
+                                                type={['Name ', 'Tagline']}
                                                 img={[
                                                      NameBlue,
                                                      TagBlue
@@ -151,12 +152,12 @@ class  CreateContest extends Component {
                                                      "with this bundle"
                                                  }
                                                  theme={'dark'}
-                                                         
+
                                             />
                                         </li>
                                         <li>
                                             <ContestCreateCard
-                                                type={['name', 'logo']}
+                                                type={['Name ', 'Logo']}
                                                 img={[
                                                      NameBlue,
                                                      LogoBlue
@@ -169,12 +170,12 @@ class  CreateContest extends Component {
                                                      "together and save"
                                                  }
                                                  theme={'dark'}
-                                                         
+
                                             />
                                         </li>
                                         <li>
                                             <ContestCreateCard
-                                                type={['tagline', 'logo']}
+                                                type={['Tagline ', 'Logo']}
                                                 img={[
                                                      TagBlue,
                                                      LogoBlue

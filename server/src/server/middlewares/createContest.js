@@ -4,7 +4,7 @@ const dateSet = require('../utils/dateSet');
 
 module.exports.setActiveContest = (req, res, next) => {
 
-    //console.log("files: ",req.files);
+    console.log("files: ",req.files);
 
     const contestsBody = Object.assign({}, req.body);
     delete contestsBody['cardNumber'];
@@ -23,7 +23,7 @@ module.exports.setActiveContest = (req, res, next) => {
         contest.is_active = false;
         contest.prize_pool = prize_pool;
 
-        let fileField = req.files[contest.type+'File'] ;  // adding file path
+        let fileField = req.files[contest.type.toLowerCase()+'File'] ;  // adding file path
         if (fileField) {
             contest.file = fileField[0].filename;
         }

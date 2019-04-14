@@ -61,6 +61,22 @@ export default function (state = initialState, action) {
                 contest: null
             }
         }
+
+        case ACTION.ENTRY_REQUEST: {
+            return {
+                ...state,
+                isFetching: true,
+                error: null,
+            };
+        }
+
+        case ACTION.ENTRY_ERROR: {
+            return {
+                ...state,
+                error: action.error,
+                isFetching: false,
+            };
+        }
         default:
             return state;
     }

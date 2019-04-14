@@ -1,12 +1,6 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const config = require('../../utils/consts');
 const db = require('../../models/index');
-const {UserAlreadyExistsError,
-        WrongPasswordError,
-        ApplicationError,
-        UnauthorizedError,
-        UserNotFoundError} = require('../../utils/customErrrors/errors');
+const { ApplicationError, UnauthorizedError} = require('../../utils/customErrrors/errors');
 
 
 module.exports.getContestsById =  async (req, res , next) => {
@@ -21,19 +15,16 @@ module.exports.getContestsById =  async (req, res , next) => {
                 }]
             },
         );
-        // if (req.decoded.role===0) {
-        //     if (contest.creator_id===req.decoded.id) {
-        //         res.status(200).send(contest)
-        //     } else {
-        //         next(new UnauthorizedError('Customer can view only his contest'))
-        //     }
-        // } else {
-        //     if (contest.is_active === true || contest.completed === true) {
-        //         res.status(200).send(contest)
-        //     } else {
-        //         next(new UnauthorizedError('Creative can not see inactive contests'))
-        //     }
-        // }
+        if (req.decoded.role===0) {
+            if (contest.creator_id!==req.decoded.id) {
+                next(new UnauthorizedError('Customer can view only his contest'))
+            }
+        } else {
+            if (contest.is_active !== true ) {
+                next(new UnauthorizedError('Creative can not see inactive contests'))
+            }
+        }
+
         res.status(200).send(contest);
 
         if (!contest) {
@@ -47,8 +38,11 @@ module.exports.getContestsById =  async (req, res , next) => {
 
 module.exports.getContests =  async (req, res , next) => {
 
+    const params = req.body.params;
     if (req.decoded.role===0) {
-        req.body.params.creator_id = req.decoded.id
+        params.creator_id = req.decoded.id;
+    } else {
+        params.is_active = true
     }
     try {
         let customersContests = await db.Contests.findAll(

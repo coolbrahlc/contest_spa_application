@@ -4,9 +4,7 @@ import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import createContest from './pages/CreateContest/CreateContest';
 import NotFound from './pages/old/NotFound';
-//import taglineContest from './pages/ContestTypes/TaglineContest';
-//import logoContest from './pages/ContestTypes/LogoContest';
-import nameContest from './pages/ContestTypes/NameContest';
+import contestType from './pages/ContestType/contestType';
 import checkout from './pages/Checkout/Checkout';
 import dashboard from './pages/Dashboard/Dashboard';
 import Home from './pages/Home/Home';
@@ -24,19 +22,16 @@ class App extends Component {
         <Router>
             <div>
                 <Switch >
-                    {/*<Route exact path="/users/"  component={ (props) => <Users {...props} test={"test"}/> }/>*/}
-                    <Route exact path="/contest/:id" component={authCheck(HeaderHOC(contestPage))} />
-                    <Route exact path="/" component={authCheck(HeaderHOC(Home))} />
+                    <Route exact path="/contest/:id" component={authCheck(contestPage)} />
+                    <Route exact path="/" component={HeaderHOC(Home)} />
                     <Route exact path="/login/" component={Login} />
                     <Route exact path="/register/" component={Register} />
                     <Route exact path="/contest/" component={authCheck(HeaderHOC(createContest))} />
-
-                    <Route exact path="/tagline/" component={authCheck(HeaderHOC( nameContest))} />
-                    <Route exact path="/logo/" component={authCheck(HeaderHOC( nameContest))} />
-                    <Route exact path="/name/" component={authCheck(HeaderHOC( nameContest ))} />
+                    <Route exact path="/tagline/" component={authCheck(HeaderHOC( contestType))} />
+                    <Route exact path="/logo/" component={authCheck(HeaderHOC( contestType))} />
+                    <Route exact path="/name/" component={authCheck(HeaderHOC( contestType ))} />
                     <Route exact path="/checkout/" component={authCheck(HeaderHOC(checkout))} />
                     <Route exact path="/dashboard/" component={authCheck(HeaderHOC(dashboard))} />
-
                     <Route component={NotFound}/>
                 </Switch>
             </div>

@@ -17,7 +17,7 @@ router.put('/contests/:id/', tokenCheck, fileUpload, updateContest, getContestsB
 router.post('/contests/create', tokenCheck, fileUpload, checkCreditCard, setActiveContest, createContests);
 router.get('/selects/', getAllSelects);
 
-router.post('/entry/create', tokenCheck, createSuggestion);
+router.post('/entry/create', tokenCheck, fileUpload, createSuggestion);
 router.put('/entry/reject', tokenCheck, rejectSuggestion);
 router.put('/entry/winner', tokenCheck, setWinnerSuggestion);
 

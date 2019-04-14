@@ -19,7 +19,7 @@ export default function (state=initialState, action) {
                 error: null
             }
         }
-        
+
         case ACTION.GET_SELECTS_RESPONSE: {
             return {
                 ...state,
@@ -38,7 +38,6 @@ export default function (state=initialState, action) {
         }
 
         case ACTION.GET_ARRAY_ORDER: {
-            //console.log('getting array', action.contestsToInsert)
             return {
                 ...state,
                 contestsToInsert: action.contestsToInsert,
@@ -52,13 +51,11 @@ export default function (state=initialState, action) {
             }
         }
         case ACTION.FORM_DATA_CLEAR: {
-            console.log('FORM_DATA_CLEAR')
             return {
                 ...state,
                 contestFormData: null,
                 success: false,
                 error: false,
-                //isFetching: false,
             }
         }
 

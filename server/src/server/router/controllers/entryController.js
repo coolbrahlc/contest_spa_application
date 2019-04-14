@@ -6,13 +6,29 @@ const { ApplicationError,
 
 module.exports.createSuggestion = async(req,res,next) => {
     const entry = JSON.parse(req.body.entry);
+    const {user_id, contest_id, answer} = entry;
     if(req.file){
         entry.file = req.file.filename;
     }
     try{
-        const entry = await db.Suggestions.create(entry);
+        const entry = await db.Suggestions.create({
+            user_id,
+            contest_id,
+            answer
+        });
         if (entry) {
-            res.send(entry);
+            const contest = await db.Contests.findOne({
+                where: {
+                    id: contest_id
+                },
+                include: [{ model: db.Suggestions,
+                    include: [{
+                        model: db.Users,
+                        attributes: ['full_name', 'profile_picture']
+                    }]
+                }]
+            });
+            res.send(contest);
         }
     }
     catch (e) {
@@ -46,14 +62,20 @@ module.exports.rejectSuggestion =  async (req, res , next) => {
         const contest = await db.Contests.findOne({
             where: {
                 id: entry[1][0].dataValues.contest_id
-            }, include: [
-                { model: db.Suggestions }
-            ]
+            },
+            include: [{ model: db.Suggestions,
+                include: [{
+                    model: db.Users,
+                    attributes: ['full_name', 'profile_picture']
+                }]
+            }]
         });
 
         if (!contest) {
             next(new ApplicationError('Contest not found'))
         }
+        console.log('sending CONTESTS')
+        console.log(contest)
         res.status(200).send(contest);
     } catch (e) {
         next(e);
@@ -122,9 +144,13 @@ module.exports.setWinnerSuggestion =  async (req, res , next) => {
         const updatedContest = await db.Contests.findOne({
             where: {
                 id: endedContest.id
-            }, include: [
-                {model: db.Suggestions}
-            ],
+            },
+            include: [{ model: db.Suggestions,
+                include: [{
+                    model: db.Users,
+                    attributes: ['full_name', 'profile_picture']
+                }]
+            }],
             transaction:t
         });
 

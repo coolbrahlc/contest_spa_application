@@ -9,14 +9,16 @@ import {ROLE} from "../../constants/constants";
 import { Container, Row, Col } from 'react-bootstrap';
 import moment from "moment";
 import CreateEntry from "../../components/CreateEntry/CreateEntry";
-import NameContest from "../../pages/ContestTypes/NameContest";
+import Header from "../../components/Header/Header";
+import NameContest from "../ContestType/contestType";
 
 class  ContestPage extends Component {
 
     constructor(props) {
         super(props);
         this.state= {
-            editMode: false
+            editMode: false,
+            sideMenuStatus: false,
         }
     }
 
@@ -59,74 +61,29 @@ class  ContestPage extends Component {
 
     };
 
-    renderBrief = (contest) => {
-        const {name, type, venture_name, target_customer,
-            preference, industry, created_at, prize_pool, id} = contest;
-        const date = moment(created_at).format("YYYY-MM-DD HH:mm");
-        return (
-            <div className={style.brief}>
-
-                {this.state.editMode ?
-                    this.renderEdit()
-                    :
-                    <div className={style.link+' '+"float-right"}  onClick={()=>this.changeMode()}>EDIT CONTEST</div>
-                }
-
-                <ul>
-                    <li>
-                        <h5>Contest Id</h5>
-                        <p>#{id}</p>
-                    </li>
-                    <li>
-                        <h5>Contest Type</h5>
-                        <p>{type}</p>
-                    </li>
-                    <li>
-                        <h5>Contest Title</h5>
-                        <p>{name}</p>
-                    </li>
-                    <li>
-                        <h5>What is your Business/ Brand about?</h5>
-                        <p>{venture_name}</p>
-                    </li>
-                    <li>
-                        <h5>Tell us about your customers</h5>
-                        <p>{target_customer}</p>
-                    </li>
-                    <li>
-                        <h5>Type of business</h5>
-                        <p>{industry}</p>
-                    </li>
-                    <li>
-                        <h5>Preferences</h5>
-                        <p>{preference}</p>
-                    </li>
-                    <li>
-                        <h5>Created</h5>
-                        <p>{moment(date).from(moment())}</p>
-                    </li>
-                    <li>
-                        <h5>Prize poll</h5>
-                        <p>{prize_pool}</p>
-                    </li>
-                </ul>
-            </div>
-        );
+    renderEditButton = () => {
+        const {user} = this.props;
+        if (this.state.editMode) {
+            return this.renderEdit()
+        } else {
+            if(user.role === ROLE.CUSTOMER) {
+                return (
+                    <div className={style.link+' '+"float-right"}
+                         onClick={()=>this.changeMode()}>EDIT CONTEST
+                    </div>
+                )}
+        }
     };
 
-    renderBrief2 = (contest) => {
+    renderBrief = (contest) => {
         const {name, type, file, venture_name, target_customer, type_of_title,
             preference, industry, created_at, prize_pool, id} = contest;
 
         const date = moment(created_at).format("YYYY-MM-DD HH:mm");
         return (
             <div className={style.brief}>
-                {this.state.editMode ?
-                    this.renderEdit()
-                    :
-                    <div className={style.link+' '+"float-right"}
-                         onClick={()=>this.changeMode()}>EDIT CONTEST
-                    </div>
+                {
+                   this.renderEditButton()
                 }
                 <ul>
                     <li className={style.brief__thin}>
@@ -195,6 +152,7 @@ class  ContestPage extends Component {
                                                     contestId = {id}
                                                     isActiveContest = {is_active}
                                                     customerId = {user.id}
+                                                    role = {user.role}
                                 />
                             })
                         }
@@ -205,7 +163,22 @@ class  ContestPage extends Component {
                 return(
                     <div>
                         Click here to add your entry
-                        <CreateEntry type={type} contest_id={id} {...this.props}/>
+                        <CreateEntry type={type} contestId={id} user ={user} {...this.props}/>
+                        <div>My entries:</div>
+                        <div className={style.entryContainer}>
+                            {
+                                Suggestions.filter(s => (s.user_id === user.id)).map(e => {
+                                    return <SingleEntry key={e.id} data={e}
+                                                        reject = {this.props.rejectEntry}
+                                                        win = {this.props.setEntryWinner}
+                                                        contestId = {id}
+                                                        isActiveContest = {is_active}
+                                                        customerId = {user.id}
+                                                        role = {user.role}
+                                    />
+                                })
+                            }
+                        </div>
                     </div>
                 )
             }
@@ -227,22 +200,34 @@ class  ContestPage extends Component {
         else{
             return (
                 <div className={style.container}>
-                    <div className={style.contestContainer}>
-                        {
-                            this.renderBrief2(contest)
-                        }
+                    <Row>
+                        <Col className={style.contestContainer} md={{ span: 8, offset: 2 }}>
+                            {
+                                this.renderBrief(contest)
+                            }
 
-                        {
-                            this.renderEntries()
-                        }
-                    </div>
+                            {
+                                this.renderEntries()
+                            }
+                        </Col>
+                    </Row>
+
                 </div>
             );
         }
     };
 
+    toggleSideMenu = () => {
+        this.setState(state => {
+            return {
+                sideMenuStatus: !state.sideMenuStatus
+            };
+        });
+    };
+
+
     render() {
-        //const {sideMenuStatus} = this.state;
+        const {sideMenuStatus} = this.state;
         if(!this.props.contest){
             return (
                 <Container>
@@ -252,13 +237,15 @@ class  ContestPage extends Component {
         } else {
             return (
                 <Row className={style.fullHeight}>
-                    <Col md={"auto"} className={style.clearRight}>
-                        {/*<SideBar filterListener={this.getFilterData}*/}
-                        {/*         opened={sideMenuStatus}*/}
-                        {/*         toggleSideMenu={this.toggleSideMenu}*/}
-                        {/*         {...this.props}/>*/}
-                    </Col>
-                    <Col className={style.clearLeft}>
+                    {/*<Col md={"auto"} className={style.clearRight}>*/}
+                    {/*    <Sidebar //filterListener={this.getFilterData}*/}
+                    {/*             opened={sideMenuStatus}*/}
+                    {/*             toggleSideMenu={this.toggleSideMenu}*/}
+                    {/*             {...this.props}/>*/}
+                    {/*</Col>*/}
+                    <Col className={style.clearLeft} >
+                        <Header toggleSideMenu={this.toggleSideMenu} {...this.props}/>
+
                         <div className={style.content}>
                             {
                                 this.renderContest()
@@ -267,7 +254,6 @@ class  ContestPage extends Component {
                     </Col>
                 </Row>
             );
-
         }
     }
 }

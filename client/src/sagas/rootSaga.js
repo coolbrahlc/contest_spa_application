@@ -3,8 +3,8 @@ import ACTION from '../actions/actiontsTypes'
 import {setArrayOrder, collectForm, getAllSelectsSaga} from './contestCreateSaga'
 import {registerSaga, loginSaga, authSaga} from './authSaga';
 import {checkoutSaga} from './checkoutSaga';
-import {contestsSaga, getContestsById, updateContestSaga, setEntryWinnerSaga, rejectEntrySaga} from './contestsSaga';
-
+import {contestsSaga, getContestsById, updateContestSaga} from './contestsSaga';
+import {setEntryWinnerSaga, rejectEntrySaga, createEntrySaga} from './entrySaga';
 
 
 function* rootSaga() {
@@ -21,9 +21,10 @@ function* rootSaga() {
     yield takeLatest(ACTION.GET_CONTEST_BY_ID, getContestsById);
     yield takeLatest(ACTION.GET_ALL_CONTESTS, contestsSaga);
     yield takeLatest(ACTION.UPDATE_CONTEST, updateContestSaga);
+
     yield takeLatest(ACTION.SET_ENTRY_WINNER, setEntryWinnerSaga);
     yield takeLatest(ACTION.REJECT_ENTRY, rejectEntrySaga);
-
+    yield takeLatest(ACTION.CREATE_ENTRY, createEntrySaga);
 }
 
 export default rootSaga;

@@ -13,7 +13,6 @@ class  Dashboard extends Component {
 
     constructor(props) {
         super(props);
-        // this.token = localStorage.getItem('token');
         this.state= {
             contests: ''
         }
@@ -28,12 +27,11 @@ class  Dashboard extends Component {
 
     renderDashboardHeader(){
         const {user} = this.props;
-        //console.log(user);
         if(user) {
             return (
                 <div className={"style.header"}>
                     <Container>
-                        <Row>{user.full_name}</Row>
+                        <Row>Your dashboard, {user.full_name}</Row>
                     </Container>
                 </div>
             );
@@ -64,14 +62,6 @@ class  Dashboard extends Component {
         );
     }
 
-    // handleInputChange = (event) => {
-    //
-    //     this.setState({
-    //         currentSelection: event.target.value
-    //     });
-    // };
-
-
     render() {
         return (
             <>
@@ -81,22 +71,6 @@ class  Dashboard extends Component {
             </>
         );
     }
-
-/*
-    render() {
-        return (
-            <div>
-                DASHBOARD
-                <div onClick={this.clickHandlerAll}>All</div>
-                <divonClick={this.clickHandlerActive}>Active Contests</div>
-                <div onClick={this.clickHandlerCompleted}>Completed contests</div>
-                <div onClick={this.clickHandlerInactive}>Inactive contests</div>
-                {!this.props.isFetching && this.listContests()}
-                {/!*{!this.props.checkoutReducer.success && <div>{this.props.checkoutReducer.error}</div>}*!/}
-            </div>
-        )
-    }
-*/
 
 }
 
@@ -109,8 +83,6 @@ const mapStateToProps =(state) => {
 
 const mapDispatchToProps =(dispatch) => ({
     getContests: (data) => dispatch(getCustomerContests(data)),
-    //getAllContests: (data) => dispatch(getAllContests(data))
-
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

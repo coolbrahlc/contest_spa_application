@@ -53,8 +53,21 @@ class Header extends Component{
             );
         }
     };
+    renderCreateLink () {
+        const {user} = this.props;
+        if (user) {
+            if (user.role!==1) {
+                return (
+                    <div >
+                        <Link className={style.link} to="/contest">CONTESTS</Link>
+                    </div>
+                )
+            }
+        }
+    }
 
     render() {
+        const {user} = this.props;
         return(
             <>
                 <div className={style.announcement}>
@@ -79,11 +92,9 @@ class Header extends Component{
                                     </Link>
                                 </Navbar.Brand>
                                 <Nav className="ml-auto">
-
-                                    <div >
-                                        <Link className={style.link} to="/contest">CONTESTS</Link>
-                                    </div>
-
+                                    {
+                                        this.renderCreateLink()
+                                    }
                                     <div>
                                         <Link className={style.link} to="/dashboard">DASHBOARD</Link>
                                     </div>

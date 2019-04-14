@@ -48,7 +48,7 @@ export const auth = (data) => ({
 });
 export const clean = () => ({
   type: ACTION.USER_CLEAN,
-  
+
 });
 
 export const checkout = (data) => {
@@ -72,9 +72,6 @@ export const getCustomerContests = (data) => {
   }
 };
 
-export const getAllContests = () => ({
-  type: ACTION.GET_ALL_CONTESTS
-});
 
 export const updateContest = (data) => ({
   type: ACTION.UPDATE_CONTEST,
@@ -90,3 +87,9 @@ export const rejectEntry = (data) => ({
   type: ACTION.REJECT_ENTRY,
   data,
 });
+
+export const createEntry = (data) => ({
+  type: ACTION.CREATE_ENTRY,
+  data
+});
+

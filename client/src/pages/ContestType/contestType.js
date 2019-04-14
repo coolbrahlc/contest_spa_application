@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {GridLoader} from "react-spinners";
 import {collectFormData, getSelects} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
-import style from "./NameContest.module.scss";
+import style from "./contestType.module.scss";
 import { Container, Row, Col } from 'react-bootstrap';
 
 const contObj = {
@@ -11,7 +11,7 @@ const contObj = {
     tagline: 'Tagline',
 };
 
-class  NameContest extends Component {
+class  contestType extends Component {
 
     constructor(props) {
         super(props);
@@ -314,7 +314,7 @@ const mapDispatchToProps =(dispatch) => ({
     collectFormData: (formData) => dispatch(collectFormData(formData))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(NameContest);
+export default connect(mapStateToProps, mapDispatchToProps)(contestType);
 
 
 

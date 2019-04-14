@@ -31,16 +31,16 @@ export const updateContest = (data) => {
     return axios.put(`${baseUrl}/contests/${data.id}`, data.data);
 };
 
-// export const getAllContests = (data) => {
-//     return axios.post(`${baseUrl}/contests/`, data, {});
-// };
-
 export const setEntryWinner = (data) => {
     return axios.put(`${baseUrl}/entry/winner`, data);
 };
 
 export const rejectEntry = (data) => {
     return axios.put(`${baseUrl}/entry/reject`, data);
+};
+
+export const createEntry = (data) => {
+    return axios.post(`${baseUrl}/entry/create`, data);
 };
 
 

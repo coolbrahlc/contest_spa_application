@@ -13,16 +13,14 @@ import LogoBlue from "../../images/Logos_blue.png";
 
 class  CreateContest extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state= {
-            //contestsToInsert: []
-        }
-    }
 
     componentDidMount() {
-        //this.props.getSelects();
-        this.setState({isFetching: true});
+       const {user, history} = this.props;
+       if (!user || (user.role===1)){
+           history.push({
+               pathname: '/',
+           })
+       }
     }
 
     clickHandler = (data) => {
@@ -203,18 +201,13 @@ class  CreateContest extends Component {
 
 
 const mapStateToProps =(state) => {
-    return {
-        //isFetchingUser: state.testReducer.isFetchingUser,
-        user: state.testReducer.user
-    }
+    const {user} = state.authReducer;
+    return user
 };
 
 const mapDispatchToProps =(dispatch) => ({
     setContestOrder: (arr) => dispatch(setContestOrder(arr)),
-    //getSelects: () => dispatch(getSelects())
     dataClear: () => dispatch(dataClear()),
-
-
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateContest);

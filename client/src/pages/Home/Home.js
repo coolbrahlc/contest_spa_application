@@ -5,7 +5,7 @@ import style from "./Home.module.scss";
 import { Container, Row, Col, Navbar, Nav } from 'react-bootstrap';
 //import {TEXT_LOOP_TEXT} from "../../constants/constants";
 
-const TEXT_LOOP_TEXT =[
+const homeText =[
     "a Company",
     "a Brand",
     "a Website",
@@ -26,8 +26,8 @@ class Home extends Component {
             styleName: style.headline__static
         }
     }
-    renderLoopText()  {
-        const text = TEXT_LOOP_TEXT[this.state.index % TEXT_LOOP_TEXT.length];
+    renderHomeText()  {
+        const text = homeText[this.state.index % homeText.length];
         return <span className={this.state.styleName}>{text}</span>;
     }
 
@@ -60,7 +60,7 @@ class Home extends Component {
                                     <div className={style.headline}>
                                         <span>Find the Perfect Name for</span>
                                         {
-                                            this.renderLoopText()
+                                            this.renderHomeText()
                                         }
                                     </div>
                                     <p>Launch a naming contest to engage hundreds of naming

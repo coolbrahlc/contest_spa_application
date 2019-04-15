@@ -10,6 +10,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER
         },
 
+        order_id: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+
         creator_id: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -69,6 +74,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         },
 
+
         completed: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
@@ -85,6 +91,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
 
+        end_date: {
+            allowNull: true,
+            type: DataTypes.DATE,
+        },
+
         created_at: {
             allowNull: false,
             type: DataTypes.DATE,
@@ -92,14 +103,15 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         updated_at: {
-            allowNull: false,
-            type: DataTypes.DATE
+            allowNull: true,
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
         },
 
     },
-{
-            timestamps: false
-        }
+    {
+        timestamps: false
+    }
     );
 
     Contests.associate = function (models) {
@@ -107,13 +119,6 @@ module.exports = (sequelize, DataTypes) => {
         Contests.hasMany(models.ContestParticipants, {as: 'contest', foreignKey: 'contest_id', targetKey: 'id' });
 
     };
-
-    // Contests.associate = function (models) {
-    // };
-    //
-    // Contests.associate = function (models) {
-    //     Contests.belongsTo(models.Users, {foreignKey: 'creator_id', sourceKey: 'id'});
-    // };
 
     return Contests;
 };

@@ -5,10 +5,10 @@ import moment from 'moment';
 class ContestPreview extends Component{
 
     renderStatus(){
-        const {is_done} = this.props.contest;
+        const {is_active} = this.props.contest;
         let status = "inactive";
         let danger = style.danger_red;
-        if(!is_done){
+        if(is_active){
             status = "active";
             danger = style.danger_green;
         }
@@ -27,29 +27,28 @@ class ContestPreview extends Component{
     };
 
     render(){
-        const {tag, id, venture, industry, createdAt, budget, entriesCount} = this.props.contest;
-        const date = moment(createdAt).format("YYYY-MM-DD HH:mm");
-        const text = venture;
-        const text1 = "text text text text text text text text text text text text text text text text text text text ";
+        const {type, id, venture, industry, created_at, prize_pool, entriesCount, days_passed, is_active, end_date} = this.props.contest;
+        const date = moment(created_at).format("YYYY-MM-DD HH:mm");
         return(
             <div className={style.container} onClick={this.clickHandler}>
                 <div className={style.container__content}>
-                    <h2>{tag} for {industry}</h2>
+                    <h2>{type} for {industry}</h2>
                     <div className={style.container__content_id}>
-                        <p>(# {id})</p>
+                        <p># {id}</p>
                     </div>
                     <div className={style.container__content_row}>
-                        <p className={style.container__content_blue}>{tag}</p>
-                        <span>(Posted {moment(date).from(moment())})</span>
+                        <p className={style.container__content_blue}>{type}</p>
+                        {end_date &&
+                        <span>Posted {moment(date).from(moment())}</span>}
                     </div>
-                    <p className={style.container__content_text}>{text}</p>
+                    <p className={style.container__content_text}>{venture}</p>
                     <div className={style.container__content_row}>
                         {
                             this.renderStatus()
                         }
                         <span className={style.container__content_blue}>
                             <i className="far fa-gem"/>
-                            ${budget}
+                            ${prize_pool}
                         </span>
                     </div>
                 </div>
@@ -63,18 +62,26 @@ class ContestPreview extends Component{
                                 </p>
                                 <span>Entries</span>
                             </li>
-                            <li>
-                                <p>
-                                    1d, 23h
-                                </p>
-                                <span>Left</span>
-                            </li>
+                            {
+                                is_active ?
+                                <li>
+                                    <span>Finish:</span>
+                                    <p>
+                                        {moment(end_date).from(moment())}
+                                    </p>
+                                </li>
+                                    :
+                                <li>
+                                    <span>Inactive</span>
+                                </li>
+                            }
+
                         </ul>
                     </div>
                     <div className={style.container__info__botbar}>
-                        <i className="far fa-clock"/>
                         <p>Early Access</p>
                     </div>
+
                 </div>
             </div>
         );

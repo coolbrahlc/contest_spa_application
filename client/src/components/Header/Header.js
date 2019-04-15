@@ -53,13 +53,25 @@ class Header extends Component{
             );
         }
     };
+    renderCreateLink () {
+        const {user} = this.props;
+        if (user) {
+            if (user.role!==1) {
+                return (
+                    <div >
+                        <Link className={style.link} to="/contest">CONTESTS</Link>
+                    </div>
+                )
+            }
+        }
+    }
 
     render() {
+        const {user} = this.props;
         return(
             <>
                 <div className={style.announcement}>
                     <span>Squadhelp recognized as one of the Most Innovative Companies by Inc Magazine.</span>
-                    {/*<a href="https://www.squadhelp.com/blog/squadhelp-recognized-one-six-innovative-companies-inc-magazine/">Read Announcement</a>*/}
                 </div>
                 <div className={style.topHeader}>
                     <Container className={style.fullHeight}>
@@ -80,16 +92,11 @@ class Header extends Component{
                                     </Link>
                                 </Navbar.Brand>
                                 <Nav className="ml-auto">
-
-                                    <div >
-                                        <Link className={style.link} to="/contest">CONTESTS</Link>
-                                        <i className="fas fa-chevron-down fa-xs"/>
-                                    </div>
-
-
+                                    {
+                                        this.renderCreateLink()
+                                    }
                                     <div>
                                         <Link className={style.link} to="/dashboard">DASHBOARD</Link>
-                                        <i className="fas fa-chevron-down fa-xs"/>
                                     </div>
                                 </Nav>
                             </Navbar>

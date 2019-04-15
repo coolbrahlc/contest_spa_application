@@ -1,16 +1,12 @@
 import {combineReducers} from 'redux'
-import testReducer from  './testReducer';
+import testReducer from './contestCreateReducer';
 import authReducer from './authReducer';
-import checkoutReducer from './checkoutReducer';
-import customerContestsReducer from './CustomerContestsReducer';
-
-
+import customerContestsReducer from './customerContestsReducer';
 
 
 const appReducer = combineReducers({
     testReducer,
     authReducer,
-    checkoutReducer,
     customerContestsReducer
 });
 

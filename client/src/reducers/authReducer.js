@@ -4,8 +4,6 @@ const initialState = {
     isFetching: false,
     error: null,
     token: null,
-    id: null,
-    role: "",
     user: null,
 };
 
@@ -24,8 +22,6 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 token: action.token,
-                id: action.id,
-                role: action.role,
                 user: action.user,
                 isFetching: false,
                 error: null,
@@ -46,9 +42,7 @@ export default function (state = initialState, action) {
                 error: null,
                 isFetching: false,
                 token: null,
-                id: null,
                 user: null,
-                role: ""
             }
         }
         default: {

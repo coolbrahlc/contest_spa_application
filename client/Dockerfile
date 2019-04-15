@@ -2,17 +2,16 @@ FROM node:10.15.0-alpine
 
 ARG NODE_ENV="development"
 
-RUN mkdir -p /client
+RUN mkdir -p ./client
 
 WORKDIR /client
 
-#COPY package*.json ./
+COPY package*.json ./
 
-#RUN npm install
+RUN npm install
 
-#COPY . .
+COPY . .
 
-ENTRYPOINT npm install && npm start
 EXPOSE 5000
 
-#CMD npm start
+CMD npm start

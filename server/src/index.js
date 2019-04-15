@@ -1,7 +1,9 @@
+global._babelPolyfill = false;
 import express from 'express';
 const router = require('./server/router/index');
 import cors from 'cors';
 const error = require('./server/utils/errorHandler');
+
 
 const PORT = process.env.PORT || 3000;
 
@@ -13,5 +15,4 @@ app.use(router);
 app.use(error.errorHandler);
 
 app.listen(PORT);
-
 

@@ -1,64 +1,46 @@
 import axios from 'axios'
 const baseUrl =  "http://localhost:3000";
 
-export const getAllUsers = () => {
-    return axios.get(`${baseUrl}/users`);
-};
-
-export const getUserProfile = (id) => {
-    return axios.get(    `${baseUrl}/users/${id}`);
-};
 
 export const getAllSelects = () => {
     return axios.get(`${baseUrl}/selects`);
 };
 
 export const register = (data) => axios.post(`${baseUrl}/register`, data);
+
 export const login = (data) => axios.post(`${baseUrl}/login`, data);
 
-export const token = (data) => {
-    return axios.post(`${baseUrl}/token`, {} , {
-        headers: {
-            Authorization: data
-        }
-    })
+export const token = () => {
+    return axios.post(`${baseUrl}/token`, {} , {/* headers: {Authorization: data}*/})
 };
 
-
 export const checkout = (data) => {
-    console.log(data.token);
-    return axios.post(`${baseUrl}/contests/create`, data.data, {
-        headers: {
-            Authorization: data.token,
-        }
-    });
+    return axios.post(`${baseUrl}/contests/create`, data.data, {});
 };
 
 export const getCustomerContests = (data) => {
-    return axios.post(`${baseUrl}/contests/`, data, {
-        headers: {
-            Authorization: data.token,
-        }
-    });
+    return axios.post(`${baseUrl}/contests/`, data, {});
 };
 
 export const getContestById = (data) => {
-    console.log(data, 'CONTEST BY ID');
     return axios.get(`${baseUrl}/contests/${data.id}`, {
-        headers: {
-            Authorization: data.token,
-        }
     });
 };
 
-
-export const getAllContests = (data) => {
-    return axios.post(`${baseUrl}/contests/`, data, {
-        headers: {
-            Authorization: data.token,
-        }
-    });
+export const updateContest = (data) => {
+    return axios.put(`${baseUrl}/contests/${data.id}`, data.data);
 };
 
+export const setEntryWinner = (data) => {
+    return axios.put(`${baseUrl}/entry/winner`, data);
+};
+
+export const rejectEntry = (data) => {
+    return axios.put(`${baseUrl}/entry/reject`, data);
+};
+
+export const createEntry = (data) => {
+    return axios.post(`${baseUrl}/entry/create`, data);
+};
 
 

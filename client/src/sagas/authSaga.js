@@ -8,18 +8,14 @@ export function* registerSaga({data}){
     yield put({ type: ACTION.USER_REQUEST });
     try{
         const res = yield register(data);
-        if(res) {
-            console.log(res.data)
-
-            window.localStorage.setItem('token', res.data.token);
-            yield put({
-                type: ACTION.USER_RESPONSE,
-                token: res.data.token,
-                role: res.data.role,
-                id: res.data.id,
-                user: res.data.user,
-            });
-        }
+        window.localStorage.setItem('token', res.data.token);
+        yield put({
+            type: ACTION.USER_RESPONSE,
+            token: res.data.token,
+            role: res.data.role,
+            id: res.data.id,
+            user: res.data.user,
+        });
     }
     catch (e) {
         let errMsg = e.response.data.message;
@@ -31,16 +27,15 @@ export function* loginSaga({data}){
     yield put({ type: ACTION.USER_REQUEST });
     try{
         const res = yield login(data);
-        if(res) {
-            window.localStorage.setItem('token', res.data.token);
-            yield put({
-                type: ACTION.USER_RESPONSE,
-                token: res.data.token,
-                role: res.data.role,
-                id: res.data.id,
-                user: res.data.user,
-            });
-        }
+        window.localStorage.setItem('token', res.data.token);
+
+        yield put({
+            type: ACTION.USER_RESPONSE,
+            token: res.data.token,
+            role: res.data.role,
+            id: res.data.id,
+            user: res.data.user,
+        });
     }
     catch (e) {
         let errMsg = e.response.data.message;
@@ -48,20 +43,18 @@ export function* loginSaga({data}){
     }
 }
 
-export function* authSaga({data}){
+export function* authSaga(){
     yield put({ type: ACTION.USER_REQUEST});
     try{
-        const res = yield token(data);
-        if(res) {
-            window.localStorage.setItem('token', res.data.token);
-            yield put({
-                type: ACTION.USER_RESPONSE,
-                token: res.data.token,
-                role: res.data.role,
-                id: res.data.id,
-                user: res.data.user,
-            });
-        }
+        const res = yield token();
+        window.localStorage.setItem('token', res.data.token);
+        yield put({
+            type: ACTION.USER_RESPONSE,
+            token: res.data.token,
+            role: res.data.role,
+            id: res.data.id,
+            user: res.data.user,
+        });
     }
     catch (e) {
         yield put({ type: ACTION.USER_ERROR, error: e});

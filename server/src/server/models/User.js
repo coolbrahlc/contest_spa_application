@@ -2,7 +2,7 @@
 
 
 module.exports = (sequelize , DataTypes) => {
-  const User = sequelize.define('Users', {
+  const Users = sequelize.define('Users', {
         id: {
           allowNull: false,
           autoIncrement: true,
@@ -68,18 +68,10 @@ module.exports = (sequelize , DataTypes) => {
 
   );
 
-  User.associate = function (models) {
-    User.hasMany(models.Contests, { foreignKey: 'creator_id', targetKey: 'id' });
+  Users.associate = function (models) {
+      Users.hasMany(models.Contests, { foreignKey: 'creator_id', targetKey: 'id' });
+      Users.hasMany(models.Suggestions, { foreignKey: 'user_id', targetKey: 'id' });
   };
 
-  User.associate = function (models) {
-    User.hasMany(models.Participants, { foreignKey: 'participant_id', targetKey: 'id' });
-  };
-
-  User.associate = function (models) {
-    User.hasMany(models.Suggestions, { foreignKey: 'user_id', targetKey: 'id' });
-  };
-
-
-  return User;
+  return Users;
 };

@@ -1,0 +1,64 @@
+@import "../../sass/mixins";
+@import "../../sass/variables";
+
+@mixin container{
+  @include flex-col-start-center;
+  height: inherit;
+  max-width: 240px;
+  color: $cardColor;
+  padding: 15px;
+  cursor: pointer;
+  font-family: Raleway, sans-serif;
+  &:hover{
+    hr{
+      border-color: $lightGreenTheme;
+    }
+  }
+  hr{
+    width: 60px;
+  }
+  h5{
+    font-size: 17px;
+    font-weight: 700;
+    margin: 10px 0;
+  }
+  p{
+    font-size: 14px;
+    line-height: 20px;
+    opacity: .7;
+  }
+}
+
+.imgRow{
+  @include flex-row-center-center;
+  img{
+    max-height: 48px;
+    max-width: 48px;
+    margin: 20px 0;
+  }
+}
+
+.container-dark{
+  @include container;
+  background-color: $cardBackground;
+  filter: grayscale(100%);
+  &:hover{
+    filter: none;
+    -webkit-box-shadow: 0px 4px 10px 0px #7F7F7F;
+    -moz-box-shadow: 0px 4px 10px 0px #7F7F7F;
+    box-shadow: 0px 4px 10px 0px #7F7F7F;
+  }
+}
+
+.container-white{
+  @include container;
+  background-color: white;
+  filter: grayscale(100%);
+  &:hover{
+    filter: none;
+    -webkit-box-shadow: 0px 4px 10px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 4px 10px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 4px 10px 0px rgba(0,0,0,0.75);
+
+  }
+}

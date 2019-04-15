@@ -32,10 +32,16 @@ const CreateEntry = (props) => {
 
     const renderTextEntrie = () => {
         return(
-            <div>
+            <div className={style.entryContainer}>
                 <label>Input you idea for contest</label>
-                <input type="text" name={"text"} onChange={handleTextChange} value={text}/>
-                <input type={"submit"} value={"Send"} onClick={handleSubmit}/>
+                <div className={style.inputDefault}>
+                    <input type="text" name={"text"} placeholder={"Your idea"} onChange={handleTextChange} value={text}/>
+                </div>
+                {/*<input type={"submit"} value={"Send"} onClick={handleSubmit}/>*/}
+
+                <div className="btn btn-primary btn" onClick={handleSubmit}>
+                    Submit entry
+                </div>
             </div>
         );
     };

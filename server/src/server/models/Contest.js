@@ -115,6 +115,7 @@ module.exports = (sequelize, DataTypes) => {
     );
 
     Contests.associate = function (models) {
+        Contests.belongsTo(models.Users, {foreignKey: 'creator_id', sourceKey: 'id'});
         Contests.hasMany(models.Suggestions,  { foreignKey: 'contest_id', targetKey: 'id' });
         Contests.hasMany(models.ContestParticipants, {as: 'contest', foreignKey: 'contest_id', targetKey: 'id' });
 

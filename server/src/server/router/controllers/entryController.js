@@ -21,7 +21,7 @@ module.exports.createSuggestion = async(req,res,next) => {
                 where: {
                     id: contest_id
                 },
-                include: [{ model: db.Suggestions,
+                include: [{model: db.Users}, { model: db.Suggestions,
                     include: [{
                         model: db.Users,
                         attributes: ['full_name', 'profile_picture']
@@ -63,7 +63,7 @@ module.exports.rejectSuggestion =  async (req, res , next) => {
             where: {
                 id: entry[1][0].dataValues.contest_id
             },
-            include: [{ model: db.Suggestions,
+            include: [{model: db.Users}, { model: db.Suggestions,
                 include: [{
                     model: db.Users,
                     attributes: ['full_name', 'profile_picture']
@@ -145,7 +145,7 @@ module.exports.setWinnerSuggestion =  async (req, res , next) => {
             where: {
                 id: endedContest.id
             },
-            include: [{ model: db.Suggestions,
+            include: [{model: db.Users}, { model: db.Suggestions,
                 include: [{
                     model: db.Users,
                     attributes: ['full_name', 'profile_picture']

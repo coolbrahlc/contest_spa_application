@@ -50,6 +50,7 @@
 
 .link {
   @include link;
+  width: 170px;
   &:hover{
     cursor: pointer;
   }
@@ -58,6 +59,7 @@
 .filter {
   @include link;
   color: $lightGreenTheme;
+  width: 200px;
   &:hover{
     cursor: pointer;
   }

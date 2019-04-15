@@ -13,14 +13,7 @@ export default function ContestCreateCard(props) {
         const {click, type} = props;
         click(type);
     };
-    const renderType = (type) => {
-        type.map(el =>{
-            console.log(el.toUpperCase())
-            return (
-                <div>{el.toUpperCase()+' '}</div>
-            )
-        })
-    }
+
 
     let containerTheme;
     if(props.theme){

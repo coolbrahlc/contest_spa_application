@@ -99,7 +99,6 @@ class  ContestPage extends Component {
                             this.renderStatus(is_active)
                         }
                         <div >#{id}</div>
-                        <div>Created {moment(date).from(moment())}</div>
 
                         <li className={style.brief__thin}>
                             <h5>Contest name</h5>
@@ -141,10 +140,8 @@ class  ContestPage extends Component {
                             <p>{venture_name}</p>
                         </li>
                         <li className={style.brief__thin}>
-                            <h5>Budget</h5>
-                            <p>{prize_pool} $</p>
-                        </li>
-                        <li className={style.brief__thin}>
+                            <h5>File</h5>
+
                             {(type === 'Logo')?
                                 this.renderImage(file) :
 
@@ -188,7 +185,6 @@ class  ContestPage extends Component {
             else{
                 return(
                     <div>
-                        Click here to add your entry
                         <CreateEntry type={type} contestId={id} user ={user} {...this.props}/>
                         <div>My entries:</div>
                         <div className={style.entryContainer}>
@@ -212,7 +208,7 @@ class  ContestPage extends Component {
     };
 
     renderContest = () => {
-        const {isFetchingContest, contest} = this.props;
+        const {isFetchingContest, contest, user} = this.props;
         if(isFetchingContest){
             return (
                 <div className={style.loader}>
@@ -227,17 +223,20 @@ class  ContestPage extends Component {
             return (
                 <div className={style.container}>
                     <Row>
-                        <Col className={style.contestContainer} md={{ span: 8, offset: 2 }}>
+                        <Col className={style.contestContainer} md={{ span: 8}}>
                             {
                                 this.renderBrief(contest)
                             }
 
-                            {/*<SidebarRight contestData={contest} totalEntries={contest.entriesCount}/>*/}
 
 
                             {
                                 this.renderEntries()
                             }
+                        </Col>
+                        <Col className={style.sidebarContainer} md={{ span: 2 }}>
+                            <SidebarRight contestData={contest} totalEntries={contest.Suggestions.length} myUser={user}/>
+
                         </Col>
                     </Row>
 
@@ -264,6 +263,8 @@ class  ContestPage extends Component {
 
     render() {
         const {sideMenuStatus} = this.state;
+        const {contest, user} = this.props;
+
         if(!this.props.contest){
             return (
                 <Container>
@@ -274,21 +275,16 @@ class  ContestPage extends Component {
             console.log(this.props.contest)
             return (
                 <Row className={style.fullHeight}>
-                    {/*<Col md={"auto"} className={style.clearRight}>*/}
-                    {/*    <Sidebar //filterListener={this.getFilterData}*/}
-                    {/*             opened={sideMenuStatus}*/}
-                    {/*             toggleSideMenu={this.toggleSideMenu}*/}
-                    {/*             {...this.props}/>*/}
-                    {/*</Col>*/}
-                    <Col className={style.clearLeft} >
-                        <Header toggleSideMenu={this.toggleSideMenu} {...this.props}/>
-
+                    <Col className={style.clearLeft} md={{ span: 10, offset:2}}>
                         <div className={style.content}>
                             {
                                 this.renderContest()
                             }
                         </div>
                     </Col>
+                    {/*<Col md={"auto"} className={style.clearRight}>*/}
+                        {/*<SidebarRight contestData={contest} totalEntries={contest.entriesCount} myUser={user}/>*/}
+                    {/*</Col>*/}
                 </Row>
             );
         }

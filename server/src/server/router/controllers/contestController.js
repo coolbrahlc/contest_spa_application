@@ -31,7 +31,6 @@ module.exports.getContestsById =  async (req, res , next) => {
             next(new ApplicationError('Not found'))
         }
     } catch (e) {
-        console.log(e)
         next(new ApplicationError('Internal error'))
     }
 };

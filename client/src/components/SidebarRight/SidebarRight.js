@@ -3,14 +3,14 @@ import {connect} from 'react-redux';
 import styles from './SidebarRight.module.sass';
 import {withRouter} from 'react-router-dom';
 import moment from 'moment';
+import {publicURL} from "../../api/baseURL";
+import pic from "../../images/profilePic.jpeg";
 
 
 class SidebarRight extends React.Component {
     constructor(props) {
         super(props);
-        this.defaultPath = '/usersAvatars/';
     }
-
 
     renderCustomerInfo = () => {
         const {User} = this.props.contestData;
@@ -18,30 +18,29 @@ class SidebarRight extends React.Component {
             <div className={styles.infoCustomerContainer}>
                 <span className={styles.labelCustomerInfo}>About Contest Holder</span>
                 <div className={styles.customerInfo}>
-                    <img src={this.defaultPath + User.avatar}/>
+                    {this.renderProfilePic(User.profile_picture)}
                     <div className={styles.customerNameContainer}>
-                        <span>{User.firstname + ' ' + User.lastname}</span>
-                        <span>{User.displayname}</span>
+                        <span>{User.full_name + ' ' + 'Johnson'}</span>
+                        <span>{User.full_name}</span>
                     </div>
                 </div>
             </div>
         )
     };
 
-    getTimeStr = () => {
-        const diff = (moment.duration(moment().diff(moment(this.props.contestData.createdAt))));
-        let str = '';
-        if (diff._data.days !== 0)
-            str = `${diff._data.days} days `;
-        if (diff._data.hours !== 0)
-            str += `${diff._data.hours} hours`;
-        if (str.length === 0)
-            str = 'less than one hour';
-        return str;
+    renderProfilePic= (profilePic) => {
+        if (profilePic) {
+            return <img key={profilePic} src={publicURL+profilePic} alt="img"/>
+        } else {
+            return <img key={pic} src={pic} alt="img"/>
+        }
     };
+
 
     renderGeneralSideBarInfo = () => {
         const {contestData} = this.props;
+        const date = moment(contestData.created_at).format("YYYY-MM-DD HH:mm");
+
         return (
             <div className={styles.contestInfo}>
                 <div className={styles.awardAndTimeContainer}>
@@ -52,9 +51,9 @@ class SidebarRight extends React.Component {
                     <div className={styles.timeContainer}>
                         <div className={styles.timeDesc}>
                             <i className="far fa-clock"/>
-                            <span>Going</span>
+                            <span>Created</span>
                         </div>
-                        <span className={styles.time}>{this.getTimeStr()}</span>
+                        <span className={styles.time}>{moment(date).from(moment())}</span>
                     </div>
                     <div className={styles.guaranteedPrize}>
                         <div>
@@ -74,21 +73,16 @@ class SidebarRight extends React.Component {
         )
     };
 
-    renderContestInfo = () => {
+                
+    render() {
         const {User} = this.props.contestData;
-        console.log(User)
-        console.log(this.props.user.id)
-
+        const {myUser} = this.props;
         return (
             <div className={styles.contestSideBarInfo}>
                 {this.renderGeneralSideBarInfo()}
-                {this.props.user.id !== User.id && this.renderCustomerInfo()}
+                {myUser.id !== User.id && this.renderCustomerInfo()}
             </div>
         )
-    };
-
-    render() {
-        return this.renderContestInfo();
     }
 }
 

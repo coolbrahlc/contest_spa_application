@@ -8,7 +8,7 @@ const { getAllSelects } = require('./controllers/selectsController');
 const { checkCreditCard, createContests } = require('./controllers/transactionController');
 const { rejectSuggestion, setWinnerSuggestion, createSuggestion } = require('./controllers/entryController');
 const { setActiveContest } = require('../middlewares/createContest');
-const { fileUpload } = require('../utils/fileUpload');
+const { fileUpload, getFile } = require('../utils/fileUpload');
 
 
 router.post('/contests/', tokenCheck, getContests);
@@ -25,6 +25,8 @@ router.post('/login', login);
 router.post('/register', register, createNewToken, tokenUpdate);
 router.post('/token', tokenCheck, sendToken);
 //router.post('/token', auth.tokenCheck, auth.createNewToken, auth.tokenUpdate);
+
+router.get('/api/public/:name', getFile);
 
 
 module.exports = router;

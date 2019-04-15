@@ -7,7 +7,7 @@ module.exports.getContestsById =  async (req, res , next) => {
     try {
         let contest = await db.Contests.findOne(
             {where:{id: req.params.id},
-                include: [{ model: db.Suggestions,
+                include: [{model: db.Users}, { model: db.Suggestions,
                     include: [{
                         model: db.Users,
                         attributes: ['full_name', 'profile_picture']
@@ -31,6 +31,7 @@ module.exports.getContestsById =  async (req, res , next) => {
             next(new ApplicationError('Not found'))
         }
     } catch (e) {
+        console.log(e)
         next(new ApplicationError('Internal error'))
     }
 };
@@ -74,7 +75,17 @@ module.exports.updateContest = async (req,res,next) => {
     Object.keys(contestBody).forEach(key => {
         contest.push(JSON.parse(contestBody[key]));
     });
+
     const edit =  contest[0];
+    console.log(edit.type);
+
+    let fileField = req.files[edit.type.toLowerCase()+'File'] ;  // adding file path
+    console.log(fileField);
+
+    if (fileField) {
+        edit.file = fileField[0].filename;
+    }
+
 
     try {
         const contest = await db.Contests.update(edit, {

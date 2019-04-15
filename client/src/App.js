@@ -23,7 +23,7 @@ class App extends Component {
             <div>
                 <Switch >
                     <Route exact path="/contest/:id" component={authCheck(contestPage)} />
-                    <Route exact path="/" component={HeaderHOC(Home)} />
+                    <Route exact path="/" component={HeaderHOC(authCheck(Home))} />
                     <Route exact path="/login/" component={Login} />
                     <Route exact path="/register/" component={Register} />
                     <Route exact path="/contest/" component={authCheck(HeaderHOC(createContest))} />

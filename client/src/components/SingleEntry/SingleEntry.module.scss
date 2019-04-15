@@ -12,18 +12,29 @@
   -webkit-box-shadow: 0px 2px 5px -1px rgba(0,0,0,0.75);
   -moz-box-shadow: 0px 2px 5px -1px rgba(0,0,0,0.75);
   box-shadow: 0px 2px 5px -1px rgba(0,0,0,0.75);
+  &:hover{
+    background-color: #F7F7F7;
+  }
   &__acceptButton{
     @include flex-row-center-center;
     width: 30px;
     i{
-      color: green;
+      font-size: 25px;
+      color: grey;
+      &:hover{
+        color: green;
+      }
     }
   }
   &__rejectButton{
     @include flex-row-center-center;
     width: 30px;
     i{
-      color: red;
+      font-size: 25px;
+      color: grey;
+      &:hover{
+        color: red;
+      }
     }
   }
   &__likeButtonRed{

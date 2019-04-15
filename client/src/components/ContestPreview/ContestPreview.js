@@ -65,10 +65,14 @@ class ContestPreview extends Component{
                             {
                                 is_active ?
                                 <li>
-                                    <span>Finish:</span>
-                                    <p>
-                                        {moment(end_date).from(moment())}
-                                    </p>
+                                    {end_date &&
+                                        <>
+                                            <span>Finish:</span>
+                                            <p>
+                                                { moment(end_date).from(moment())}
+                                            </p>
+                                        </>
+                                    }
                                 </li>
                                     :
                                 <li>

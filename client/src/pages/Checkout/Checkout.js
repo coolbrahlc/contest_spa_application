@@ -6,6 +6,7 @@ import { checkout} from '../../actions/actionCreator';
 import styles from './Checkout.module.sass';
 import {Container, Alert, Row, Col} from 'react-bootstrap';
 import InputMask from 'react-input-mask';
+import {cardSchema} from "../../utils/validation";
 
 
 class  nameContest extends Component {
@@ -56,17 +57,40 @@ class  nameContest extends Component {
         });
     };
 
+    getErrorsFromValidationError = (validationError) => {
+        const FIRST_ERROR = 0;
+        return validationError.inner.reduce((errors, error) => {
+            return {
+                ...errors,
+                [`${error.path}Error`]: error.errors[FIRST_ERROR],
+            }
+        }, {})
+    };
+
+    onClickNext = async () => {
+        try {
+            const valid = await cardSchema.validate(this.state, { abortEarly: false });
+            console.log(valid);
+            if (valid) {
+                this.checkout();
+            }
+        } catch (e) {
+            console.log('e', e);
+            const errObj = this.getErrorsFromValidationError(e);
+            this.setState(errObj);
+        }
+    };
+
+
     render() {
         const {success, isFetching, error} = this.props;
+        const {cardNumberError, dateError, codeError} = this.state;
+
         return (
             <Container>
                 {success && this.redirect('/dashboard')}
                 <Row  className={styles.payment}>
                     <Col md={6} className={styles.paymentContainer}>
-                        {/*{isFetching && <GridLoader loading={isFetching}*/}
-                        {/*                           sizeUnit={"px"}*/}
-                        {/*                           size={40 }*/}
-                        {/*                           color={'#28D2D1'}/>}*/}
 
                         <div className={styles.paymentContest}>
                             <div className={styles.paymentInput}>
@@ -76,6 +100,8 @@ class  nameContest extends Component {
                                            mask="9999 9999 9999 9999" maskChar={null}
                                            onChange={(e) => this.handleInputChange(e)}
                                 />
+                                {cardNumberError && <div className={styles.error}>{cardNumberError}</div>}
+
                             </div>
                             <div className={styles.paymentDateSecCode}>
 
@@ -86,6 +112,9 @@ class  nameContest extends Component {
                                                mask="99/9999" maskChar=' '
                                                onChange={(e) => this.handleInputChange(e)}
                                     />
+                                    {dateError && <div className={styles.error}>{dateError}</div>}
+
+
                                 </div>
 
                                 <div className={styles.paymentInput}>
@@ -95,6 +124,8 @@ class  nameContest extends Component {
                                                mask="999" maskChar=' '
                                                onChange={(e) => this.handleInputChange(e)}
                                     />
+                                    {codeError && <div className={styles.error}>{codeError}</div>}
+
                                 </div>
 
                             </div>
@@ -112,7 +143,7 @@ class  nameContest extends Component {
                                         className={[styles.paymentBtn, styles.paymentBtnBack].join(' ')}>
                                     Back
                                 </button>
-                                <button onClick={this.checkout}
+                                <button onClick={this.onClickNext}
                                         className={styles.paymentBtn}>
                                     Pay Now
                                 </button>

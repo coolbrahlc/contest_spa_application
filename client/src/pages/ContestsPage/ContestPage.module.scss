@@ -25,6 +25,11 @@
   padding: 5px 20px;
   height: 100%;
 }
+.photo{
+  width: 500px;
+  height: auto;
+}
+
 
 .container{
   width: 100%;
@@ -46,7 +51,7 @@
   padding: 30px;
   position: relative;
   &__thin{
-    @include flex-row-between-center;
+    @include flex-col-start-start;
     width: 30%;
   }
   &__thick{
@@ -80,6 +85,7 @@
   color: $headerColor;
   padding: 0 5px 0 30px;
   &:hover{
+    cursor: pointer;
     color: $headerHoveredColor;
     text-decoration: none;
   }
@@ -88,4 +94,17 @@
 .entryContainer{
   @include flex-row-start-center;
   flex-wrap: wrap;
+}
+
+.danger{
+  &_red{
+    i{
+      color: red;
+    }
+  }
+  &_green{
+    i{
+      color: green;
+    }
+  }
 }

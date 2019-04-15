@@ -11,6 +11,9 @@ import moment from "moment";
 import CreateEntry from "../../components/CreateEntry/CreateEntry";
 import Header from "../../components/Header/Header";
 import NameContest from "../ContestType/contestType";
+import {publicURL} from "../../api/baseURL";
+import SidebarRight from "../../components/SidebarRight/SidebarRight";
+
 
 class  ContestPage extends Component {
 
@@ -27,11 +30,6 @@ class  ContestPage extends Component {
         this.props.getContestById({id:id});
     }
 
-    redirect =  () => {
-        this.props.history.replace({
-            pathname: '/login',
-        })
-    };
 
     changeMode =  () => {
         this.setState({
@@ -75,9 +73,18 @@ class  ContestPage extends Component {
         }
     };
 
+    renderImage = (file) => {
+
+        if(file) {
+            return <div className={style.photo}><img src={`${publicURL}${file}`} alt="contestPic" className="img-fluid"/></div>
+        }
+    };
+
+
     renderBrief = (contest) => {
         const {name, type, file, venture_name, target_customer, type_of_title,
-            preference, industry, created_at, prize_pool, id} = contest;
+            preferences, industry, created_at, prize_pool, id, is_active} = contest;
+        const {editMode} = this.state;
 
         const date = moment(created_at).format("YYYY-MM-DD HH:mm");
         return (
@@ -85,52 +92,71 @@ class  ContestPage extends Component {
                 {
                    this.renderEditButton()
                 }
-                <ul>
-                    <li className={style.brief__thin}>
-                        <p>{name}</p>
-                        <span>#{id}</span>
-                    </li>
-                    <li className={style.brief__thin}>
-                        <p>{type}</p>
-                        <span>{moment(date).from(moment())}</span>
-                    </li>
-                    {
-                       type_of_title &&
-                       <li className={style.brief__thin}>
-                           <p>{type_of_title}</p>
-                       </li>
-                    }
-                    {
-                        venture_name &&
+                {!editMode &&
+                <>
+                    <ul>
+                        {
+                            this.renderStatus(is_active)
+                        }
+                        <div >#{id}</div>
+                        <div>Created {moment(date).from(moment())}</div>
+
                         <li className={style.brief__thin}>
+                            <h5>Contest name</h5>
+
+                            <p>{name}</p>
+                        </li>
+                        <li className={style.brief__thin}>
+                            <h5>Contest type</h5>
+                            <p>{type}</p>
+                        </li>
+                        {
+                            type_of_title &&
+                            <li className={style.brief__thin}>
+                                <h5>Type of name</h5>
+                                <p>{type_of_title}</p>
+                            </li>
+                        }
+                        {
+                            venture_name &&
+                            <li className={style.brief__thin}>
+                                <h5>Venture name</h5>
+                                <p>{venture_name}</p>
+                            </li>
+                        }
+                        <li className={style.brief__thin}>
+                            <h5>Industry</h5>
+                            <p>{industry}</p>
+                        </li>
+                        <li className={style.brief__thin}>
+                            <h5>Preferences</h5>
+                            <p>{preferences}</p>
+                        </li>
+                        <li className={style.brief__thick}>
+                            <h5>Target customers</h5>
+                            <p>{target_customer}</p>
+                        </li>
+                        <li className={style.brief__thick}>
+                            <h5 className={style.brief__thick}>Description</h5>
                             <p>{venture_name}</p>
                         </li>
-                    }
-                    <li className={style.brief__thin}>
-                        <p>{industry}</p>
-                    </li>
-                    <li className={style.brief__thin}>
-                        <h5>Preferences</h5>
-                        <p>{preference}</p>
-                    </li>
-                    <li className={style.brief__thick}>
-                        <h5>Target customers</h5>
-                        <p>{target_customer}</p>
-                    </li>
-                    <li className={style.brief__thick}>
-                        <h5 className={style.brief__thick}>Description</h5>
-                        <p>{venture_name}</p>
-                    </li>
-                    <li>
-                        <h5>Budget</h5>
-                        <p>{prize_pool}</p>
-                    </li>
-                    <li>
-                        {
-                            //this.renderImage(file)
-                        }
-                    </li>
-                </ul>
+                        <li className={style.brief__thin}>
+                            <h5>Budget</h5>
+                            <p>{prize_pool} $</p>
+                        </li>
+                        <li className={style.brief__thin}>
+                            {(type === 'Logo')?
+                                this.renderImage(file) :
+
+                                <h5 className={style.brief__thick}>
+                                    <a href={publicURL + file}>{file}</a>
+                                </h5>
+                            }
+
+                        </li>
+                    </ul>
+                </>}
+
             </div>
         );
     };
@@ -206,6 +232,9 @@ class  ContestPage extends Component {
                                 this.renderBrief(contest)
                             }
 
+                            {/*<SidebarRight contestData={contest} totalEntries={contest.entriesCount}/>*/}
+
+
                             {
                                 this.renderEntries()
                             }
@@ -217,13 +246,20 @@ class  ContestPage extends Component {
         }
     };
 
-    toggleSideMenu = () => {
-        this.setState(state => {
-            return {
-                sideMenuStatus: !state.sideMenuStatus
-            };
-        });
-    };
+    renderStatus = (is_active) =>{
+        let status = "inactive";
+        let danger = style.danger_red;
+        if(is_active){
+            status = "active";
+            danger = style.danger_green;
+        }
+        return (
+            <p className={danger}>
+                <i className="fas fa-check-circle"/>
+                {status}
+            </p>
+        );
+    }
 
 
     render() {
@@ -235,6 +271,7 @@ class  ContestPage extends Component {
                 </Container>
             );
         } else {
+            console.log(this.props.contest)
             return (
                 <Row className={style.fullHeight}>
                     {/*<Col md={"auto"} className={style.clearRight}>*/}

@@ -53,7 +53,7 @@ export const taglineContestSchema = yup.object().shape({
 });
 
 export const cardSchema = yup.object().shape({
-    cardNumber: yup.string().min(19, 'Too short').required("Required"),
+    cardNumber: yup.string().min(16, 'Too short').required("Required"),
     date: yup.string().max(7).required("Required"),
     code: yup.string().min(3).max(4).required("Required"),
 });

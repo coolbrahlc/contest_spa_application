@@ -1,18 +1,8 @@
 const moment = require('moment');
 const db = require('../models/index');
-const cron = require('node-cron');
-
-
-cron.schedule('* * * * *', () => {
-    console.log('Deactivating exipired contests');
-    cronTask().then(res => {
-        res.map(el => console.log(el.dataValues.id) )
-    });
-});
-
 
 //Deactivating exipired contests
-const cronTask = async () => {
+module.exports.cronTask = async () => {
     const op =db.Sequelize.Op;
     const contt= await db.Contests.update(
         {is_active: false, completed: true},

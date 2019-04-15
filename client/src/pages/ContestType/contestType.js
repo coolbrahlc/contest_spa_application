@@ -4,12 +4,21 @@ import {collectFormData, getSelects} from "../../actions/actionCreator";
 import connect from "react-redux/es/connect/connect";
 import style from "./contestType.module.scss";
 import { Container, Row, Col } from 'react-bootstrap';
+import {nameContestSchema, logoContestSchema, taglineContestSchema} from "../../utils/validation";
+
 
 const contObj = {
     name: 'Name',
     logo: 'Logo',
     tagline: 'Tagline',
 };
+
+const validationObj = {
+    name: nameContestSchema,
+    logo: logoContestSchema,
+    tagline: taglineContestSchema,
+};
+
 
 class  contestType extends Component {
 
@@ -19,7 +28,7 @@ class  contestType extends Component {
         if (!props.editMode) {
             contestType = this.props.location.state.contestType;
         } else {
-            contestType = props.type
+            contestType = props.type.toLowerCase()
         }
 
         let data ={};
@@ -70,6 +79,32 @@ class  contestType extends Component {
         });
     };
 
+
+    getErrorsFromValidationError = (validationError) => {
+        const FIRST_ERROR = 0;
+        return validationError.inner.reduce((errors, error) => {
+            return {
+                ...errors,
+                [`${error.path}Error`]: error.errors[FIRST_ERROR],
+            }
+        }, {})
+    };
+
+    onClickNext = async () => {
+        const {contestType} = this.state;
+        try {
+            const valid = await validationObj[contestType].validate(this.state, { abortEarly: false });
+            if (valid) {
+                this.sendContestData();
+            }
+        } catch (e) {
+            const errObj = this.getErrorsFromValidationError(e);
+            this.setState(errObj);
+        }
+
+    };
+
+
     sendContestData = () => {
         let bodyFormData;
         if (!this.props.contestFormData) {
@@ -77,7 +112,7 @@ class  contestType extends Component {
         } else {
             bodyFormData = this.props.contestFormData;
         }
-        const {contestType, contestName, typeOfName, nameStyle, industry,
+        const {contestType, contestName, typeOfName, preferences, industry,
             typeOfWork, targetCustomer, length, nameFileValue}= this.state;
         const {editMode, contestsToInsert, collectFormData, update, contest, history}= this.props;
 
@@ -85,7 +120,7 @@ class  contestType extends Component {
             type: contObj[contestType],
             name: contestName,
             type_of_title: typeOfName,
-            preferences: nameStyle,
+            preferences: preferences,
             industry: industry,
             type_of_work:typeOfWork,
             target_customer: targetCustomer,
@@ -123,41 +158,51 @@ class  contestType extends Component {
         const value = target.value;
         const name = target.name;
         this.setState({
-            [name]: value
-        });
+            [name]: value,
+            [`${name}Error`]: null
+    });
     };
 
     renderForm = () => {
         const {contestType} =this.state;
+        const {contestNameError, targetCustomerError, industryError, lengthError, ventureNameError} = this.state;
+
         return (
             <div>
-                <div className={style.formSection}>
+                <div className={style.inputDefault}>
                     <input type="text"
                            placeholder="Contest name"
                            name="contestName"
                            value={this.state.contestName}
                            onChange={this.handleInputChange}/>
                 </div>
+                {contestNameError &&	<div className={style.error}>{contestNameError}</div>}
+
 
                 { contestType!=='name' &&
-                <div className={style.formSection}>
-                    <input type="text"
-                           placeholder="Venture name"
-                           name="ventureName"
-                           value={this.state.ventureName}
-                           onChange={this.handleInputChange}/>
-                </div>
+                    <>
+                        <div className={style.inputDefault}>
+                            <input type="text"
+                                   placeholder="Venture name"
+                                   name="ventureName"
+                                   value={this.state.ventureName}
+                                   onChange={this.handleInputChange}/>
+                        </div>
+                        {ventureNameError &&	<div className={style.error}>{ventureNameError}</div>}
+                    </>
                 }
 
-                <div className={style.formSection}>
+
+                <div className={style.inputDefault}>
                     <input type="text"
                            placeholder="Industry"
                            name="industry"
                            value={this.state.industry}
                            onChange={this.handleInputChange}/>
                 </div>
+                {industryError &&	<div className={style.error}>{industryError}</div>}
 
-                 {contestType === 'name' &&
+                {contestType === 'name' &&
                     <div className={style.formSection}>
                         <select value={this.state.typeOfName}
                                 name="typeOfName"
@@ -171,26 +216,31 @@ class  contestType extends Component {
                     </div>
                 }
 
-                <div className={style.formSection}>
+                <div className={style.inputDefault}>
                     <input type="text"
                            placeholder="Target customer"
                            name="targetCustomer"
                            value={this.state.targetCustomer}
                            onChange={this.handleInputChange}/>
                 </div>
+                {targetCustomerError &&	<div className={style.error}>{targetCustomerError}</div>}
+
 
                 {contestType === 'name' &&
-                    <div className={style.formSection}>
-                        <select value={this.state.preferences}
-                                className={style["form-control"]}
-                                name="preferences"
-                                onChange={this.handleInputChange}>
-                            {
-                                this.getSelects("name_style").map(select => (
-                                    <option key={select} value={select}>{select}</option>))
-                            }
-                        </select>
-                    </div>
+                    <>
+                        <div className={style.formSection}>
+                            <select value={this.state.preferences}
+                                    className={style["form-control"]}
+                                    name="preferences"
+                                    onChange={this.handleInputChange}>
+                                {
+                                    this.getSelects("name_style").map(select => (
+                                        <option key={select} value={select}>{select}</option>))
+                                }
+                            </select>
+                        </div>
+                    </>
+
                 }
 
                 {contestType === 'tagline' &&
@@ -221,13 +271,15 @@ class  contestType extends Component {
                     </div>
                 }
 
-                <div className={style.formSection}>
+                <div className={style.inputDefault}>
                     <input type="number"
                            placeholder="Contest length"
                            name="length"
                            value={this.state.length}
                            onChange={this.handleInputChange}/>
                 </div>
+                {lengthError &&	<div className={style.error}>{lengthError}</div>}
+
                 <div className={style.formSection}>
                     <input type="file"
                            name="nameFile"
@@ -283,7 +335,7 @@ class  contestType extends Component {
                                 <div className={style.navigationMenu__prevButton} onClick={this.handlePrevClick}>
                                     Prev
                                 </div>
-                                <div className={style.navigationMenu__nextButton} onClick={this.sendContestData}>
+                                <div className={style.navigationMenu__nextButton} onClick={this.onClickNext}>
                                     Next
                                 </div>
                             </Col>
@@ -291,7 +343,7 @@ class  contestType extends Component {
                         :
                         <Row className={style.navigationMenu}>
                             <Col md={6}>
-                                <div className={style.navigationMenu__nextButton} onClick={this.sendContestData}>
+                                <div className={style.navigationMenu__nextButton} onClick={this.onClickNext}>
                                     Submit editing
                                 </div>
                             </Col>

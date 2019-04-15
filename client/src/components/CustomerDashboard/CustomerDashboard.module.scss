@@ -27,6 +27,7 @@
     &:hover{
       color: inherit;
       text-decoration: none;
+      cursor: pointer;
     }
   }
   &:hover{
@@ -49,11 +50,17 @@
 
 .link {
   @include link;
+  &:hover{
+    cursor: pointer;
+  }
 }
 
 .filter {
   @include link;
   color: $lightGreenTheme;
+  &:hover{
+    cursor: pointer;
+  }
 }
 
 .loader {

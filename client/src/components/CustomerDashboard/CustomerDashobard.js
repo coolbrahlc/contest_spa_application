@@ -1,28 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import style from "./CustomerDashboard.module.scss";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import { GridLoader } from 'react-spinners';
 import { Container, Row, Col } from 'react-bootstrap';
 import ContestPreview from "../ContestPreview/ContestPreview";
+import queryString from 'query-string';
+
+const filterObj = {
+    active: {is_active: true},
+    inactive: {is_active: false},
+    completed: {completed: true},
+};
+
 
 const CustomerDashboard = (props) => {
 
-    const {isFetching, contests, getContests} = props;
+    const {isFetching, contests, getContests, history} = props;
     const [lastFilter, setLastFilter] = useState('');
 
-
-    const clickHandler = (params, filter) => {
+    const clickHandler = (filter) => {
         if (lastFilter!==filter) {
-            getContests({ params });
+
+            getContests({params: filterObj[filter]});
             setLastFilter(filter);
+
+            history.push({
+                pathname: '/dashboard',
+                search: '?filter='+filter
+            })
         }
     };
 
     const filterHandler = () => {
         setLastFilter(false);
         getContests({ params: {} });
+        history.push({pathname: '/dashboard'})
     };
+
+    useEffect(() => {
+        const parsed = queryString.parse(props.location.search);
+        if (parsed.filter) {
+            const filter = parsed.filter;
+            getContests({ params: filterObj[filter] });
+            setLastFilter(filter);
+        } else {
+            getContests({ params: {} });
+        }
+    }, []);
+
+    useEffect(() => {
+        const parsed = queryString.parse(props.location.search);
+        if (parsed.filter) {
+            const filter = parsed.filter;
+            getContests({ params: filterObj[filter] });
+            setLastFilter(filter);
+        }
+    }, [props.location.search]);
 
 
     if (isFetching) {
@@ -54,9 +88,9 @@ const CustomerDashboard = (props) => {
             <Container>
                 <Row className={style.contests}>
                     <Col md = {{size: 6}}>
-                        {<div className={style.link} onClick={() => clickHandler({is_active: true}, 'Active' )}>Active Contests</div>}
-                        {<div className={style.link} onClick={() => clickHandler({completed: true}, 'Completed' )}>Completed contests</div>}
-                        {<div className={style.link} onClick={() => clickHandler({is_active: false}, 'Inactive' )}>Inactive contests</div> }
+                        {<div className={style.link} onClick={() => clickHandler('active' )}>Active Contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler('completed' )}>Completed contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler('inactive' )}>Inactive contests</div> }
                     </Col>
                     <Col md = {{size: 6}}>
                         <div className={`${style.button} float-right`}>

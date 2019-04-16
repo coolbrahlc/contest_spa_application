@@ -45,6 +45,7 @@ module.exports.getContests =  async (req, res , next) => {
         params.is_active = true
     }
     try {
+        console.log(req.body.params)
         let customersContests = await db.Contests.findAll(
             {where:req.body.params,
                 include: [

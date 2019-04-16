@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import style from "./CreativeDashboard.module.scss";
 import {connect} from "react-redux";
 import {Link} from "react-router-dom";
 import { GridLoader } from 'react-spinners';
 import { Container, Row, Col } from 'react-bootstrap';
 import ContestPreview from "../ContestPreview/ContestPreview";
+import queryString from 'query-string';
 
 const CreativeDashboard = (props) => {
 
@@ -12,12 +13,33 @@ const CreativeDashboard = (props) => {
     const [lastFilter, setLastFilter] = useState('');
 
 
-    const clickHandler = (params, filter) => {
+    const clickHandler = (filter) => {
         if (lastFilter!==filter) {
-            getContests({ params });
+            getContests({ params: {type:filter} });
             setLastFilter(filter);
         }
     };
+
+    useEffect(() => {
+        const parsed = queryString.parse(props.location.search);
+        if (parsed.filter) {
+            const filter = parsed.filter;
+            getContests({ params: {type: filter} });
+            setLastFilter(filter);
+        } else {
+            getContests({ params: {} });
+        }
+    }, []);
+
+    useEffect(() => {
+        const parsed = queryString.parse(props.location.search);
+        if (parsed.filter) {
+            const filter = parsed.filter;
+            getContests({ params: {type: filter} });
+            setLastFilter(filter);
+        }
+    }, [props.location.search]);
+
 
     const filterHandler = () => {
         setLastFilter(false);
@@ -54,9 +76,9 @@ const CreativeDashboard = (props) => {
             <Container>
                 <Row className={style.contests}>
                     <Col md = {{size: 6}}>
-                        {<div className={style.link} onClick={() => clickHandler({type: 'Name'}, 'Name' )}>Name contests</div>}
-                        {<div className={style.link} onClick={() => clickHandler({type: 'Logo'}, 'Logo' )}>Logo contests</div>}
-                        {<div className={style.link} onClick={() => clickHandler({type: 'Tagline'}, 'Tagline' )}>Tagline contests</div> }
+                        {<div className={style.link} onClick={() => clickHandler('name' )}>Name contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler( 'name' )}>Logo contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler('name' )}>Tagline contests</div> }
                     </Col>
                     <Col md = {{size: 6}}>
                     </Col>

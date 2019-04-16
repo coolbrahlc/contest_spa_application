@@ -9,7 +9,6 @@ import {ROLE} from "../../constants/constants";
 import { Container, Row, Col } from 'react-bootstrap';
 import moment from "moment";
 import CreateEntry from "../../components/CreateEntry/CreateEntry";
-import Header from "../../components/Header/Header";
 import NameContest from "../ContestType/contestType";
 import {publicURL} from "../../api/baseURL";
 import SidebarRight from "../../components/SidebarRight/SidebarRight";

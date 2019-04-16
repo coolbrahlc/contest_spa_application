@@ -19,6 +19,7 @@ const CreateEntry = (props) => {
         const {contestId, user, createEntry} = props;
         if(contestId && user) {
             if(text || originalFile){
+                console.log('1')
                 const fdata = new FormData();
                 console.log(originalFile);
                 fdata.append('entryFile', originalFile);
@@ -27,9 +28,15 @@ const CreateEntry = (props) => {
                     contest_id: contestId,
                     answer: text
                 }));
+                console.log('2')
+
                 createEntry(fdata);
+                console.log('3')
+
                 setSrc(false);
                 setFile(false);
+                console.log('4')
+
             }
         }
     };

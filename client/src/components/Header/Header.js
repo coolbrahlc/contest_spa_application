@@ -114,6 +114,7 @@ class Header extends Component{
                                     {
                                         this.renderCreateLink()
                                     }
+
                                     <div>
                                         <Link className={style.link} to="/dashboard">DASHBOARD</Link>
                                     </div>

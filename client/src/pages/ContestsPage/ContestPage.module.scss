@@ -107,6 +107,12 @@
   flex-wrap: wrap;
 }
 
+
+.loader {
+  @include loader;
+}
+
+
 .danger{
   &_red{
     i{

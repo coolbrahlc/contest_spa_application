@@ -13,7 +13,6 @@ class  nameContest extends Component {
 
     constructor(props) {
         super(props);
-        this.token = localStorage.getItem('token');
 
         this.state= {
             cardNumber: '',
@@ -30,7 +29,6 @@ class  nameContest extends Component {
 
     checkout = () => {
         let data = this.props.contestFormData;
-        console.log(this.state.cardNumber)
         data.set('cardNumber', this.state.cardNumber);
         this.props.checkoutSubmit({
             data,
@@ -53,7 +51,8 @@ class  nameContest extends Component {
         const value = target.value;
         const name = target.name;
         this.setState({
-            [name]: value
+            [name]: value,
+            [`${name}Error`]: null
         });
     };
 
@@ -70,12 +69,10 @@ class  nameContest extends Component {
     onClickNext = async () => {
         try {
             const valid = await cardSchema.validate(this.state, { abortEarly: false });
-            console.log(valid);
             if (valid) {
                 this.checkout();
             }
         } catch (e) {
-            console.log('e', e);
             const errObj = this.getErrorsFromValidationError(e);
             this.setState(errObj);
         }

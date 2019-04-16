@@ -3,7 +3,7 @@ import './App.css';
 import Register from './pages/Auth/Register';
 import Login from './pages/Auth/Login';
 import createContest from './pages/CreateContest/CreateContest';
-import NotFound from './pages/old/NotFound';
+import NotFound from './pages/NotFound/NotFound';
 import contestType from './pages/ContestType/contestType';
 import checkout from './pages/Checkout/Checkout';
 import dashboard from './pages/Dashboard/Dashboard';

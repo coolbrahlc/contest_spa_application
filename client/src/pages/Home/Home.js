@@ -1,8 +1,8 @@
 import { connect } from "react-redux";
 import {logout, auth} from "../../actions/actionCreator";
-import React, {useState, useEffect, Component } from 'react';
+import React, { Component } from 'react';
 import style from "./Home.module.scss";
-import { Container, Row, Col, Navbar, Nav } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
 const homeText =[
     "a Company",

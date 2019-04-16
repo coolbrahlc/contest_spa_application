@@ -5,6 +5,7 @@ import connect from "react-redux/es/connect/connect";
 import style from "./contestType.module.scss";
 import { Container, Row, Col } from 'react-bootstrap';
 import {nameContestSchema, logoContestSchema, taglineContestSchema} from "../../utils/validation";
+import ProgressBar from '../../components/ProgressBar/ProgressBar'
 
 
 const contObj = {
@@ -73,7 +74,6 @@ class  contestType extends Component {
     }
 
     onChangeFile =  (e) => {
-        console.log(e.target.files[0]);
         this.setState({
             nameFileValue:e.target.files[0]
         });
@@ -305,6 +305,7 @@ class  contestType extends Component {
                 {!editMode &&
                     <div className={style["heading-steps"]}>
                         <Container>
+
                             <Row>
                                 <Col md={5}>
                                     <h2>Company {this.state.contestType}</h2>

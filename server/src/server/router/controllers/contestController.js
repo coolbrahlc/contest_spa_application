@@ -69,34 +69,38 @@ module.exports.getContests =  async (req, res , next) => {
 
 module.exports.updateContest = async (req,res,next) => {
 
-    const contestBody = Object.assign({}, req.body);
-    let contest = [];
-    Object.keys(contestBody).forEach(key => {
-        contest.push(JSON.parse(contestBody[key]));
-    });
-
-    const edit =  contest[0];
-    console.log(edit.type);
-
-    let fileField = req.files[edit.type.toLowerCase()+'File'] ;  // adding file path
-    console.log(fileField);
-
-    if (fileField) {
-        edit.file = fileField[0].filename;
-    }
-
-
     try {
-        const contest = await db.Contests.update(edit, {
+        const checkContest = await db.Contests.findOne({where:{id: req.params.id}});
+        if (checkContest.creator_id!==req.decoded.id) {
+            next(new UnauthorizedError('Customer can update only his contest'))
+        }
+
+        const contestBody = Object.assign({}, req.body);
+        let contest = [];
+        Object.keys(contestBody).forEach(key => {
+            contest.push(JSON.parse(contestBody[key]));
+        });
+
+        const edit =  contest[0];
+        console.log(edit.type);
+
+        let fileField = req.files[edit.type.toLowerCase()+'File'] ;  // adding file path
+        console.log(fileField);
+
+        if (fileField) {
+            edit.file = fileField[0].filename;
+        }
+
+        const updated = await db.Contests.update(edit, {
             returning: true,
             where: {
                 id: req.params.id
             }
         });
-        if (contest) {
+        if (updated) {
             next()
         }
-    }
+        }
     catch (e) {
         next(e);
     }

@@ -8,9 +8,7 @@ module.exports.createSuggestion = async(req,res,next) => {
     const entry = JSON.parse(req.body.entry);
     const {user_id, contest_id, answer} = entry;
     let file;
-    console.log(req.files['entryFile'][0].filename)
-    if(req.files){
-        console.log(23333333333)
+    if(req.files['entryFile']){
         file = req.files['entryFile'][0].filename;
     } else {
         file = ''
@@ -33,7 +31,9 @@ module.exports.createSuggestion = async(req,res,next) => {
                         model: db.Users,
                         attributes: ['full_name', 'profile_picture']
                     }]
-                }]
+                }],
+                order: [["created_at","DESC"]]
+
             });
             res.send(contest);
         }
@@ -47,15 +47,7 @@ module.exports.rejectSuggestion =  async (req, res , next) => {
 
     const {id, contestId, customerId} = req.body;
     try {
-        const checkIsOwner = await db.Contests.findOne({
-            attributes: ['creator_id'],
-            where: {
-                id: contestId
-            }
-        });
-        if (checkIsOwner.dataValues.creator_id!==customerId) {
-            next(new ApplicationError('Permission denied'))
-        }
+
         const entry = await db.Suggestions.update({
                 status: "rejected"},
             {where: {id: id},
@@ -95,9 +87,6 @@ module.exports.setWinnerSuggestion =  async (req, res , next) => {
     let endedContest;
 
     try {
-        if (customerId !== req.decoded.id) {
-            next(new ApplicationError('Permission denied'))
-        }
         t = await db.sequelize.transaction();
 
         await db.Suggestions.update({status: "winner"},

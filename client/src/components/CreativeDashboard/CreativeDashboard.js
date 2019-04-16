@@ -54,10 +54,15 @@ const CreativeDashboard = (props) => {
             <Container>
                 <Row className={style.contests}>
                     <Col md = {{size: 6}}>
+                        {<div className={style.link} onClick={() => clickHandler({type: 'Name'}, 'Name' )}>Name contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler({type: 'Logo'}, 'Logo' )}>Logo contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler({type: 'Tagline'}, 'Tagline' )}>Tagline contests</div> }
                     </Col>
                     <Col md = {{size: 6}}>
                     </Col>
                 </Row>
+                {lastFilter && <div  className={style.filter} onClick={() => filterHandler()}>Current filter: {lastFilter}</div>}
+
 
                 {
                     contests.map(c => {

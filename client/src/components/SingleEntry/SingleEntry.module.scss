@@ -1,9 +1,16 @@
 @import "../../sass/variables";
 @import "../../sass/mixins";
 
+.topContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .container{
   @include flex-col-around-start;
-  width: 240px;
+  width: 100%;
   min-width: 240px;
   height: 150px;
   border-radius: 3px;
@@ -64,4 +71,11 @@
   @include flex-row-between-center;
   width: 100%;
   height: 30px
+}
+
+
+.imgPreview{
+  height: 100px;
+  width: auto;
+  padding: 20px;
 }

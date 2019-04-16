@@ -7,14 +7,21 @@ const { ApplicationError,
 module.exports.createSuggestion = async(req,res,next) => {
     const entry = JSON.parse(req.body.entry);
     const {user_id, contest_id, answer} = entry;
-    if(req.file){
-        entry.file = req.file.filename;
+    let file;
+    console.log(req.files['entryFile'][0].filename)
+    if(req.files){
+        console.log(23333333333)
+        file = req.files['entryFile'][0].filename;
+    } else {
+        file = ''
     }
+
     try{
         const entry = await db.Suggestions.create({
             user_id,
             contest_id,
-            answer
+            answer,
+            file
         });
         if (entry) {
             const contest = await db.Contests.findOne({
@@ -74,8 +81,7 @@ module.exports.rejectSuggestion =  async (req, res , next) => {
         if (!contest) {
             next(new ApplicationError('Contest not found'))
         }
-        console.log('sending CONTESTS')
-        console.log(contest)
+
         res.status(200).send(contest);
     } catch (e) {
         next(e);

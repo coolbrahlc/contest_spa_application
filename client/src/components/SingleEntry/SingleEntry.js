@@ -20,7 +20,8 @@ export default function SingleEntry(props) {
     };
     const renderImage = () => {
         if(file){
-            return <img src={`${publicURL}/${file}`} alt="entryPic"/>
+            return <div className={style.img}><img src={`${publicURL+file}`}  className={style.imgPreview} alt={"logo"}/></div>
+               // <div className={style.img}><img src={`${publicURL+file}`} className="img-fluid" alt={"logo"}/></div>
         }
     };
 
@@ -52,11 +53,17 @@ export default function SingleEntry(props) {
     if(User) {
         return (
             <div className={style.container}>
-                <p>Username: {User.full_name}</p>
-                <span>Answer: {answer}</span>
-                {
-                   renderImage()
-                }
+                <div className={style.topContainer}>
+                    <div>
+                        <p>Username: {User.full_name}</p>
+                        <span>Answer: {answer}</span>
+                    </div>
+                    <div>
+                        {
+                            renderImage()
+                        }
+                    </div>
+                </div>
                 <div className={style.menuGroup}>
                     {
                         renderActions()

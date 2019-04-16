@@ -139,18 +139,21 @@ class  ContestPage extends Component {
                             <h5 className={style.brief__thick}>Description</h5>
                             <p>{venture_name}</p>
                         </li>
-                        <li className={style.brief__thin}>
-                            <h5>File</h5>
+                        {file &&
+                            <li className={style.brief__thin}>
+                                <h5>File</h5>
 
-                            {(type === 'Logo')?
-                                this.renderImage(file) :
+                                {(type === 'Logo')?
+                                    this.renderImage(file) :
 
-                                <h5 className={style.brief__thick}>
-                                    <a href={publicURL + file}>{file}</a>
-                                </h5>
-                            }
+                                    <h5 className={style.brief__thick}>
+                                        <a href={publicURL + file}>{file}</a>
+                                    </h5>
+                                }
 
-                        </li>
+                            </li>
+                        }
+
                     </ul>
                 </>}
 
@@ -186,7 +189,6 @@ class  ContestPage extends Component {
                 return(
                     <div>
                         <CreateEntry type={type} contestId={id} user ={user} {...this.props}/>
-                        <div>My entries:</div>
                         <div className={style.entryContainer}>
                             {
                                 Suggestions.filter(s => (s.user_id === user.id)).map(e => {
@@ -258,13 +260,9 @@ class  ContestPage extends Component {
                 {status}
             </p>
         );
-    }
-
+    };
 
     render() {
-        const {sideMenuStatus} = this.state;
-        const {contest, user} = this.props;
-
         if(!this.props.contest){
             return (
                 <Container>
@@ -272,7 +270,6 @@ class  ContestPage extends Component {
                 </Container>
             );
         } else {
-            console.log(this.props.contest)
             return (
                 <Row className={style.fullHeight}>
                     <Col className={style.clearLeft} md={{ span: 10, offset:2}}>
@@ -282,9 +279,7 @@ class  ContestPage extends Component {
                             }
                         </div>
                     </Col>
-                    {/*<Col md={"auto"} className={style.clearRight}>*/}
-                        {/*<SidebarRight contestData={contest} totalEntries={contest.entriesCount} myUser={user}/>*/}
-                    {/*</Col>*/}
+
                 </Row>
             );
         }

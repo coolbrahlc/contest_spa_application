@@ -176,6 +176,8 @@ class  Register extends Component {
                             touched.passwordConfirm && <div className={style.formError}>{errors.passwordConfirm}</div>}
                         </div>
                     </div>
+                    {backendErr && <div className={style.formError}>{backendErr}</div>}
+
 
                     <div className={style.formRadiobar}>
 
@@ -216,10 +218,6 @@ class  Register extends Component {
                         </button>
                     </div>
 
-
-
-
-                {backendErr && <div className="input-feedback">{backendErr}</div>}
                 {user && this.registerSuccess()}
                 </div>
             </form>
@@ -244,8 +242,6 @@ class  Register extends Component {
                         initialValues={{ email: '', password: '', passwordConfirm: '', name: '', displayName: '', lastName: "" ,
                             permission: 'false'}}
                         onSubmit={(values, { setSubmitting }) => {
-                            alert(JSON.stringify(values, null, 2));
-                            console.log(values)
                             setSubmitting(false);
                             this.registerUser(values);
                         }}

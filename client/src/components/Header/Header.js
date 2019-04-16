@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import Logo from "../../images/squadhelp-logo-color.jpg";
 import { Container, Row, Col, Navbar, Nav, Dropdown } from 'react-bootstrap';
 import {logout, auth} from "../../actions/actionCreator";
+import {publicURL} from "../../api/baseURL";
+import pic from "../../images/profilePic.jpeg";
 
 class Header extends Component{
 
@@ -16,24 +18,41 @@ class Header extends Component{
         }
     };
 
+    renderProfilePic= (profilePic) => {
+        if (profilePic) {
+
+            return <div className={style.image}><img key={profilePic} className="img-fluid h-100" src={publicURL+profilePic} alt="img"/></div>
+        } else {
+            return <div className={style.image}><img key={pic} className="img-fluid h-100" src={pic} alt="img"/></div>
+        }
+    };
+
     renderTopBar = () => {
         const {user} = this.props;
         if(user){
             return (
                 <>
                     <Col md={{size: 2, offset: 10}}>
-                        <Dropdown className={style.headerMenu}>
-                            <Dropdown.Toggle id="dropdown-basic" className={style.headerButton}>
-                                {user.full_name}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <Dropdown.Header>Options</Dropdown.Header>
-                                <Dropdown.Divider />
-                                <Dropdown.Item>Profile</Dropdown.Item>
-                                <Dropdown.Item><Link to={"/dashboard"}>Dashboard</Link></Dropdown.Item>
-                                <Dropdown.Item><p onClick={this.onClick}>Logout</p></Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <Row>
+                            <Col md={{size: 6}}>
+                                {this.renderProfilePic(user.profile_picture)}
+                            </Col>
+                            <Col md={{size: 6}}>
+                                <Dropdown className={style.headerMenu}>
+                                    <Dropdown.Toggle id="dropdown-basic" className={style.headerButton}>
+                                        {user.full_name}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <Dropdown.Header>Options</Dropdown.Header>
+                                        <Dropdown.Divider />
+                                        <Dropdown.Item>Profile</Dropdown.Item>
+                                        <Dropdown.Item><Link to={"/dashboard"}>Dashboard</Link></Dropdown.Item>
+                                        <Dropdown.Item><p onClick={this.onClick}>Logout</p></Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </Col>
+                        </Row>
+
                     </Col>
                 </>
             );

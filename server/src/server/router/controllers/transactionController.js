@@ -3,48 +3,38 @@ const dateSet = require('../../utils/dateSet');
 const db = require('../../models/index');
 const { ApplicationError,
         UnauthorizedError,
-        UserNotFoundError} = require('../../utils/customErrrors/errors');
+        UserNotFoundError, BankError} = require('../../utils/customErrrors/errors');
 
 
-module.exports.checkCreditCard=(req,res,next)=>{
-    db.BankAccounts.findOne({where: {card_number: req.body.cardNumber}})
-        .then(foundAccount=>{
-            if (foundAccount.account < config.PRIZE_POOL) {
-                next(new ApplicationError("not enough money on card"));
-            }
-            else{
-                next();
-            }
-        })
-        .catch(err=>{
-            next(new ApplicationError(" Credit card not found"));
-        })
+
+const payment = async (sender, receiver, t) => {
+    try {
+        await db.BankAccounts.update({ balance: db.sequelize.literal('balance -' + config.PRIZE_POOL) },
+            { where: {card_number: sender}, transaction: t});
+        await db.BankAccounts.update({ balance: db.sequelize.literal('balance +' + config.PRIZE_POOL) },
+            { where: {card_number: receiver}, transaction: t });
+    } catch(e) {
+        throw new BankError();
+    }
 };
 
 
-module.exports.createContests = (req, res, next) => {
-    let insertContestPromises = db.Contests.bulkCreate(req.contests);
-    db.sequelize.transaction(()=> {
-        return Promise.all([
-            db.BankAccounts.update(
-                { account: db.sequelize.literal('account -' + config.PRIZE_POOL) },
-                { where: {card_number: req.body.cardNumber }}                   //   1111222233334444
-            ),
-            db.BankAccounts.update(
-                { account: db.sequelize.literal('account +' + config.PRIZE_POOL) },
-                { where: {card_number: config.BANK_ACCOUNT_CARD}}
-            ),
-        ])
-    })
-    .then(()=>{
-        return insertContestPromises;
-    })
-    .then(results=> {
-        res.status(200).send({results:results, status:"success"})
-    })
-    .catch(err => {
-        next(new ApplicationError(err))
-    });
+module.exports.createContests = async (req, res, next) => {
+    let t;
+    try {
+        t = await db.sequelize.transaction();
+        await payment(req.body.cardNumber, config.BANK_ACCOUNT_CARD, t);
+        const contests = await db.Contests.bulkCreate(req.contests, {returning: true, transaction: t});
+        console.log('contests', contests);
+
+        if (!contests[0]) {
+            throw new BankError('Failed operation');
+        }
+        await t.commit();
+        res.status(200).send({results:contests, status:"success"})
+    } catch(e) {
+        await t.rollback();
+        next(e);
+    }
+
 };
-
-

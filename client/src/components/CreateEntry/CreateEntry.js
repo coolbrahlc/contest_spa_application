@@ -7,7 +7,9 @@ import {createEntry} from "../../actions/actionCreator";
 const CreateEntry = (props) => {
 
     const [text, setText] = useState("");
-    const [originalFile, setFile] = useState(null);
+    const [originalFile, setFile] = useState(false);
+    const [src, setSrc] = useState(false);
+
 
     const handleTextChange = (event) => {
         setText(event.target.value);
@@ -18,6 +20,7 @@ const CreateEntry = (props) => {
         if(contestId && user) {
             if(text || originalFile){
                 const fdata = new FormData();
+                console.log(originalFile);
                 fdata.append('entryFile', originalFile);
                 fdata.append('entry', JSON.stringify({
                     user_id: user.id,
@@ -25,7 +28,8 @@ const CreateEntry = (props) => {
                     answer: text
                 }));
                 createEntry(fdata);
-                //props.history.push('/dashboard');
+                setSrc(false);
+                setFile(false);
             }
         }
     };
@@ -49,32 +53,34 @@ const CreateEntry = (props) => {
     const handleImageChange = (e) => {
         const fileData = e.target.files[0];
         setFile(fileData);
+        const reader  = new FileReader();
+        reader.onloadend = function () {
+            const src = reader.result;
+            setSrc(src)
+        };
+        reader.readAsDataURL(fileData);
     };
 
-    // const renderPreview = () => {
-    //     if(originalFile){
-    //         return <FilePreview file={originalFile}>
-    //             {(preview) => <img src={preview} alt={"logo"}/>}
-    //         </FilePreview>
-    //     }
-    // };
 
     const renderPicEntrie = () => {
         return(
-            <div>
+            <div className={style.entryContainer}>
                 <label>Input you idea for contest</label>
-                <input type="file" name={"file"} accept="image/*" onChange={handleImageChange}/>
-                <input type={"submit"} value={"Send"} onClick={handleSubmit}/>
+                <input type="file"  name={"file"} accept=".png, .jpg, .jpeg"  onChange={handleImageChange}/>
+
                 {
-                    //renderPreview()
+                    src && <div className={style.img}><img src={src} className="img-fluid" alt={"logo"}/></div>
                 }
+                <div className="btn btn-primary btn mt-3 mb-3" onClick={handleSubmit}>
+                    Submit entry
+                </div>
             </div>
         );
     };
 
     const renderEntrie = () => {
         const {type} = props;
-        if(type === 'logo'){
+        if(type === 'Logo'){
             return renderPicEntrie()
         }
         else{

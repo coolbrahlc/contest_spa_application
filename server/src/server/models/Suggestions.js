@@ -34,6 +34,11 @@ module.exports = (sequelize , DataTypes) => {
             allowNull: false
         },
 
+        file: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+
         status: {
             type: DataTypes.ENUM('rejected', 'winner', 'review'),
             defaultValue: 'review',

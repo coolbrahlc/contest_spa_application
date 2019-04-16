@@ -10,7 +10,7 @@ module.exports.getContestsById =  async (req, res , next) => {
                 include: [{model: db.Users}, { model: db.Suggestions,
                     include: [{
                         model: db.Users,
-                        attributes: ['full_name', 'profile_picture']
+                        attributes: ['full_name', 'profile_picture', 'email', 'id']
                     }]
                 }]
             },

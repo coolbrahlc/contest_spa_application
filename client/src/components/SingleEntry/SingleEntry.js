@@ -2,6 +2,7 @@ import React from "react";
 import style from "./SingleEntry.module.scss";
 import {publicURL} from "../../api/baseURL";
 import { ROLE } from "../../constants/constants";
+import pic from "../../images/profilePic.jpeg";
 
 
 export default function SingleEntry(props) {
@@ -24,6 +25,14 @@ export default function SingleEntry(props) {
                // <div className={style.img}><img src={`${publicURL+file}`} className="img-fluid" alt={"logo"}/></div>
         }
     };
+    const renderProfilePic = (profilePic) => {
+        if (profilePic) {
+            return <img className={style.imgPreview} key={profilePic} src={publicURL+profilePic} alt="img"/>
+        } else {
+            return <img className={style.imgPreview} key={pic} src={pic} alt="img"/>
+        }
+    };
+
 
 
     const renderActions = () => {
@@ -55,7 +64,9 @@ export default function SingleEntry(props) {
             <div className={style.container}>
                 <div className={style.topContainer}>
                     <div>
+                        <div>{ renderProfilePic(User.profile_picture) }</div>
                         <p>Username: {User.full_name}</p>
+                        <p>Email: {User.email}</p>
                         <span>Answer: {answer}</span>
                     </div>
                     <div>

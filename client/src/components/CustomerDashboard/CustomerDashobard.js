@@ -6,6 +6,8 @@ import { GridLoader } from 'react-spinners';
 import { Container, Row, Col } from 'react-bootstrap';
 import ContestPreview from "../ContestPreview/ContestPreview";
 import queryString from 'query-string';
+import { ACTIVE, INACTIVE, COMPLETED } from '../../constants/constants'
+
 
 const filterObj = {
     active: {is_active: true},
@@ -70,7 +72,7 @@ const CustomerDashboard = (props) => {
             )
     }
     else{
-        if(!contests.length>0 && !lastFilter){
+        if(!contests && !lastFilter){
             return (
                 <Container>
                     <Row className={style.contests}>
@@ -80,7 +82,21 @@ const CustomerDashboard = (props) => {
                             </div>
                         </Col>
                     </Row>
-                    <Row>Nothing found</Row>
+                    <Row>Error</Row>
+                </Container>
+            );
+        }
+        if(contests.length===0 && !lastFilter){
+            return (
+                <Container>
+                    <Row className={style.contests}>
+                        <Col md = {{size: 2, offset: 5}}>
+                            <div className={style.button}>
+                                <Link className={style.button__link} to="/contest">START CONTEST</Link>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>You dont have contests</Row>
                 </Container>
             );
         }
@@ -88,9 +104,9 @@ const CustomerDashboard = (props) => {
             <Container>
                 <Row className={style.contests}>
                     <Col md = {{size: 6}}>
-                        {<div className={style.link} onClick={() => clickHandler('active' )}>Active Contests</div>}
-                        {<div className={style.link} onClick={() => clickHandler('completed' )}>Completed contests</div>}
-                        {<div className={style.link} onClick={() => clickHandler('inactive' )}>Inactive contests</div> }
+                        {<div className={style.link} onClick={() => clickHandler(ACTIVE)}>Active Contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler(COMPLETED)}>Completed contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler(INACTIVE)}>Inactive contests</div> }
                     </Col>
                     <Col md = {{size: 6}}>
                         <div className={`${style.button} float-right`}>

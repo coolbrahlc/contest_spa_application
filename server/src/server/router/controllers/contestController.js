@@ -1,6 +1,7 @@
 const config = require('../../utils/consts');
 const db = require('../../models/index');
 const { ApplicationError, UnauthorizedError} = require('../../utils/customErrrors/errors');
+const { CUSTOMER_ROLE, CREATIVE_ROLE, TAGLINE_TYPE, LOGO_TYPE } = require('../../utils/consts');
 
 
 module.exports.getContestsById =  async (req, res , next) => {
@@ -10,7 +11,7 @@ module.exports.getContestsById =  async (req, res , next) => {
                 include: [{model: db.Users}, { model: db.Suggestions,
                     include: [{
                         model: db.Users,
-                        attributes: ['full_name', 'profile_picture', 'email', 'id']
+                        attributes: ['full_name', 'profile_picture', 'email', 'id'],
                     }]
                 }]
             },
@@ -39,69 +40,55 @@ module.exports.getContestsById =  async (req, res , next) => {
 module.exports.getContests =  async (req, res , next) => {
 
     const params = req.body.params;
-    if (req.decoded.role===0) {
+    if (req.decoded.role===CUSTOMER_ROLE) {
         params.creator_id = req.decoded.id;
     } else {
-        params.is_active = true
+        params.is_active = true;
     }
     try {
-        console.log(req.body.params)
-        let customersContests = await db.Contests.findAll(
-            {where:req.body.params,
-                include: [
-                    {
-                        model: db.Suggestions,
-                    }
-                ]
-            },
+        const customersContests = await db.Contests.findAll(
+    { where:req.body.params, include: [{  model: db.Suggestions }] }
         );
         customersContests.map(contest => {
-            contest.dataValues.entriesCount = contest.Suggestions.length
+            contest.dataValues.entriesCount = contest.Suggestions.length;
         });
 
         if (!customersContests) {
-            next(new ApplicationError('Not found'))
+            next(new ApplicationError('Not found'));
         }
-        res.status(200).send(customersContests)
+        res.status(200).send(customersContests);
     } catch (e) {
-        next(new ApplicationError('Internal error'))
+        next(new ApplicationError('Internal error'));
     }
 };
 
-module.exports.updateContest = async (req,res,next) => {
-
+module.exports.updateContest = async (req, res, next) => {
     try {
         const checkContest = await db.Contests.findOne({where:{id: req.params.id}});
         if (checkContest.creator_id!==req.decoded.id) {
-            next(new UnauthorizedError('Customer can update only his contest'))
+            next(new UnauthorizedError('Customer can update only his contest'));
         }
+        let edit = Object.values(req.body);
+        edit = JSON.parse(edit[0]);
 
-        const contestBody = Object.assign({}, req.body);
-        let contest = [];
-        Object.keys(contestBody).forEach(key => {
-            contest.push(JSON.parse(contestBody[key]));
-        });
-
-        const edit =  contest[0];
-        console.log(edit.type);
-
-        let fileField = req.files[edit.type.toLowerCase()+'File'] ;  // adding file path
-        console.log(fileField);
+        const fileField = req.files[edit.type.toLowerCase()+'File'] ;  // adding file path
 
         if (fileField) {
             edit.file = fileField[0].filename;
         }
 
         const updated = await db.Contests.update(edit, {
-            returning: true,
             where: {
-                id: req.params.id
-            }
+                id: req.params.id,
+            },
+            returning: true,
         });
-        if (updated) {
-            next()
+        if (updated[0]<1) {
+            throw new ApplicationError('Entry not found');
         }
-        }
+        const updatedContest = updated[1][0].dataValues;
+        res.status(200).send(updatedContest);
+    }
     catch (e) {
         next(e);
     }

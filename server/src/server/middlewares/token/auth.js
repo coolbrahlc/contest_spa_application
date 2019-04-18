@@ -17,7 +17,7 @@ module.exports.tokenCheck=(req,res,next)=>{
     try {
         req.decoded = jwt.verify(accessToken, config.SECRET);
         const {id, role} = req.decoded;
-
+        // TODO REMOVE?
         db.Users.findOne({where: {id: req.decoded.id} })
             .then(user=>{
 
@@ -29,8 +29,8 @@ module.exports.tokenCheck=(req,res,next)=>{
                 next();
             })
             .catch(err=>{
-                next(err)
-            })
+                next(err);
+            });
 
     } catch (err) {
         next(new UnauthorizedError('token error'));
@@ -40,17 +40,17 @@ module.exports.tokenCheck=(req,res,next)=>{
 
 module.exports.createNewToken = (req,res,next) => {
     const {id, role} = req.decoded;
-    req.body.token = jwt.sign({id: id, role: role}, config.SECRET, {expiresIn: "30d"});
+    req.body.token = jwt.sign({ id, role }, config.SECRET, {expiresIn: "30d"});
     next();
 };
 
 
-module.exports.sendToken = (req,res,next) => {
-    const {id, role} = req.decoded;
+module.exports.sendToken = (req,res, next) => {
+    const { id, role } = req.decoded;
     res.send({
         token: req.body.token,
-        role: role,
-        id: id,
+        role,
+        id,
         message: 'Successful token check',
         user: req.body.user,
     });
@@ -58,8 +58,8 @@ module.exports.sendToken = (req,res,next) => {
 
 
 module.exports.tokenUpdate= async (req,res, next) => {
-    const {id} = req.decoded;
-    const user = await db.Users.findOne({where: {id: id}});
+    const { id } = req.decoded;
+    const user = await db.Users.findOne({ where: { id } });
     if(!user){
         next(new UserNotFoundError());
     }
@@ -71,7 +71,7 @@ module.exports.tokenUpdate= async (req,res, next) => {
                 role: user.role,
                 id: user.id,
                 message: 'Successful token update',
-                user: user,
+                user,
             });
         }
         else{

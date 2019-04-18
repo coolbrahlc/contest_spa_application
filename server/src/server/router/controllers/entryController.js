@@ -2,158 +2,132 @@ const dateSet = require('../../utils/dateSet');
 const db = require('../../models/index');
 const { ApplicationError,
         UnauthorizedError,
-        UserNotFoundError} = require('../../utils/customErrrors/errors');
+        UserNotFoundError } = require('../../utils/customErrrors/errors');
+const { ENTRY_REJECTED, ENTRY_WINNER, TAGLINE_TYPE, LOGO_TYPE } = require('../../utils/consts');
 
-module.exports.createSuggestion = async(req,res,next) => {
+
+module.exports.createSuggestion = async(req, res, next) => {
     const entry = JSON.parse(req.body.entry);
-    const {user_id, contest_id, answer} = entry;
+    const { user_id, contest_id, answer } = entry;
     let file;
     if(req.files['entryFile']){
         file = req.files['entryFile'][0].filename;
     } else {
-        file = ''
+        file = '';
     }
-
-    try{
+    try {
         const entry = await db.Suggestions.create({
             user_id,
             contest_id,
             answer,
-            file
+            file,
         });
-        if (entry) {
-            const contest = await db.Contests.findOne({
-                where: {
-                    id: contest_id
-                },
-                include: [{model: db.Users}, { model: db.Suggestions,
-                    include: [{
-                        model: db.Users,
-                        attributes: ['full_name', 'profile_picture']
-                    }]
-                }],
-                order: [["created_at","DESC"]]
 
-            });
-            res.send(contest);
+        if (!entry) {
+            throw new ApplicationError();
         }
+        let resultedEntry = await db.Suggestions.findOne({
+            where: {
+                id: entry.id,
+            },
+            include: [{
+                model: db.Users,
+                attributes: ['full_name', 'profile_picture', 'email', 'id'],
+            }],
+            order: [["created_at","DESC"]],
+
+        });
+        resultedEntry = resultedEntry.dataValues;
+        res.send(resultedEntry);
     }
     catch (e) {
         next(e);
+        next(new ApplicationError('Failed creating entry'));
     }
 };
 
-module.exports.rejectSuggestion =  async (req, res , next) => {
+module.exports.rejectSuggestion =  async (req, res, next) => {
 
-    const {id, contestId, customerId} = req.body;
+    const { id, contestId, customerId } = req.body;
     try {
-
-        const entry = await db.Suggestions.update({
-                status: "rejected"},
-            {where: {id: id},
-                returning: true
-            });
-
-        if (!entry) {
-            next(new ApplicationError('Entry not found'));
+        const entry = await db.Suggestions.update({ status: ENTRY_REJECTED },
+            { where: { id }, returning: true });
+        if (entry[0]<1) {
+            throw new ApplicationError('Entry not found');
         }
-
-        const contest = await db.Contests.findOne({
-            where: {
-                id: entry[1][0].dataValues.contest_id
-            },
-            include: [{model: db.Users}, { model: db.Suggestions,
-                include: [{
-                    model: db.Users,
-                    attributes: ['full_name', 'profile_picture']
-                }]
-            }]
-        });
-
-        if (!contest) {
-            next(new ApplicationError('Contest not found'))
-        }
-
-        res.status(200).send(contest);
+        const updatedId= entry[1][0].dataValues.id;
+        res.status(200).send({ id: updatedId });
     } catch (e) {
-        next(e);
+        next(new ApplicationError('Entry not found'));
     }
 };
 
-module.exports.setWinnerSuggestion =  async (req, res , next) => {
+module.exports.setWinnerSuggestion =  async (req, res, next) => {
 
-    const {customerId, contestId, entryId, creatorId} = req.body;
+    const { customerId, contestId, entryId, creatorId } = req.body;
     let t;
     let endedContest;
-
     try {
         t = await db.sequelize.transaction();
 
-        await db.Suggestions.update({status: "winner"},
-            {where: {id: entryId}, returning: true, transaction:t} );
+        const entry = await db.Suggestions.update({ status: ENTRY_WINNER },
+            { where: { id: entryId }, returning: true, transaction:t });
+
+        if (entry[0]<1) {
+            throw new ApplicationError('Entry not found');
+        }
 
         const op =db.Sequelize.Op;
-        await db.Suggestions.update({status: "rejected"},
-            {where: {contest_id: contestId, id: {[op.ne]: entryId}}, transaction:t });
+        await db.Suggestions.update({ status: ENTRY_REJECTED },
+            { where: { contest_id: contestId, id: { [op.ne]: entryId } }, transaction:t });
 
         // Deactivating current contest
         endedContest = await db.Contests.update(
-            {completed: true, is_active: false},  // days_left: 0},
-            {where: {id: contestId, creator_id: customerId},
-                returning: true, transaction:t} );
+            { completed: true, is_active: false },
+            { where: { id: contestId, creator_id: customerId },
+                returning: true, transaction:t });
 
         if (endedContest[0]===0) {
-            next(new ApplicationError('Transaction error'))
+            throw new ApplicationError('Transaction error');
         }
         endedContest = endedContest[1][0].dataValues;
 
         // Starting next contest in order
         if (endedContest.order_id) {
             const contests = await db.Contests.findAll(
-                {where: {order_id: endedContest.order_id, completed: false}, transaction:t });
+      { where: { order_id: endedContest.order_id, completed: false, id: { [op.ne]: entryId } }, transaction:t});
             if (contests.length) {
-                const nextId =Math.min(...contests.map(c => {
-                    return c.dataValues.id;
-                }));
-                const filtered = contests.filter( c => c.dataValues.id === nextId );
-                const endDate = dateSet.addDays(filtered[0].days_passed);
-
+                let nextContest = contests.filter(c =>  c.dataValues.type === TAGLINE_TYPE);
+                if (nextContest.length<1) {
+                    nextContest = contests.filter(c =>  c.dataValues.type === LOGO_TYPE);
+                }
+                const endDate = dateSet.addDays(nextContest[0].days_passed);
                 db.Contests.update(
-                    {is_active: true, end_date: endDate},
+                    { is_active: true, end_date: endDate },
                     {
                         where: {
-                            id: nextId,
+                            id: nextContest[0].id,
                             is_active: false,
                             completed: false,
                         },
-                        transaction:t
+                        transaction:t,
                     }
-                )
+                );
             }
         }
+
         // Add prize money to user
         await db.Users.update(
-            {account: db.sequelize.literal('account +' + endedContest.prize_pool)},
-            {where: {id: creatorId}, transaction:t});
+            { account: db.sequelize.literal('account +' + endedContest.prize_pool)},
+            { where: { id: creatorId }, transaction:t });
 
-        const updatedContest = await db.Contests.findOne({
-            where: {
-                id: endedContest.id
-            },
-            include: [{model: db.Users}, { model: db.Suggestions,
-                include: [{
-                    model: db.Users,
-                    attributes: ['full_name', 'profile_picture']
-                }]
-            }],
-            transaction:t
-        });
-
+        const winnerId= entry[1][0].dataValues.id;
         await t.commit();
-        res.status(200).send(updatedContest);
+        res.status(200).send({ id: winnerId });
 
     } catch (e) {
+        console.log(e);
         await t.rollback();
-        next(e);
+        next(new ApplicationError('Transaction error'));
     }
 };

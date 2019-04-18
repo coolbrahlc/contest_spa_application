@@ -131,21 +131,21 @@ class  contestType extends Component {
             bodyFormData.append(`${contestType}File`, nameFileValue);
         }
 
-        if (!editMode) {
-            collectFormData(bodyFormData);
-            const order = contestsToInsert;
-            const nextStep = order.indexOf(contestType)+1;
-
-            if (nextStep === order.length) {
-                history.push({ pathname: '/checkout' });
-            } else {
-                history.push({ pathname: '/'+ order[nextStep], state: { contestType: order[nextStep]} });
-            }
-        } else {
+        if (editMode) {
             update({
                 data: bodyFormData,
                 id: contest.id
             })
+        } else {
+            collectFormData(bodyFormData);
+            const order = contestsToInsert;
+            const nextStep = order.indexOf(contestType) + 1;
+
+            if (nextStep === order.length) {
+                history.push({pathname: '/checkout'});
+            } else {
+                history.push({pathname: '/' + order[nextStep], state: {contestType: order[nextStep]}});
+            }
         }
     };
 

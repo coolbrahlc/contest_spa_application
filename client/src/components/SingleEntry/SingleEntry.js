@@ -67,6 +67,8 @@ export default function SingleEntry(props) {
                         <div>{ renderProfilePic(User.profile_picture) }</div>
                         <p>Username: {User.full_name}</p>
                         <p>Email: {User.email}</p>
+                        <p>entry ID: {id}</p>
+
                         <span>Answer: {answer}</span>
                     </div>
                     <div>

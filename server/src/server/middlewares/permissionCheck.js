@@ -1,10 +1,9 @@
 const uuid = require('node-uuid');
 const config = require('../utils/consts');
 const dateSet = require('../utils/dateSet');
-import {CREATIVE_ROLE, CUSTOMER_ROLE} from '../utils/consts';
-const { ApplicationError, UnauthorizedError} = require('../utils/customErrrors/errors');
+import { CREATIVE_ROLE, CUSTOMER_ROLE } from '../utils/consts';
+const { ApplicationError, UnauthorizedError } = require('../utils/customErrrors/errors');
 const db = require('../models/index');
-
 
 
 module.exports.creativeOnly = async (req, res, next) => {
@@ -29,15 +28,15 @@ module.exports.isOwner = async (req, res, next) => {
         const checkIsOwner = await db.Contests.findOne({
             attributes: ['creator_id'],
             where: {
-                id: contestId
-            }
+                id: contestId,
+            },
         });
         if (checkIsOwner.dataValues.creator_id!==req.decoded.id) {
-            next(new ApplicationError('Permission denied'))
+            throw new ApplicationError('Permission denied');
         }
-        next()
+        next();
     } catch (e) {
-        next(e)
+        next(new ApplicationError('Permission denied'));
     }
 
 };

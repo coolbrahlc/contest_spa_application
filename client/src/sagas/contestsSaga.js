@@ -33,7 +33,7 @@ export function* updateContestSaga(action){
     yield put({type: ACTION.GET_CONTEST_BY_ID_REQUEST});
     try{
         const {data} = yield restController.updateContest(action.data);
-        yield put({type: ACTION.GET_CONTEST_BY_ID_RESPONSE, data});
+        yield put({type: ACTION.UPDATE_CONTEST_RESPONSE, data});
     }
     catch (e) {
         yield put({type: ACTION.GET_CUSTOMER_CONTESTS_ERROR, error: e.response.data.message});

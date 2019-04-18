@@ -164,33 +164,35 @@ class  ContestPage extends Component {
     renderEntries = () => {
         const {user} = this.props;
         const {id, type, Suggestions, is_active} = this.props.contest;
+        const {entries} = this.props;
 
         if(user){
             if(user.role === ROLE.CUSTOMER) {
                 return(
                     <div className={style.entryContainer}>
                     {
-                            Suggestions.map(e => {
-                                return <SingleEntry key={e.id} data={e}
-                                                    reject = {this.props.rejectEntry}
-                                                    win = {this.props.setEntryWinner}
-                                                    contestId = {id}
-                                                    isActiveContest = {is_active}
-                                                    customerId = {user.id}
-                                                    role = {user.role}
-                                />
-                            })
-                        }
+                        entries.map(e => {
+                            return <SingleEntry key={e.id} data={e}
+                                                reject = {this.props.rejectEntry}
+                                                win = {this.props.setEntryWinner}
+                                                contestId = {id}
+                                                isActiveContest = {is_active}
+                                                customerId = {user.id}
+                                                role = {user.role}
+                            />
+                        })
+                    }
                     </div>
                 )
             }
             else{
+                console.log('creative entr', entries);
                 return(
                     <div>
                         <CreateEntry type={type} contestId={id} user ={user} {...this.props}/>
                         <div className={style.entryContainer}>
                             {
-                                Suggestions.filter(s => (s.user_id === user.id)).map(e => {
+                                entries.filter(s => (s.user_id === user.id)).map(e => {
                                     return <SingleEntry key={e.id} data={e}
                                                         reject = {this.props.rejectEntry}
                                                         win = {this.props.setEntryWinner}
@@ -225,22 +227,13 @@ class  ContestPage extends Component {
                 <div className={style.container}>
                     <Row>
                         <Col className={style.contestContainer} md={{ span: 8}}>
-                            {
-                                this.renderBrief(contest)
-                            }
-
-
-
-                            {
-                                this.renderEntries()
-                            }
+                            {this.renderBrief(contest)}
+                            {this.renderEntries()}
                         </Col>
                         <Col className={style.sidebarContainer} md={{ span: 2 }}>
                             <SidebarRight contestData={contest} totalEntries={contest.Suggestions.length} myUser={user}/>
-
                         </Col>
                     </Row>
-
                 </div>
             );
         }
@@ -287,8 +280,8 @@ class  ContestPage extends Component {
 
 const mapStateToProps = (state) => {
     const {user} = state.authReducer;
-    const {contest, isFetchingContest, error, preferences} = state.customerContestsReducer;
-    return {error, contest, isFetchingContest, preferences, user};
+    const {contest, entries, isFetchingContest, error, preferences} = state.customerContestsReducer;
+    return {error, contest, entries, isFetchingContest, preferences, user};
 };
 
 const mapDispatchToProps = (dispatch) => ({

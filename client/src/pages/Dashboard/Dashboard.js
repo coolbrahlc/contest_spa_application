@@ -63,13 +63,7 @@ class  Dashboard extends Component {
     }
 
     render() {
-        return (
-            <>
-                {
-                    this.renderDashboard()
-                }
-            </>
-        );
+        return this.renderDashboard();
     }
 
 }

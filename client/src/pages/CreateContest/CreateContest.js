@@ -40,7 +40,7 @@ class  CreateContest extends Component {
                     <div className={style.mostPopularCategories}>
                         <Container>
                             <Row>
-                                <Col md={12}>
+                                <Col md={12} sm={12} lg={12}>
                                     <div className={style.heading}>
                                         <h3>Our Most Popular <b>Categories</b></h3>
                                         <p>Pick from our most popular categories,

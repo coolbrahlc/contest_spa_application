@@ -6,7 +6,7 @@ import { GridLoader } from 'react-spinners';
 import { Container, Row, Col } from 'react-bootstrap';
 import ContestPreview from "../ContestPreview/ContestPreview";
 import queryString from 'query-string';
-
+import { NAME_TYPE, LOGO_TYPE, TAGLINE_TYPE } from '../../constants/constants'
 const CreativeDashboard = (props) => {
 
     const {isFetching, contests, getContests} = props;
@@ -58,7 +58,7 @@ const CreativeDashboard = (props) => {
         )
     }
     else{
-        if(!contests.length>0 && !lastFilter){
+        if(!contests && !lastFilter){
             return (
                 <Container>
                     <Row className={style.contests}>
@@ -68,7 +68,21 @@ const CreativeDashboard = (props) => {
                             </div>
                         </Col>
                     </Row>
-                    <Row>Nothing found</Row>
+                    <Row>Error</Row>
+                </Container>
+            );
+        }
+        if(contests.length===0 && !lastFilter){
+            return (
+                <Container>
+                    <Row className={style.contests}>
+                        <Col md = {{size: 2, offset: 5}}>
+                            <div className={style.button}>
+                                <Link className={style.button__link} to="/contest">START CONTEST</Link>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>You dont have contests</Row>
                 </Container>
             );
         }
@@ -76,9 +90,9 @@ const CreativeDashboard = (props) => {
             <Container>
                 <Row className={style.contests}>
                     <Col md = {{size: 6}}>
-                        {<div className={style.link} onClick={() => clickHandler('name' )}>Name contests</div>}
-                        {<div className={style.link} onClick={() => clickHandler( 'name' )}>Logo contests</div>}
-                        {<div className={style.link} onClick={() => clickHandler('name' )}>Tagline contests</div> }
+                        {<div className={style.link} onClick={() => clickHandler( NAME_TYPE )}>Name contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler( LOGO_TYPE )}>Logo contests</div>}
+                        {<div className={style.link} onClick={() => clickHandler( TAGLINE_TYPE )}>Tagline contests</div> }
                     </Col>
                     <Col md = {{size: 6}}>
                     </Col>

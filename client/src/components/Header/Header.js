@@ -73,7 +73,7 @@ class Header extends Component{
         }
     };
     renderCreateLink () {
-        const {user} = this.props;
+        var {user} = this.props;
         if (user) {
             if (user.role!==1) {
                 return (

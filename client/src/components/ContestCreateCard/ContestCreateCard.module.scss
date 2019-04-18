@@ -5,6 +5,7 @@
   @include flex-col-start-center;
   height: inherit;
   max-width: 240px;
+  min-width: 100px;
   color: $cardColor;
   padding: 15px;
   cursor: pointer;

@@ -1,10 +1,8 @@
 const uuid = require('node-uuid');
 const config = require('../utils/consts');
-const dateSet = require('../utils/dateSet');
+const { addDays } = require('../utils/dateSet');
 
 module.exports.setActiveContest = (req, res, next) => {
-
-    console.log("files: ",req.files);
 
     const contestsBody = Object.assign({}, req.body);
     delete contestsBody['cardNumber'];
@@ -30,7 +28,7 @@ module.exports.setActiveContest = (req, res, next) => {
     });
     const first = contests[0];
     first.is_active = true;
-    first.end_date = dateSet.addDays(contests[0].days_passed);
+    first.end_date = addDays(contests[0].days_passed);
 
     req.contests= contests;
     next();

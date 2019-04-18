@@ -9,22 +9,22 @@ const config = require('../../utils/consts');
 
 module.exports.register = async (req, res, next) => {
     try {
-            const {name, password, email, role} = req.body;
-            let encryptedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-            let registerUser = await db.Users.create({
-                full_name: name,
-                email: email,
-                password: encryptedPassword,
-                updated_at: Date.now(),
-                role: role
-            });
-            if(registerUser){
-                req.decoded ={};
-                req.decoded.id = registerUser.id;
-                req.decoded.role = registerUser.role;
-                req.body.user = registerUser;
-                next()
-            }
+        const {name, password, email, role} = req.body;
+        let encryptedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+        let registerUser = await db.Users.create({
+            full_name: name,
+            email,
+            password: encryptedPassword,
+            updated_at: Date.now(),
+            role,
+        });
+        if(registerUser){
+            req.decoded ={};
+            req.decoded.id = registerUser.id;
+            req.decoded.role = registerUser.role;
+            req.body.user = registerUser;
+            next();
+        }
     } catch (error) {
         next(new UserAlreadyExistsError());
     }
@@ -39,23 +39,23 @@ module.exports.login = async (req, res, next) => {
             if (isEqual) {
                 const token = jwt.sign({ id: user.id, role: user.role}, config.SECRET, {expiresIn: '30d'});
 
-                const updated = await user.update({token: token });
+                const updated = await user.update({ token });
                 if(updated) {
                     res.send({message: 'Successfull login',
-                        token: token,
-                        user: user,
+                        token,
+                        user,
                         id: user.id,
                         role: user.role,
-                    })
+                    });
                 }
                 else{
                     next(new ApplicationError());
                 }
             } else {
-                next(new UserNotFoundError())
+                next(new UserNotFoundError());
             }
         } else {
-            next(new UserNotFoundError())
+            next(new UserNotFoundError());
         }
     } catch(err) {
         next(new ApplicationError(err));

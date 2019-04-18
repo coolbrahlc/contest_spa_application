@@ -8,6 +8,7 @@ import contestType from './pages/ContestType/contestType';
 import checkout from './pages/Checkout/Checkout';
 import dashboard from './pages/Dashboard/Dashboard';
 import Home from './pages/Home/Home';
+import UserProfile from './pages/UserProfile/UserProfile';
 import contestPage from './pages/ContestsPage/contestPage';
 import authCheck from './components/AuthCheck/AuthCheck';
 import HeaderHOC from './components/HeaderHOC/HeaderHOC';
@@ -32,6 +33,8 @@ class App extends Component {
                     <Route exact path="/name/" component={authCheck(HeaderHOC( contestType ))} />
                     <Route exact path="/checkout/" component={authCheck(HeaderHOC(checkout))} />
                     <Route exact path="/dashboard/" component={authCheck(HeaderHOC(dashboard))} />
+                    <Route exact path="/profile/" component={authCheck(HeaderHOC( UserProfile ))} />
+
                     <Route component={NotFound}/>
                 </Switch>
             </div>

@@ -20,9 +20,6 @@ class  Dashboard extends Component {
 
     componentDidMount() {
         const {user} = this.props;
-        if(user) {
-            this.props.getContests({ params: {} });
-        }
     }
 
     renderDashboardHeader(){

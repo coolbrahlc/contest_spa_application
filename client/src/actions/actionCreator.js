@@ -27,7 +27,6 @@ export const getSelects = () => {
   };
 };
 
-
 export const register = (data) => ({
   type: ACTION.USER_REGISTER,
   data
@@ -41,7 +40,6 @@ export const login = (data) => ({
 export const logout = () => ({
   type: ACTION.USER_LOGOUT
 });
-
 
 export const auth = (data) => ({
   type: ACTION.USER_AUTH,
@@ -72,7 +70,6 @@ export const getCustomerContests = (data) => {
   }
 };
 
-
 export const updateContest = (data) => ({
   type: ACTION.UPDATE_CONTEST,
   data
@@ -93,3 +90,7 @@ export const createEntry = (data) => ({
   data
 });
 
+export const editUser = (data) => ({
+  type: ACTION.EDIT_USER_PROFILE,
+  data
+});

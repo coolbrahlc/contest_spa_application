@@ -2,12 +2,14 @@ import {combineReducers} from 'redux'
 import testReducer from './contestCreateReducer';
 import authReducer from './authReducer';
 import customerContestsReducer from './customerContestsReducer';
+import userProfileReducer from './userProfileReducer';
 
 
 const appReducer = combineReducers({
     testReducer,
     authReducer,
-    customerContestsReducer
+    customerContestsReducer,
+    userProfileReducer
 });
 
 

@@ -50,7 +50,6 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 isFetching: true,
-                error: null,
             };
         }
 
@@ -59,6 +58,7 @@ export default function (state = initialState, action) {
                 ...state,
                 user: {...state.user, ...action.data},
                 isFetching: false,
+                editError: null
             };
         }
 

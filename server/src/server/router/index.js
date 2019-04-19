@@ -2,7 +2,7 @@ import 'babel-polyfill';
 const express = require('express');
 const router = express.Router();
 const { getContests, getContestsById, updateContest } = require('./controllers/contestController');
-const { login, register, updateUser } = require('./controllers/authController');
+const { login, register, updateUser, cashout } = require('./controllers/userController');
 const { createNewToken, tokenCheck, tokenUpdate, sendToken } = require('../middlewares/token/auth');
 const { checkCreditCard } = require('../middlewares/checkCreditCard');
 const { getAllSelects } = require('./controllers/selectsController');
@@ -10,7 +10,7 @@ const { createContests } = require('./controllers/transactionController');
 const { rejectSuggestion, setWinnerSuggestion, createSuggestion } = require('./controllers/entryController');
 const { setActiveContest } = require('../middlewares/createContest');
 const { fileUpload, getFile } = require('../utils/fileUpload');
-const { loginValidator, registerValidator, contestCreateValidator } = require('../utils/validation');
+const { loginValidator, registerValidator, /*contestCreateValidator*/ } = require('../utils/validation');
 const { customerOnly, creativeOnly, isOwner } = require('../middlewares/permissionCheck');
 
 
@@ -28,6 +28,7 @@ router.post('/login', loginValidator, login);
 router.post('/register', registerValidator, register, createNewToken, tokenUpdate);
 router.post('/token', tokenCheck, sendToken);
 router.put('/user', tokenCheck, fileUpload, updateUser);
+router.post('/user/checkout', tokenCheck, cashout);
 
 //router.post('/token', auth.tokenCheck, auth.createNewToken, auth.tokenUpdate);
 

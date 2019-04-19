@@ -12,13 +12,28 @@ export function* contestsSaga(action){
         }
     }
     catch (e) {
+        console.log(e)
         yield put({type: ACTION.GET_CUSTOMER_CONTESTS_ERROR, error: e.response.data.message});
     }
 }
 
 
+export function* moreContestsSaga(action){
+    yield put({type: ACTION.GET_MORE_CONTESTS_REQUEST});
+    try{
+        const {data} = yield restController.getCustomerContests(action.data);
+        if(data) {
+            yield put({type: ACTION.GET_MORE_CONTESTS_RESPONSE, data});
+        }
+    }
+    catch (e) {
+        console.log(e)
+        yield put({type: ACTION.GET_MORE_CONTESTS_ERROR, error: e.response.data.message});
+    }
+}
+
+
 export function* getContestsById(action){
-    yield put({type: ACTION.GET_CONTEST_BY_ID_REQUEST});
     try{
         const {data} = yield restController.getContestById(action.data);
         yield put({type: ACTION.GET_CONTEST_BY_ID_RESPONSE, data});
@@ -30,13 +45,13 @@ export function* getContestsById(action){
 
 
 export function* updateContestSaga(action){
-    yield put({type: ACTION.GET_CONTEST_BY_ID_REQUEST});
+    //yield put({type: ACTION.UPDATE_CONTEST_REQUEST});
     try{
         const {data} = yield restController.updateContest(action.data);
         yield put({type: ACTION.UPDATE_CONTEST_RESPONSE, data});
     }
     catch (e) {
-        yield put({type: ACTION.GET_CUSTOMER_CONTESTS_ERROR, error: e.response.data.message});
+        yield put({type: ACTION.UPDATE_CONTEST_ERROR, error: e.response.data.message});
     }
 }
 

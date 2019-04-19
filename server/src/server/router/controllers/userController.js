@@ -9,7 +9,7 @@ const config = require('../../utils/consts');
 
 module.exports.register = async (req, res, next) => {
     try {
-        const {name, password, email, role} = req.body;
+        const { name, password, email, role } = req.body;
         let encryptedPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
         let registerUser = await db.Users.create({
             full_name: name,
@@ -92,14 +92,13 @@ module.exports.updateUser = async (req, res, next) => {
         });
     }
     catch (e) {
-        console.log(e)
         next(new ApplicationError('Internal error'));
     }
 };
 
 
 module.exports.cashout = async (req, res, next) => {
-    const { id, amount, userAccount } = req.body;
+    const { id, checkoutAmount, cardNumber } = req.body;
     let transaction;
     try {
         transaction = await db.sequelize.transaction();
@@ -107,19 +106,20 @@ module.exports.cashout = async (req, res, next) => {
             where: { id: id },
         }, { transaction });
 
-        if (user.account < amount) {
-            throw new BalanceError();
+        const userBalance = user.account;
+        if (parseInt(userBalance) < checkoutAmount) {
+            return next(new BalanceError());
         } else {
-            const intAmount = parseInt(amount);
+            const intAmount = parseInt(checkoutAmount);
             const takeBankMoney = await db.BankAccounts.update({ account: db.sequelize.literal('account +' + intAmount) },
-                { where: { card_number: userAccount }, transaction });
+                { where: { card_number: cardNumber }, transaction });
             if (takeBankMoney[0]===0) {
-                throw new ApplicationError('Transaction error');
+                return next(new ApplicationError('creative credentials error'));
             }
             const creativeProfit = await db.BankAccounts.update({ account: db.sequelize.literal('account -' + intAmount) },
                 { where: { card_number: config.BANK_ACCOUNT_CARD }, transaction });
             if (creativeProfit[0]===0) {
-                throw new ApplicationError('Transaction error');
+                return next(new ApplicationError('bank account error'));
             }
             const updated = await db.Users.update(
                 { account: db.sequelize.literal('account -' + intAmount) },
@@ -135,7 +135,6 @@ module.exports.cashout = async (req, res, next) => {
         }
         transaction.commit();
     } catch (e) {
-        console.log(e)
         transaction.rollback();
         next(new ApplicationError('Internal error'));
     }

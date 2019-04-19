@@ -13,16 +13,15 @@ export const token = () => {
     return axios.post(`${baseURL}/token`, {} , {/* headers: {Authorization: data}*/})
 };
 export const editProfile = (data) => {
-    return axios.put(`${baseURL}/user/`, data, {});
+    return axios.put(`${baseURL}/user/`, data);
 };
 
-
 export const checkout = (data) => {
-    return axios.post(`${baseURL}/contests/create`, data.data, {});
+    return axios.post(`${baseURL}/contests/create`, data.data);
 };
 
 export const getCustomerContests = (data) => {
-    return axios.post(`${baseURL}/contests/`, data, {});
+    return axios.post(`${baseURL}/contests/`, data);
 };
 
 export const getContestById = (data) => {
@@ -46,4 +45,7 @@ export const createEntry = (data) => {
     return axios.post(`${baseURL}/entry/create`, data);
 };
 
+export const creativeCheckout = (data) => {
+    return axios.post(`${baseURL}/user/checkout`, data);
+};
 

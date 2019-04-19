@@ -94,3 +94,13 @@ export const editUser = (data) => ({
   type: ACTION.EDIT_USER_PROFILE,
   data
 });
+
+export const creativeCheckout = (data) => ({
+  type: ACTION.CREATIVE_CHECKOUT,
+  data
+});
+
+export const getMore = (data) => ({
+  type: ACTION.GET_MORE_CONTESTS,
+  data
+});

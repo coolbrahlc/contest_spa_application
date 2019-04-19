@@ -21,6 +21,7 @@ const CreativeDashboard = (props) => {
     };
 
     useEffect(() => {
+        console.log('rerender page')
         const parsed = queryString.parse(props.location.search);
         if (parsed.filter) {
             const filter = parsed.filter;
@@ -44,6 +45,33 @@ const CreativeDashboard = (props) => {
     const filterHandler = () => {
         setLastFilter(false);
         getContests({ params: {} });
+    };
+
+    const loadMore = (startFrom) => {
+        const getContests = this.props;
+        console.log('load more');
+        getContests( {offset: startFrom, params: {}});
+    };
+
+    window.onscroll = () => {
+        const {
+            loadUsers,
+            state: {
+                error,
+                isLoading,
+                hasMore,
+            },
+        } = this;
+
+
+        if (error || isLoading || !hasMore) return;
+
+        if (
+            window.innerHeight + document.documentElement.scrollTop
+            === document.documentElement.offsetHeight
+        ) {
+            loadMore();
+        }
     };
 
 

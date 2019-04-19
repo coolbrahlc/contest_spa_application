@@ -3,11 +3,10 @@ import '../../App.css';
 import {GridLoader} from "react-spinners";
 import connect from "react-redux/es/connect/connect";
 import style from "./UserProfile.module.scss";
-import {editUser} from "../../actions/actionCreator"
+import {editUser, creativeCheckout} from "../../actions/actionCreator"
 import { Container, Row, Col } from 'react-bootstrap';
 import {publicURL} from "../../api/baseURL";
 import pic from "../../images/profilePic.jpeg";
-import AvatarEditor from 'react-avatar-editor'
 
 
 class  UserProfile extends Component {
@@ -20,20 +19,19 @@ class  UserProfile extends Component {
             fullName: full_name ? full_name :'',
             email: email? email :'',
             profilePic: null,
+            checkoutAmount: 0,
+            cardNumber: ''
         }
     }
 
     componentDidMount() {
-        //const id = this.props.match.params.id;
     }
-
 
     changeMode =  () => {
         this.setState({
             editMode: !this.state.edgeMode
         })
     };
-
 
     onChangeFile =  (e) => {
         this.setState({
@@ -50,7 +48,6 @@ class  UserProfile extends Component {
             [`${name}Error`]: null
         });
     };
-
 
     renderEdit =  () => {
         return (
@@ -104,22 +101,31 @@ class  UserProfile extends Component {
         }
     };
 
-    renderImage = (file) => {
-
-        if(file) {
-            return <div className={style.photo}><img src={`${publicURL}${file}`} alt="contestPic" className="img-fluid"/></div>
+    checkout = () => {
+        const {checkoutAmount, cardNumber} = this.state;
+        const {user, creativeCheckout} = this.props;
+        if (cardNumber.length===19 && checkoutAmount>0) {
+            creativeCheckout({
+                checkoutAmount,
+                cardNumber,
+                id: user.id,
+            });
+            this.setState({
+                checkoutAmount: 0,
+                cardNumber: ''
+            })
+        } else {
+            console.log('validation err')
         }
     };
 
     renderProfilePic= (profilePic) => {
         if (profilePic) {
-
             return <div className={style.photo}><img key={profilePic} className={style.myImg} src={publicURL+profilePic} alt="img"/></div>
         } else {
             return <div className={style.photo}><img key={pic} className={style.myImg} src={pic} alt="img"/></div>
         }
     };
-
 
     renderProfileCard = (user) => {
         const { full_name, email, profile_picture, account, id } = user;
@@ -131,7 +137,6 @@ class  UserProfile extends Component {
                         this.renderEditButton()
                     }
                 </div>
-
                 {!editMode &&
                 <div>
 
@@ -152,24 +157,37 @@ class  UserProfile extends Component {
                                 <h5>Your balance</h5>
                                 <p>{account} $</p>
                             </div>
-                            <div className={style.link} >Checkout</div>
                         </li>
+                        <li className={style.brief__wide}>
+                            <div className="d-flex flex-column">
+                                <h5>Checkout</h5>
+                                <input type="number" name="checkoutAmount"
+                                       placeholder='Amount'
+                                       value={this.state.checkoutAmount}
+                                       onChange={this.handleInputChange}/>
 
+                                <input type="text" name="cardNumber"
+                                       placeholder='Card number'
+                                       value={this.state.cardNumber}
+                                       onChange={this.handleInputChange}/>
+                            </div>
+                            <div className={style.link} onClick={()=>this.checkout()}>Checkout</div>
+                        </li>
                     </ul>
                 </div>}
             </div>
         );
     };
 
-
     renderUser = () => {
-        const {isFetching, user} = this.props;
+        const {isFetching, user, editError} = this.props;
         if(!isFetching){
             return (
                 <div className={style.container}>
                     <Row>
-                        <Col className={style.contestContainer} md={{ span: 10}}>
+                        <Col className={style.contestContainer} md={{ span: 12}}>
                             {this.renderProfileCard(user)}
+                            {editError && <div>{editError}</div>}
                         </Col>
                     </Row>
                 </div>
@@ -177,9 +195,9 @@ class  UserProfile extends Component {
         }
     };
 
-
     render() {
-        if(!this.props.user){
+        const {isFetching, user, editError} = this.props;
+        if(!user){
             return (
                 <Container>
                     <Row>User profile not found</Row>
@@ -202,12 +220,13 @@ class  UserProfile extends Component {
 }
 
 const mapStateToProps = (state) =>{
-    const {user} = state.authReducer;
-    return { user };
+    const {user, editError} = state.authReducer;
+    return { user, editError };
 };
 
 const mapDispatchToProps = (dispatch) => ({
     editUser: (id) => dispatch(editUser(id)),
+    creativeCheckout: (data) => dispatch(creativeCheckout(data)),
 });
 
 

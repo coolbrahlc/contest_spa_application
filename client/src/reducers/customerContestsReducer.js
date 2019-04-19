@@ -5,10 +5,11 @@ const initialState = {
     isFetching: true,
     isFetchingContest: true,
     error: null,
-    contests: null,
+    contests: [],
     contest: null,
     entries: [],
     editMode: false,
+    isFetchingMore: false,
 };
 
 
@@ -18,20 +19,53 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 isFetching: true,
-                error: null,
-                contests: null,
-                editMode: true,
             }
         }
+
         case ACTION.GET_CUSTOMER_CONTESTS_RESPONSE: {
             return {
                 ...state,
                 isFetching: false,
                 error: null,
                 contests: action.data,
-                editMode: false,
             }
         }
+
+        case ACTION.GET_CUSTOMER_CONTESTS_ERROR: {
+            return {
+                ...state,
+                isFetching: false,
+                error: action.error,
+                //contests: null,
+            }
+        }
+
+        // GET MORE CONTESTS ACTIONS
+        case ACTION.GET_MORE_CONTESTS_REQUEST: {
+            return {
+                ...state,
+                isFetchingMore: true,
+            }
+        }
+
+        case ACTION.GET_MORE_CONTESTS_RESPONSE: {
+            const oldContests = state.contests;
+            return {
+                ...state,
+                isFetchingMore: false,
+                contests: oldContests.concat(action.data),
+            }
+        }
+
+        case ACTION.GET_MORE_CONTESTS_ERROR: {
+            return {
+                ...state,
+                isFetchingMore: false,
+                error: action.error,
+            }
+        }
+
+        // GET CONTEST ACTIONS
         case ACTION.GET_CONTEST_BY_ID_REQUEST: {
             return {
                 ...state,
@@ -41,7 +75,6 @@ export default function (state = initialState, action) {
         }
 
         case ACTION.GET_CONTEST_BY_ID_RESPONSE: {
-            console.log('getting by ID');
             return {
                 ...state,
                 isFetchingContest: false,
@@ -53,23 +86,11 @@ export default function (state = initialState, action) {
         case ACTION.UPDATE_CONTEST_RESPONSE: {
             return {
                 ...state,
-                isFetchingContest: false,
                 contest: {...state.contest, ...action.data}
             }
         }
 
-
-        case ACTION.GET_CUSTOMER_CONTESTS_ERROR: {
-            return {
-                ...state,
-                isFetching: false,
-                isFetchingContest: false,
-                error: action.error,
-                //contests: null,
-                contest: null
-            }
-        }
-
+        // ENTRY ACTIONS
         case ACTION.ENTRY_REQUEST: {
             return {
                 ...state,
@@ -104,6 +125,7 @@ export default function (state = initialState, action) {
                 contest: {...contest}
             };
         }
+
         case ACTION.ENTRY_REJECT_RESPONSE: {
             const entries = state.entries;
             const index = entries.findIndex(e => e.id === action.data.id);
@@ -115,6 +137,7 @@ export default function (state = initialState, action) {
                 entries: [...entries],
             };
         }
+
         case ACTION.ENTRY_ERROR: {
             return {
                 ...state,

@@ -7,6 +7,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import ContestPreview from "../ContestPreview/ContestPreview";
 import queryString from 'query-string';
 import { ACTIVE, INACTIVE, COMPLETED } from '../../constants/constants'
+import {creativeCheckout, editUser, getMore} from "../../actions/actionCreator";
 
 
 const filterObj = {
@@ -18,7 +19,7 @@ const filterObj = {
 
 const CustomerDashboard = (props) => {
 
-    const {isFetching, contests, getContests, history} = props;
+    const {isFetching, contests, getContests, history, error, isFetchingMore} = props;
     const [lastFilter, setLastFilter] = useState('');
 
     const clickHandler = (filter) => {
@@ -41,6 +42,8 @@ const CustomerDashboard = (props) => {
     };
 
     useEffect(() => {
+        document.body.style.overflow = 'auto'
+        console.log('rerender page')
         const parsed = queryString.parse(props.location.search);
         if (parsed.filter) {
             const filter = parsed.filter;
@@ -51,6 +54,10 @@ const CustomerDashboard = (props) => {
         }
     }, []);
 
+    // useEffect(() => {
+    //     console.log('unmount ')
+    // }, []);
+
     useEffect(() => {
         const parsed = queryString.parse(props.location.search);
         if (parsed.filter) {
@@ -59,6 +66,32 @@ const CustomerDashboard = (props) => {
             setLastFilter(filter);
         }
     }, [props.location.search]);
+
+    const loadMore = (startFrom) => {
+        console.log('load more');
+        props.getMore( {offset: startFrom, params: {}});
+    };
+
+
+    window.onscroll = () => {
+        // const {
+        //     state: {
+        //         error,
+        //         isLoading,
+        //         hasMore,
+        //     },
+        // } = this;
+        //
+        // if (error || isLoading || !hasMore) return;
+
+        // Checks that the page has scrolled to the bottom
+        if (
+            window.innerHeight + document.documentElement.scrollTop
+            === document.documentElement.offsetHeight
+        ) {
+            loadMore(contests.length);
+        }
+    };
 
 
     if (isFetching) {
@@ -121,6 +154,10 @@ const CustomerDashboard = (props) => {
                         return (
                             <Row key={c.id} className={style.contests}>
                                 <ContestPreview contest={c} {...props}/>
+                                {isFetchingMore && <GridLoader loading={isFetching}
+                                                               color={'#28D2D1'}
+                                                               height={320} width={320}
+                                />}
                             </Row>
                         );
                     })
@@ -135,5 +172,9 @@ const mapStateToProps = (state) => {
     const {contests, isFetching, error} =  state.customerContestsReducer;
     return {error, contests, isFetching, user};
 };
+const mapDispatchToProps = (dispatch) => ({
+    getMore: (data) => dispatch(getMore(data)),
+    creativeCheckout: (data) => dispatch(creativeCheckout(data)),
+});
 
-export default connect(mapStateToProps, null)(CustomerDashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(CustomerDashboard);

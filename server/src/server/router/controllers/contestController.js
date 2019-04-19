@@ -39,7 +39,7 @@ module.exports.getContestsById =  async (req, res , next) => {
 
 module.exports.getContests =  async (req, res , next) => {
 
-    const params = req.body.params;
+    const { params, offset } = req.body;
     if (req.decoded.role===CUSTOMER_ROLE) {
         params.creator_id = req.decoded.id;
     } else {
@@ -47,7 +47,13 @@ module.exports.getContests =  async (req, res , next) => {
     }
     try {
         const customersContests = await db.Contests.findAll(
-    { where:req.body.params, include: [{  model: db.Suggestions }] }
+    {   where:req.body.params,
+                order: [
+                    ['id', 'DESC'],
+                ],
+                limit: 8,
+                offset: offset ? offset : 0,
+                include: [{  model: db.Suggestions }] }
         );
         customersContests.map(contest => {
             contest.dataValues.entriesCount = contest.Suggestions.length;
@@ -56,6 +62,7 @@ module.exports.getContests =  async (req, res , next) => {
         if (!customersContests) {
             next(new ApplicationError('Not found'));
         }
+        console.log(customersContests)
         res.status(200).send(customersContests);
     } catch (e) {
         next(new ApplicationError('Internal error'));

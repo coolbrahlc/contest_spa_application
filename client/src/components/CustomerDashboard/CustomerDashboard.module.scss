@@ -1,7 +1,9 @@
 @import "../../sass/mixins";
 @import "../../sass/variables";
 
-
+body {
+  overflow: hidden;
+}
 .contests{
   background-color: white;
   margin-top: 20px;

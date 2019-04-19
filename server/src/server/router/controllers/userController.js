@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../../models/index');
 const {UserAlreadyExistsError,
         ApplicationError,
-        UserNotFoundError} = require('../../utils/customErrrors/errors');
+        UserNotFoundError, BalanceError} = require('../../utils/customErrrors/errors');
 const config = require('../../utils/consts');
 
 
@@ -71,7 +71,6 @@ module.exports.updateUser = async (req, res, next) => {
         const profilePic = req.files['profilePic'] ;  // adding file path
 
         if (profilePic) {
-            console.log('have pic');
             edit.profile_picture = profilePic[0].filename;
         }
 
@@ -86,7 +85,6 @@ module.exports.updateUser = async (req, res, next) => {
         }
         const updatedUser = updated[1][0].dataValues;
         const { full_name, profile_picture, email } = updatedUser;
-        console.log({ full_name, profile_picture, email });
         res.status(200).send({
             full_name,
             profile_picture,
@@ -99,3 +97,46 @@ module.exports.updateUser = async (req, res, next) => {
     }
 };
 
+
+module.exports.cashout = async (req, res, next) => {
+    const { id, amount, userAccount } = req.body;
+    let transaction;
+    try {
+        transaction = await db.sequelize.transaction();
+        const user = await db.Users.findOne({
+            where: { id: id },
+        }, { transaction });
+
+        if (user.account < amount) {
+            throw new BalanceError();
+        } else {
+            const intAmount = parseInt(amount);
+            const takeBankMoney = await db.BankAccounts.update({ account: db.sequelize.literal('account +' + intAmount) },
+                { where: { card_number: userAccount }, transaction });
+            if (takeBankMoney[0]===0) {
+                throw new ApplicationError('Transaction error');
+            }
+            const creativeProfit = await db.BankAccounts.update({ account: db.sequelize.literal('account -' + intAmount) },
+                { where: { card_number: config.BANK_ACCOUNT_CARD }, transaction });
+            if (creativeProfit[0]===0) {
+                throw new ApplicationError('Transaction error');
+            }
+            const updated = await db.Users.update(
+                { account: db.sequelize.literal('account -' + intAmount) },
+                {   where: { id: id },
+                    returning: true,
+                    transaction,
+                });
+            if (updated[0]===0) {
+                throw new ApplicationError('Transaction error');
+            }
+            const updatedUser = updated[1][0].dataValues;
+            res.send(updatedUser);
+        }
+        transaction.commit();
+    } catch (e) {
+        console.log(e)
+        transaction.rollback();
+        next(new ApplicationError('Internal error'));
+    }
+};

@@ -45,8 +45,22 @@
   height: 100%;
 }
 
-.image{
+.headerActions{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  div:first-child{
+    margin-right: 10px;
+  }
+}
+
+.myImg{
   height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  &:hover{
+    cursor: pointer;
+  }
 }
 
 .botHeader{

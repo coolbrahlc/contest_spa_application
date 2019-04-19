@@ -12,6 +12,10 @@ export const login = (data) => axios.post(`${baseURL}/login`, data);
 export const token = () => {
     return axios.post(`${baseURL}/token`, {} , {/* headers: {Authorization: data}*/})
 };
+export const editProfile = (data) => {
+    return axios.put(`${baseURL}/user/`, data, {});
+};
+
 
 export const checkout = (data) => {
     return axios.post(`${baseURL}/contests/create`, data.data, {});

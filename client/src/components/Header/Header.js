@@ -18,12 +18,15 @@ class Header extends Component{
         }
     };
 
+    toUserProfile = () => {
+        this.props.history.push('/profile');
+    };
+
     renderProfilePic= (profilePic) => {
         if (profilePic) {
-
-            return <div className={style.image}><img key={profilePic} className="img-fluid h-100" src={publicURL+profilePic} alt="img"/></div>
+            return <img key={profilePic} onClick={this.toUserProfile} className={style.myImg} src={publicURL+profilePic} alt="img"/>
         } else {
-            return <div className={style.image}><img key={pic} className="img-fluid h-100" src={pic} alt="img"/></div>
+            return <img key={pic} className={style.myImg} src={pic} alt="img"/>
         }
     };
 
@@ -33,11 +36,11 @@ class Header extends Component{
             return (
                 <>
                     <Col md={{size: 2, offset: 10}}>
-                        <Row>
-                            <Col md={{size: 6}}>
+                        <div className={style.headerActions}>
+                            <div >
                                 {this.renderProfilePic(user.profile_picture)}
-                            </Col>
-                            <Col md={{size: 6}}>
+                            </div>
+                            <div>
                                 <Dropdown className={style.headerMenu}>
                                     <Dropdown.Toggle id="dropdown-basic" className={style.headerButton}>
                                         {user.full_name}
@@ -45,13 +48,13 @@ class Header extends Component{
                                     <Dropdown.Menu>
                                         <Dropdown.Header>Options</Dropdown.Header>
                                         <Dropdown.Divider />
-                                        <Dropdown.Item>Profile</Dropdown.Item>
+                                        <Dropdown.Item><Link to={"/profile"}>Profile</Link></Dropdown.Item>
                                         <Dropdown.Item><Link to={"/dashboard"}>Dashboard</Link></Dropdown.Item>
                                         <Dropdown.Item><p onClick={this.onClick}>Logout</p></Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
-                            </Col>
-                        </Row>
+                            </div>
+                        </div>
 
                     </Col>
                 </>

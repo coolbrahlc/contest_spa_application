@@ -18,9 +18,9 @@ export default function (NestedComponent) {
                 }
             }
         }
-        
+
         render() {
-            const {isFetching} = this.props
+            const {isFetching} = this.props;
             if(isFetching){
                 return (
                     <div className={style.loader}>

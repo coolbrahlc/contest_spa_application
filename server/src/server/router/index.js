@@ -2,7 +2,7 @@ import 'babel-polyfill';
 const express = require('express');
 const router = express.Router();
 const { getContests, getContestsById, updateContest } = require('./controllers/contestController');
-const { login, register } = require('./controllers/authController');
+const { login, register, updateUser } = require('./controllers/authController');
 const { createNewToken, tokenCheck, tokenUpdate, sendToken } = require('../middlewares/token/auth');
 const { checkCreditCard } = require('../middlewares/checkCreditCard');
 const { getAllSelects } = require('./controllers/selectsController');
@@ -27,6 +27,8 @@ router.put('/entry/winner', tokenCheck, isOwner, setWinnerSuggestion);
 router.post('/login', loginValidator, login);
 router.post('/register', registerValidator, register, createNewToken, tokenUpdate);
 router.post('/token', tokenCheck, sendToken);
+router.put('/user', tokenCheck, fileUpload, updateUser);
+
 //router.post('/token', auth.tokenCheck, auth.createNewToken, auth.tokenUpdate);
 
 router.get('/api/public/:name', getFile);

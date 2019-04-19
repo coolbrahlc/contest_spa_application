@@ -3,16 +3,11 @@ import '../../App.css';
 import {GridLoader} from "react-spinners";
 import connect from "react-redux/es/connect/connect";
 import style from "./UserProfile.module.scss";
-import {editUser, updateContest, setEntryWinner, rejectEntry} from "../../actions/actionCreator"
-import SingleEntry from "../../components/SingleEntry/SingleEntry";
-import {ROLE} from "../../constants/constants";
+import {editUser} from "../../actions/actionCreator"
 import { Container, Row, Col } from 'react-bootstrap';
-import moment from "moment";
-import CreateEntry from "../../components/CreateEntry/CreateEntry";
-import NameContest from "../ContestType/contestType";
 import {publicURL} from "../../api/baseURL";
-import SidebarRight from "../../components/SidebarRight/SidebarRight";
-import userProfileReducer from "../../reducers/userProfileReducer";
+import pic from "../../images/profilePic.jpeg";
+import AvatarEditor from 'react-avatar-editor'
 
 
 class  UserProfile extends Component {
@@ -22,7 +17,7 @@ class  UserProfile extends Component {
         const {full_name, email} = props.user;
         this.state= {
             editMode: false,
-            fullName: full_name? full_name :'',
+            fullName: full_name ? full_name :'',
             email: email? email :'',
             profilePic: null,
         }
@@ -39,12 +34,6 @@ class  UserProfile extends Component {
         })
     };
 
-    update = (data) => {
-        this.props.updateContest(data);
-        this.setState({
-            editMode :false
-        })
-    };
 
     onChangeFile =  (e) => {
         this.setState({
@@ -62,29 +51,30 @@ class  UserProfile extends Component {
         });
     };
 
+
     renderEdit =  () => {
         return (
             <div>
                 <div className={style.inputDefault}>
                     <input type="text"
                            placeholder="Contest name"
-                           name="contestName"
+                           name="fullName"
                            value={this.state.fullName}
                            onChange={this.handleInputChange}/>
                 </div>
                 <div className={style.inputDefault}>
                     <input type="text"
                            placeholder="Contest name"
-                           name="contestName"
+                           name="email"
                            value={this.state.email}
                            onChange={this.handleInputChange}/>
                 </div>
                 <div className={style.formSection}>
                     <input type="file"
-                           name="nameFile"
+                           name="profilePic"
                            onChange={this.onChangeFile} />
                 </div>
-                <div onClick={this.submitEdit()}>Edit</div>
+                <div onClick={this.submitEdit}>Edit</div>
             </div>
         )
     };
@@ -92,7 +82,6 @@ class  UserProfile extends Component {
     submitEdit = () => {
         let profileForm = new FormData();
         const {fullName, email, profilePic}= this.state;
-
         profileForm.set('profileEdit', JSON.stringify({
             full_name: fullName,
             email,
@@ -100,11 +89,10 @@ class  UserProfile extends Component {
         if (profilePic) {
             profileForm.append('profilePic', profilePic);
         }
-        editUser(profileForm);
+        this.props.editUser(profileForm);
     };
 
     renderEditButton = () => {
-        const {user} = this.props;
         if (this.state.editMode) {
             return this.renderEdit()
         } else {
@@ -123,17 +111,31 @@ class  UserProfile extends Component {
         }
     };
 
+    renderProfilePic= (profilePic) => {
+        if (profilePic) {
+
+            return <div className={style.photo}><img key={profilePic} className={style.myImg} src={publicURL+profilePic} alt="img"/></div>
+        } else {
+            return <div className={style.photo}><img key={pic} className={style.myImg} src={pic} alt="img"/></div>
+        }
+    };
+
 
     renderProfileCard = (user) => {
-        const { full_name, email, profile_picture, account, role, id } = user;
+        const { full_name, email, profile_picture, account, id } = user;
         const { editMode } = this.state;
         return (
             <div className={style.brief}>
-                {
-                    this.renderEditButton()
-                }
+                <div>
+                    {
+                        this.renderEditButton()
+                    }
+                </div>
+
                 {!editMode &&
-                <>
+                <div>
+
+                    {this.renderProfilePic(profile_picture)}
                     <ul>
                         <div >#{id}</div>
 
@@ -145,18 +147,16 @@ class  UserProfile extends Component {
                             <h5>Email</h5>
                             <p>{email}</p>
                         </li>
-
-                        <li className={style.brief__thin}>
-                            <h5>profile pic</h5>
-                            { this.renderImage(profile_picture) }
-                        </li>
-                        <li className={style.brief__thin}>
-                            <h5>Your balance</h5>
-                            <p>{account} $</p>
+                        <li className={style.brief__wide}>
+                            <div>
+                                <h5>Your balance</h5>
+                                <p>{account} $</p>
+                            </div>
+                            <div className={style.link} >Checkout</div>
                         </li>
 
                     </ul>
-                </>}
+                </div>}
             </div>
         );
     };
@@ -164,17 +164,7 @@ class  UserProfile extends Component {
 
     renderUser = () => {
         const {isFetching, user} = this.props;
-        if(isFetching){
-            return (
-                <div className={style.loader}>
-                    <GridLoader loading={isFetching}
-                                color={'#28D2D1'}
-                                height={320} width={320}
-                    />
-                </div>
-            )
-        }
-        else{
+        if(!isFetching){
             return (
                 <div className={style.container}>
                     <Row>
@@ -212,10 +202,8 @@ class  UserProfile extends Component {
 }
 
 const mapStateToProps = (state) =>{
-    const {user, isFetching} = state.authReducer;
-    console.log(user)
-
-    return { user, isFetching };
+    const {user} = state.authReducer;
+    return { user };
 };
 
 const mapDispatchToProps = (dispatch) => ({

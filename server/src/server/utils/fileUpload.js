@@ -15,8 +15,8 @@ const storage = multer.diskStorage({
 module.exports.fileUpload = multer({ storage: storage }).fields([{ name: 'nameFile', maxCount: 3 },
     { name: 'taglineFile', maxCount: 3 },
     { name: 'logoFile', maxCount: 3 },
+    { name: 'profilePic', maxCount: 1 },
     { name: 'entryFile', maxCount: 3 }]);
-
 
 
 module.exports.getFile = async (req, res, next) => {

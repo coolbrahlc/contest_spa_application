@@ -79,10 +79,6 @@ export default function (state = initialState, action) {
         }
 
         case ACTION.ENTRY_CREATE_RESPONSE: {
-            console.log(545454)
-            console.log(state.entries)
-            console.log(action.action)
-
             return {
                 ...state,
                 isFetching: false,

@@ -62,3 +62,40 @@ module.exports.login = async (req, res, next) => {
     }
 };
 
+module.exports.updateUser = async (req, res, next) => {
+    try {
+        let edit = Object.values(req.body);
+        edit = JSON.parse(edit[0]);
+        const { id } = req.decoded;
+
+        const profilePic = req.files['profilePic'] ;  // adding file path
+
+        if (profilePic) {
+            console.log('have pic');
+            edit.profile_picture = profilePic[0].filename;
+        }
+
+        const updated = await db.Users.update(edit, {
+            where: {
+                id,
+            },
+            returning: true,
+        });
+        if (updated[0]<1) {
+            throw new ApplicationError('User not found');
+        }
+        const updatedUser = updated[1][0].dataValues;
+        const { full_name, profile_picture, email } = updatedUser;
+        console.log({ full_name, profile_picture, email });
+        res.status(200).send({
+            full_name,
+            profile_picture,
+            email,
+        });
+    }
+    catch (e) {
+        console.log(e)
+        next(new ApplicationError('Internal error'));
+    }
+};
+

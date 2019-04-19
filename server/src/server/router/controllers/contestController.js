@@ -90,7 +90,7 @@ module.exports.updateContest = async (req, res, next) => {
         res.status(200).send(updatedContest);
     }
     catch (e) {
-        next(e);
+        next(new ApplicationError('Internal error'));
     }
 };
 

@@ -57,9 +57,23 @@
   padding: 5px 20px;
   height: 100%;
 }
+
+.photoContainer{
+  display: flex;
+  justify-content: center;
+}
 .photo{
-  width: 500px;
-  height: auto;
+  display: flex;
+  justify-content: center;
+  padding: 30px;
+  width: auto;
+  height: 200px;
+}
+
+.myImg{
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
 }
 
 
@@ -89,9 +103,15 @@
   background-color: white;
   position: relative;
   padding-top: 10px;
+  display: flex;
+  flex-direction: column;
   &__thin{
     @include flex-col-start-start;
     width: 30%;
+  }
+  &__wide{
+    display: flex;
+    justify-content: space-between;
   }
   &__thick{
     @include flex-col-start-start;

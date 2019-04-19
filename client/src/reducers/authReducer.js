@@ -1,10 +1,11 @@
 import ACTION from '../actions/actiontsTypes';
 
 const initialState = {
-    isFetching: false,
+    isFetching: true,
     error: null,
     token: null,
     user: null,
+    editError: null
 };
 
 export default function (state = initialState, action) {
@@ -45,6 +46,30 @@ export default function (state = initialState, action) {
                 user: null,
             }
         }
+        case ACTION.EDIT_PROFILE_REQUEST: {
+            return {
+                ...state,
+                isFetching: true,
+                error: null,
+            };
+        }
+
+        case ACTION.EDIT_PROFILE_RESPONSE: {
+            return {
+                ...state,
+                user: {...state.user, ...action.data},
+                isFetching: false,
+            };
+        }
+
+        case ACTION.EDIT_PROFILE_ERROR: {
+            return {
+                ...state,
+                editError: action.error,
+                isFetching: false,
+            };
+        }
+
         default: {
             return state;
         }

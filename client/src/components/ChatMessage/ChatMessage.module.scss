@@ -1,0 +1,43 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+
+@mixin message{
+  @include flex-row-between-center;
+  border-radius: 5px;
+  padding: 8px;
+  max-width: 80%;
+  word-break: break-word;
+  p{
+    flex: 1;
+    margin-right: 10px;
+    font-size: 18px;
+  }
+  span{
+    align-self: flex-end;
+    font-size: 15px;
+  }
+}
+
+.container_self{
+  @include flex-row-end-center;
+  margin: 5px;
+  .inner{
+    @include message;
+    background-color: #BCE8B5;
+    p {
+      font-size: 14px;
+    }
+  }
+}
+
+.container_opponent{
+  @include flex-row-start-center;
+  margin: 5px;
+  .inner{
+    @include message;
+    background-color: white;
+    p {
+      font-size: 14px;
+    }
+  }
+}

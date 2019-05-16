@@ -1,0 +1,16 @@
+@import "../../sass/variables";
+@import "../../sass/mixins";
+
+.container{
+  @include flex-row-center-center;
+  height: 48px;
+  width: 48px;
+  border-radius: 100%;
+  color: white;
+  margin: 0 5px;
+  img{
+    height: 48px;
+    width: 48px;
+    border-radius: 50%;
+  }
+}

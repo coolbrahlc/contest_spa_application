@@ -1,0 +1,5 @@
+@import "../../sass/mixins";
+
+.loader {
+  @include loader;
+}

@@ -1,0 +1,188 @@
+@import "../../sass/mixins";
+@import "../../sass/variables";
+
+.html{
+  background-color: $authBackColor;
+}
+
+.container{
+  @include flex-col-start-center;
+  background-color: $authBackColor;
+  width: 100%;
+  //height: 100vh;
+  font-family: Gotham SSm A, Gotham SSm B, Halvetica, sans-serif;
+  &__subcontainer{
+    @include flex-col-center-center;
+    width: 100%;
+    max-width: 600px;
+    margin-top: 20px;
+    &:hover{
+    color: white;
+    text-decoration: none;
+  }
+  }
+  &__header{
+    @include flex-row-around-center;
+    width: 100%;
+    padding-top: 50px;
+  }
+  &__info{
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0;
+    font-size: 38px;
+    margin-bottom: 18px;
+  }
+  &__subinfo{
+    color: white;
+    font-weight: 500;
+    letter-spacing: 0;
+    font-size: 18px;
+    margin: 0 auto 18px;
+    max-width: 405px;
+    text-align: center;
+    line-height: 25px;
+  }
+}
+
+.link{
+  @include linkButton;
+  &:hover{
+    color: white;
+    text-decoration: none;
+  }
+}
+
+.formContainer{
+  @include flex-col-start-center;
+  color: white;
+  height: 100%;
+  &__row:first-child{
+    margin-top: 20px;
+  }
+  &__row{
+    width: 100%;
+    min-height: 65px;
+    margin-bottom: 10px;
+    @include flex-row-between-center;
+    @media screen and (max-width: 823px) {
+      display: flex;
+      flex-direction: column;
+      div{
+        padding: 3px;
+      }
+    }
+
+    div:first-child{
+    padding-right: 3px;
+    }
+    div:last-child{
+      padding-left: 3px;
+    }
+  }
+}
+
+.formPermissions{
+  @include flex-row-center-center;
+  margin-bottom: 15px;
+}
+
+.formError{
+  @include flex-row-center-center;
+  border: 1px solid red;
+  max-width: 550px;
+  width: 100%;
+  min-height: 20px;
+  padding: 5px;
+  margin-top: 10px ;
+  margin-bottom: -10px ;
+}
+
+.formRadiobar{
+  @include flex-row-start-start;
+  width: 100%;
+  border: 1px solid white;
+  max-width: 600px;
+  min-height: 60px;
+  margin: 15px 0;
+  input:first-child{
+    margin: 10px 15px;
+  }
+  &__item{
+    font-family: Gotham SSm A,Gotham SSm B,Halvetica,sans-serif;
+    @include flex-col-center-start;
+    color: white;
+    padding: 10px;
+    p{
+      font-size: 20px;
+      font-weight: 400;
+      padding-bottom: 5px;
+    }
+    span{
+      font-size: 14px;
+    }
+  }
+}
+
+.formUnderlined{
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+
+
+@mixin input{
+  width: 100%;
+  max-width: 560px;
+  padding-bottom: 11.5px;
+  input{
+    padding: 22px;
+    width: 100%;
+    border-radius: 5px;
+    border-color: black;
+    border-width: 0;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: normal;
+    background-color: white;
+    color: $inputColor;
+  }
+  div {
+  }
+}
+
+.inputDefault{
+  @include input;
+}
+
+.inputDanger{
+  @include input;
+  input{
+    border-color: red;
+    border-width: 2px;
+  }
+}
+
+.inputButton{
+  width: 100%;
+  height: 61px;
+  border-radius: 5px;
+  border-color: black;
+  border-width: 0;
+  line-height: normal;
+  background-color: $loginBackColor;
+  cursor: pointer;
+  margin-bottom: 80px;
+  button{
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    background-color: $loginBackColor;
+    color: white;
+    border-radius: 5px;
+    border-color: black;
+    border-width: 0;
+    font-size: 20px;
+    font-weight: 500;
+  }
+}

@@ -1,0 +1,37 @@
+{
+    "development": {
+        "username": "postgres",
+        "password": "password",
+        "database": "todo-dev",
+        "host": "db-dev",
+        "dialect": "postgres",
+        "operatorsAliases": "Op",
+        "jwtSecret": "babura",
+        "pool": {
+            "max": 100,
+            "min": 0,
+            "idle": 200000,
+            "acquire": 1000000
+        },
+        "emailSender": "razerdevice@gmail.com",
+        "emailPassword": "EXAMPLE",
+        "emailService": "gmail"
+    },
+
+    "test": {
+        "username": "postgres",
+        "password": "password",
+        "database": "todo-test",
+        "host": "db-dev",
+        "dialect": "postgres",
+        "operatorsAliases": "Op"
+    },
+    "production": {
+        "username": "postgres",
+        "password": "password",
+        "database": "todo-prod",
+        "host": "db-dev",
+        "dialect": "postgres",
+        "operatorsAliases": "Op"
+    }
+}
